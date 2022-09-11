@@ -12,7 +12,7 @@
     <table>
         <thead>
             <tr>
-                @foreach (var property in Model.)
+                @foreach (var property in Model.GetType().)
                 {
                     <th>@property.Name</th>
                 }

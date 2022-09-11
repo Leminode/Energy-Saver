@@ -5,6 +5,7 @@ namespace Energy_Saver.Pages
 {
     public class IndexModel : PageModel
     {
+        public Records Records { get; set; }
         private readonly ILogger<IndexModel> _logger;
 
         public IndexModel(ILogger<IndexModel> logger)
@@ -14,6 +15,8 @@ namespace Energy_Saver.Pages
 
         [BindProperty(SupportsGet = true)]
         public string City { get; set; }
+        
+        
 
         public void OnGet()
         {

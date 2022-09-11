@@ -1,4 +1,6 @@
 ﻿@page
+@using System.ComponentModel
+@using Microsoft.AspNetCore.Mvc.ModelBinding
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -9,12 +11,12 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <div>
-    <table>
+    <table class="table">
         <thead>
             <tr>
-                @foreach (var property in Model.GetType().)
+                @foreach (var property in Model.GetType().GetProperty("Records").PropertyType.GetProperties())
                 {
-                    <th>@property.Name</th>
+                    <th>@((property.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute).DisplayName)</th>
                 }
             </tr>
         </thead>

@@ -362,7 +362,7 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-.vs
+.vs/
 
 "Energy Saver"/bin
 "Energy Saver"/obj

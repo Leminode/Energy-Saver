@@ -1,0 +1,14 @@
+[
+  {
+    "id": 1,
+    "month": 1,
+    "gasPrice": 1.5,
+    "gasAmount": 123
+},
+  {
+    "id": 2,
+    "month": 2,
+    "gasPrice": 12,
+    "gasAmount": 1234
+  }
+]

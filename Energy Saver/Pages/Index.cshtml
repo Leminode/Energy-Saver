@@ -7,19 +7,19 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome to @Model.City</h1>
+    <h1 class="display-4">Energy Saver</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <div>
-    <table class="table">
+    <table class="table" id="records-list">
         <thead>
             <tr>
-                @foreach (var property in Model.GetType().GetProperty("Records").PropertyType.GetProperties())
-                {
-                    <th>@((property.GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute).DisplayName)</th>
-                }
+                <th>Month</th>
+                <th>Gas Price</th>
+                <th>Gas Amount</th>
             </tr>
         </thead>
     </table>
 </div>
+
 <!--Atskirai padaryti dujoms, elektrai, vanduo (siltas, saltas), sildymas-->

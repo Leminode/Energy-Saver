@@ -347,3 +347,4 @@ D:\Documents\psi\Energy Saver\Energy Saver\bin\Debug\net6.0\zh-Hans\Microsoft.Co
 D:\Documents\psi\Energy Saver\Energy Saver\bin\Debug\net6.0\zh-Hant\Microsoft.CodeAnalysis.CSharp.resources.dll
 D:\Documents\psi\Energy Saver\Energy Saver\obj\Debug\net6.0\Energy Saver.MvcApplicationPartsAssemblyInfo.cs
 D:\Documents\psi\Energy Saver\Energy Saver\obj\Debug\net6.0\Energy Saver.csproj.CopyComplete
+D:\Documents\psi\Energy Saver\Energy Saver\bin\Debug\net6.0\Services\RecordsList.json

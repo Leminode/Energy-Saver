@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Energy_Saver.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Energy_Saver.Controllers
 {
@@ -7,6 +8,17 @@ namespace Energy_Saver.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public JsonResult TaxDetails()
+        {
+            List<Taxes> ObjTax = new List<Taxes>()
+            {
+
+            };
+
+            return Json(ObjTax);
         }
     }
 }

@@ -2,14 +2,12 @@
 
 ## Planas
 
-- Sukurti main puslapi, kuriame butu lentele su mokesciu istorija, patarimais
-- Prideti irasu langas, pradzioje ivedami duomenys ranka
-- Issaugoti duomenis i failus, tikriausiai jsonus
-- Implementuoti auth0
-- Vartojo profilio langas
-- Suvestines langas, kuri parodo tavo usage per metus, grafiskai pavaizduota, su ivairiais pasirinkimais
-- Leaderboardas, sukurti tasku sistema (?) 
+- Sukurti main puslapį, kuriame būtų lentelė su mokesčių istorija, patarimais.
+- Prideti įrašų langą, pradžioje įvedami duomenys ranka.
+- Išsaugoti duomenis į failus, tikriausiai jsonus.
+- Implementuoti Auth0.
+- Sukurti vartojo profilio langą.
+- Suvestinių langas, kuris parodo vartotojo vartoseną per metus (statistika bus atvaizduota grafiškai, su įvairiais pasirinkimais).
+- Sukurti leaderboardą naudojant taškų sistemą (?) 
 
-
-
-Inputas tikriausiai bus parsinamas per emailus
+(Inputas tikriausiai bus parsinamas per email'us)

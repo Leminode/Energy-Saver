@@ -9,13 +9,13 @@ namespace Energy_Saver.Model
         [JsonProperty("month")]
         public string Month { get; set; }
         [JsonProperty("gasPrice")]
-        public int GasPrice { get; set; }
+        public float GasPrice { get; set; }
         [JsonProperty("electricityPrice")]
-        public int ElectricityPrice { get; set; }
+        public float ElectricityPrice { get; set; }
         [JsonProperty("waterPrice")]
         public int WaterPrice { get; set; }
         [JsonProperty("heatingPrice")]
-        public int HeatingPrice { get; set; }
+        public float HeatingPrice { get; set; }
         
     }
 }

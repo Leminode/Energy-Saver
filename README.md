@@ -1,6 +1,6 @@
 # Energy-Saver
 
-##Planas
+## Planas
 
 - Sukurti main puslapi, kuriame butu lentele su mokesciu istorija, patarimais
 - Prideti irasu langas, pradzioje ivedami duomenys ranka

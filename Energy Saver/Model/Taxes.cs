@@ -16,9 +16,6 @@ namespace Energy_Saver.Model
         public int WaterPrice { get; set; }
         [JsonProperty("heatingPrice")]
         public int HeatingPrice { get; set; }
-
-        [JsonProperty("taxes")]
-        public IList<Taxes> taxes;
-
+        
     }
 }

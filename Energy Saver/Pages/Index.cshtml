@@ -1,6 +1,5 @@
 ﻿@page
 @using System.ComponentModel
-@using Energy_Saver.Pages
 @using Microsoft.AspNetCore.Mvc.ModelBinding
 @model IndexModel
 @{
@@ -12,14 +11,26 @@
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 <div>
-    <table class="table" id="records-list">
+    <table class="table" id="tax-list">
         <thead>
             <tr>
                 <th>Month</th>
                 <th>Gas Price</th>
-                <th>Gas Amount</th>
+                <th>Electricity Price</th>
+                <th>Water Price</th>
+                <th>Heating Price</th>
             </tr>
         </thead>
+        @foreach (var jsonData in Model.Taxes)
+        {
+            <tr>
+                <td>@jsonData.Month</td>
+                <td>@jsonData.GasPrice</td>
+                <td>@jsonData.ElectricityPrice</td>
+                <td>@jsonData.WaterPrice</td>
+                <td>@jsonData.HeatingPrice</td>
+            </tr>
+        }
     </table>
 </div>
 

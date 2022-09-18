@@ -1,0 +1,11 @@
+[
+   {
+      "id": 1,
+      "month": 1,
+      "gasPrice": 2,
+      "electricityPrice": 3,
+      "waterPrice": 4,
+      "heatingPrice": 5
+   }
+]
+

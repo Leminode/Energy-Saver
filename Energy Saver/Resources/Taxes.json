@@ -1,11 +1,30 @@
 [
-   {
-      "id": 1,
-      "month": 1,
-      "gasPrice": 2,
-      "electricityPrice": 3,
-      "waterPrice": 4,
-      "heatingPrice": 5
-   }
+  {
+    "id": 1,
+    "year": 2022,
+    "month": "3",
+    "gasPrice": 2,
+    "electricityPrice": 3,
+    "waterPrice": 4,
+    "heatingPrice": 5
+  },
+  {
+    "id": 2,
+    "year": 2021,
+    "month": "2",
+    "gasPrice": 2,
+    "electricityPrice": 3,
+    "waterPrice": 4,
+    "heatingPrice": 5
+  },
+  {
+    "id": 3,
+    "year": 2022,
+    "month": "5",
+    "gasPrice": 2,
+    "electricityPrice": 3,
+    "waterPrice": 4,
+    "heatingPrice": 5
+  }
 ]
 

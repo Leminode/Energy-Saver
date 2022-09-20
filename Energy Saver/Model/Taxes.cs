@@ -7,6 +7,9 @@ namespace Energy_Saver.Model
         [JsonProperty("id")]
         public int Id { get; set; }
 
+        [JsonProperty("year")]
+        public int Year { get; set; }
+
         [JsonProperty("month")]
         public string Month { get; set; }
 

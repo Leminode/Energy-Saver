@@ -24,6 +24,8 @@ namespace Energy_Saver.Pages
             string path = "Resources/Taxes.json";
             string json = System.IO.File.ReadAllText(Path.GetFullPath(path));
             Taxes = JsonConvert.DeserializeObject<List<Taxes>>(json);
+
+            Taxes = Taxes.OrderByDescending(t => t.Year).ToList();
         }
 
         public void OnPost()

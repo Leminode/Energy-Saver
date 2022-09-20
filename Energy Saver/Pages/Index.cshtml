@@ -21,9 +21,17 @@
                 <th>Heating Price</th>
             </tr>
         </thead>
+        @{ int currentYear = 0; }
         @foreach (var jsonData in Model.Taxes)
         {
             <tr>
+                @if(jsonData.Year != currentYear)
+                {
+                    <tr>
+                    <td colspan=5 style="text-align:center"><b>@jsonData.Year</b></td>
+                    </tr>
+                    currentYear = jsonData.Year;
+                }
                 <td>@jsonData.Month</td>
                 <td>@jsonData.GasPrice</td>
                 <td>@jsonData.ElectricityPrice</td>

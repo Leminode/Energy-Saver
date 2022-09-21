@@ -1,0 +1,60 @@
+﻿@page
+@model Energy_Saver.Pages.InputModel
+
+@{
+    ViewData["Title"] = "Input";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>Input</h1>
+
+<h4>Taxes</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Taxes.Year" class="control-label"></label>
+                <input asp-for="Taxes.Year" class="form-control" />
+                <span asp-validation-for="Taxes.Year" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Taxes.Month" class="control-label"></label>
+                <input asp-for="Taxes.Month" class="form-control" />
+                <span asp-validation-for="Taxes.Month" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Taxes.GasPrice" class="control-label"></label>
+                <input asp-for="Taxes.GasPrice" class="form-control" />
+                <span asp-validation-for="Taxes.GasPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Taxes.ElectricityPrice" class="control-label"></label>
+                <input asp-for="Taxes.ElectricityPrice" class="form-control" />
+                <span asp-validation-for="Taxes.ElectricityPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Taxes.WaterPrice" class="control-label"></label>
+                <input asp-for="Taxes.WaterPrice" class="form-control" />
+                <span asp-validation-for="Taxes.WaterPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Taxes.HeatingPrice" class="control-label"></label>
+                <input asp-for="Taxes.HeatingPrice" class="form-control" />
+                <span asp-validation-for="Taxes.HeatingPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Energy_Saver.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddDbContext<Energy_SaverContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Energy_SaverContext") ?? throw new InvalidOperationException("Connection string 'Energy_SaverContext' not found.")));
 
 var app = builder.Build();
 

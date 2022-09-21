@@ -6,12 +6,10 @@
     Layout = "~/Pages/Shared/_Layout.cshtml";
 }
 
-<h1>Input</h1>
-
-<h4>Taxes</h4>
+<h1>Taxes</h1>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-2">
         <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
@@ -44,8 +42,10 @@
                 <input asp-for="Taxes.HeatingPrice" class="form-control" />
                 <span asp-validation-for="Taxes.HeatingPrice" class="text-danger"></span>
             </div>
+            <div>   
+            </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Enter" class="btn btn-primary" style="margin-top: 10px"/>
             </div>
         </form>
     </div>

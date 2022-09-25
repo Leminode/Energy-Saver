@@ -13,11 +13,11 @@
     <table class="table" id="tax-list">
         <thead>
             <tr>
-                <th>Month</th>
-                <th>Gas Price</th>
-                <th>Electricity Price</th>
-                <th>Water Price</th>
-                <th>Heating Price</th>
+                <th style="text-align:left">Month</th>
+                <th style="text-align:right">Gas Price</th>
+                <th style="text-align:right">Electricity Price</th>
+                <th style="text-align:right">Water Price</th>
+                <th style="text-align:right">Heating Price</th>
             </tr>
         </thead>
         @{ int currentYear = 0; }
@@ -27,15 +27,15 @@
                 @if(jsonData.Year != currentYear)
                 {
                     <tr>
-                    <td colspan=5 style="text-align:center"><b>@jsonData.Year</b></td>
+                    <td colspan=5 style="text-align:left"><b>@jsonData.Year</b></td>
                     </tr>
                     currentYear = jsonData.Year;
                 }
-                <td>@jsonData.Month</td>
-                <td>@jsonData.GasPrice</td>
-                <td>@jsonData.ElectricityPrice</td>
-                <td>@jsonData.WaterPrice</td>
-                <td>@jsonData.HeatingPrice</td>
+                <td style="text-align:left"> @jsonData.Month </td>
+                <td style="text-align:right">@jsonData.GasPrice</td>
+                <td style="text-align:right">@jsonData.ElectricityPrice</td>
+                <td style="text-align:right">@jsonData.WaterPrice</td>
+                <td style="text-align:right">@jsonData.HeatingPrice</td>
             </tr>
         }
     </table>

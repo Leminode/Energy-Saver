@@ -26,13 +26,13 @@ namespace Energy_Saver.Model
             December,
         }*/
 
-        public float GasPrice { get; set; }
+        public float GasAmount { get; set; }
 
-        public float ElectricityPrice { get; set; }
+        public float ElectricityAmount { get; set; }
 
-        public float WaterPrice { get; set; }
+        public float WaterAmount { get; set; }
 
-        public float HeatingPrice { get; set; }
+        public float HeatingAmount { get; set; }
         
     }
 }

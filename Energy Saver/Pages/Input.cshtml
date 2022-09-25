@@ -19,28 +19,41 @@
             </div>
             <div class="form-group">
                 <label asp-for="Taxes.Month" class="control-label"></label>
-                <input asp-for="Taxes.Month" class="form-control" />
+                <select asp-for="Taxes.Month" class="form-control">
+                    <option value ="1">January</option>
+                    <option value ="2">February</option>
+                    <option value ="3">March</option>
+                    <option value ="4">April</option>
+                    <option value ="5">May</option>
+                    <option value ="6">June</option>
+                    <option value ="7">July</option>
+                    <option value ="8">August</option>
+                    <option value ="9">September</option>
+                    <option value ="10">October</option>
+                    <option value ="11">November</option>
+                    <option value ="12">December</option>
+                </select>
                 <span asp-validation-for="Taxes.Month" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Taxes.GasPrice" class="control-label"> Gas price</label>
-                <input asp-for="Taxes.GasPrice" class="form-control" />
-                <span asp-validation-for="Taxes.GasPrice" class="text-danger"></span>
+                <label asp-for="Taxes.GasAmount" class="control-label"> Gas price</label>
+                <input asp-for="Taxes.GasAmount" class="form-control" />
+                <span asp-validation-for="Taxes.GasAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Taxes.ElectricityPrice" class="control-label">Electricity price</label>
-                <input asp-for="Taxes.ElectricityPrice" class="form-control" />
-                <span asp-validation-for="Taxes.ElectricityPrice" class="text-danger"></span>
+                <label asp-for="Taxes.ElectricityAmount" class="control-label">Electricity amount</label>
+                <input asp-for="Taxes.ElectricityAmount" class="form-control" />
+                <span asp-validation-for="Taxes.ElectricityAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Taxes.WaterPrice" class="control-label">Water price</label>
-                <input asp-for="Taxes.WaterPrice" class="form-control" />
-                <span asp-validation-for="Taxes.WaterPrice" class="text-danger"></span>
+                <label asp-for="Taxes.WaterAmount" class="control-label">Water amount</label>
+                <input asp-for="Taxes.WaterAmount" class="form-control" />
+                <span asp-validation-for="Taxes.WaterAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Taxes.HeatingPrice" class="control-label">Heating price</label>
-                <input asp-for="Taxes.HeatingPrice" class="form-control" />
-                <span asp-validation-for="Taxes.HeatingPrice" class="text-danger"></span>
+                <label asp-for="Taxes.HeatingAmount" class="control-label">Heating amount</label>
+                <input asp-for="Taxes.HeatingAmount" class="form-control" />
+                <span asp-validation-for="Taxes.HeatingAmount" class="text-danger"></span>
             </div>
             <div>   
             </div>

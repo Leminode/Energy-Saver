@@ -14,10 +14,10 @@
         <thead>
             <tr>
                 <th style="text-align:left">Month</th>
-                <th style="text-align:right">Gas Price</th>
-                <th style="text-align:right">Electricity Price</th>
-                <th style="text-align:right">Water Price</th>
-                <th style="text-align:right">Heating Price</th>
+                <th style="text-align:right">Gas amount</th>
+                <th style="text-align:right">Electricity amount</th>
+                <th style="text-align:right">Water amount</th>
+                <th style="text-align:right">Heating amount</th>
             </tr>
         </thead>
         @{ int currentYear = 0; }
@@ -32,10 +32,10 @@
                     currentYear = jsonData.Year;
                 }
                 <td style="text-align:left"> @jsonData.Month </td>
-                <td style="text-align:right">@jsonData.GasPrice</td>
-                <td style="text-align:right">@jsonData.ElectricityPrice</td>
-                <td style="text-align:right">@jsonData.WaterPrice</td>
-                <td style="text-align:right">@jsonData.HeatingPrice</td>
+                <td style="text-align:right">@jsonData.GasAmount</td>
+                <td style="text-align:right">@jsonData.ElectricityAmount</td>
+                <td style="text-align:right">@jsonData.WaterAmount</td>
+                <td style="text-align:right">@jsonData.HeatingAmount</td>
             </tr>
         }
     </table>

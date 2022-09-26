@@ -13,32 +13,28 @@
     <table class="table" id="tax-list">
         <thead>
             <tr>
-                <th>Month</th>
-                <th>Gas Price</th>
-                <th>Electricity Price</th>
-                <th>Water Price</th>
-                <th>Heating Price</th>
+                <th style="text-align:left">Month</th>
+                <th style="text-align:right">Gas amount</th>
+                <th style="text-align:right">Electricity amount</th>
+                <th style="text-align:right">Water amount</th>
+                <th style="text-align:right">Heating amount</th>
             </tr>
         </thead>
-        @{ int currentYear = 0; }
-        @foreach (var jsonData in Model.Taxes)
+        @foreach (var year in Model.Taxes)
         {
             <tr>
-                @if(jsonData.Year != currentYear)
-                {
-                    <tr>
-                    <td colspan=5 style="text-align:center"><b>@jsonData.Year</b></td>
-                    </tr>
-                    currentYear = jsonData.Year;
-                }
-                <td>@jsonData.Month</td>
-                <td>@jsonData.GasPrice</td>
-                <td>@jsonData.ElectricityPrice</td>
-                <td>@jsonData.WaterPrice</td>
-                <td>@jsonData.HeatingPrice</td>
+                <td colspan=5 style="text-align:left"><b>@year[0].Year</b></td>
             </tr>
+            @foreach (var taxRecord in year)
+            {
+                <tr>
+                    <td style="text-align:left">@taxRecord.Month.ToString()</td>
+                    <td style="text-align:right">@taxRecord.GasAmount</td>
+                    <td style="text-align:right">@taxRecord.ElectricityAmount</td>
+                    <td style="text-align:right">@taxRecord.WaterAmount</td>
+                    <td style="text-align:right">@taxRecord.HeatingAmount</td>
+                </tr>
+            }
         }
     </table>
 </div>
-
-<!--Atskirai padaryti dujoms, elektrai, vanduo (siltas, saltas), sildymas-->

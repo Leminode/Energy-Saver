@@ -3,9 +3,9 @@ using Newtonsoft.Json;
 
 namespace Energy_Saver.Model
 {
-    public struct Taxes : IComparable<Taxes>
+    public class Taxes : IComparable<Taxes>
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         public int Year { get; set; }
 

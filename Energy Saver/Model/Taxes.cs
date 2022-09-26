@@ -1,29 +1,32 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Build.Framework;
+using Newtonsoft.Json;
 
 namespace Energy_Saver.Model
 {
-    public class Taxes
+    public class Taxes : IComparable<Taxes>
     {
-        [JsonProperty("id")]
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
-        [JsonProperty("year")]
         public int Year { get; set; }
 
-        [JsonProperty("month")]
-        public string Month { get; set; }
-
-        [JsonProperty("gasPrice")]
-        public float GasPrice { get; set; }
-
-        [JsonProperty("electricityPrice")]
-        public float ElectricityPrice { get; set; }
-
-        [JsonProperty("waterPrice")]
-        public float WaterPrice { get; set; }
-
-        [JsonProperty("heatingPrice")]
-        public float HeatingPrice { get; set; }
+        public Months Month { get; set; }
         
+        public decimal GasAmount { get; set; }
+
+        public decimal ElectricityAmount { get; set; }
+
+        public decimal WaterAmount { get; set; }
+
+        public decimal HeatingAmount { get; set; }
+
+        public int CompareTo(Taxes other)
+        {
+            if (this.Year == other.Year)
+                return 0;
+            else if (this.Year < other.Year)
+                return -1;
+            else
+                return 1;
+        }
     }
 }

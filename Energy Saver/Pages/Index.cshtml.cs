@@ -29,12 +29,12 @@ namespace Energy_Saver.Pages
             string path = "Resources/Taxes.json";
             string json = System.IO.File.ReadAllText(Path.GetFullPath(path));
 
-            List<Taxes> temp = JsonConvert.DeserializeObject<List<Taxes>>(json, new JsonSerializerSettings
+            List<Taxes> ?temp = JsonConvert.DeserializeObject<List<Taxes>>(json, new JsonSerializerSettings
             {
                 ContractResolver = contractResolver
             });
             Taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-            Taxes = Taxes.Select(taxes => taxes.OrderBy(i => i.Year).ToList()).OrderBy(taxes => taxes[0]).ToList();// OrderByDescending(t => t.Year).ToList();
+            Taxes = Taxes.Select(taxes => taxes.OrderByDescending(i => i.Year).ThenBy(j => j.Month).ToList()).OrderByDescending(taxes => taxes[0]).ToList();
         }
 
         public void OnPost()

@@ -20,23 +20,21 @@
                 <th style="text-align:right">Heating Price</th>
             </tr>
         </thead>
-        @{ int currentYear = 0; }
-        @foreach (var jsonData in Model.Taxes)
+        @foreach (var year in Model.Taxes)
         {
             <tr>
-                @if(jsonData.Year != currentYear)
-                {
-                    <tr>
-                    <td colspan=5 style="text-align:left"><b>@jsonData.Year</b></td>
-                    </tr>
-                    currentYear = jsonData.Year;
-                }
-                <td style="text-align:left"> @jsonData.Month </td>
-                <td style="text-align:right">@jsonData.GasPrice</td>
-                <td style="text-align:right">@jsonData.ElectricityPrice</td>
-                <td style="text-align:right">@jsonData.WaterPrice</td>
-                <td style="text-align:right">@jsonData.HeatingPrice</td>
+                <td colspan=5 style="text-align:left"><b>@year[0].Year</b></td>
             </tr>
+            @foreach (var jsonData in year)
+            {
+                <tr>
+                    <td style="text-align:left"> @jsonData.Month </td>
+                    <td style="text-align:right">@jsonData.GasPrice</td>
+                    <td style="text-align:right">@jsonData.ElectricityPrice</td>
+                    <td style="text-align:right">@jsonData.WaterPrice</td>
+                    <td style="text-align:right">@jsonData.HeatingPrice</td>
+                </tr>
+            }
         }
     </table>
 </div>

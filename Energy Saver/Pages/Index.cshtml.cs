@@ -16,7 +16,7 @@ namespace Energy_Saver.Pages
         private readonly ILogger<IndexModel> _logger;
 
         [BindProperty]
-        public List<Taxes> ?Taxes { get; set; }
+        public List<List<Taxes>> ?Taxes { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -29,11 +29,12 @@ namespace Energy_Saver.Pages
             string path = "Resources/Taxes.json";
             string json = System.IO.File.ReadAllText(Path.GetFullPath(path));
 
-            Taxes = JsonConvert.DeserializeObject<List<Taxes>>(json, new JsonSerializerSettings
+            List<Taxes> temp = JsonConvert.DeserializeObject<List<Taxes>>(json, new JsonSerializerSettings
             {
                 ContractResolver = contractResolver
             });
-            Taxes = Taxes.OrderByDescending(t => t.Year).ToList();
+            Taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+            Taxes = Taxes.Select(taxes => taxes.OrderBy(i => i.Year).ToList()).OrderBy(taxes => taxes[0]).ToList();// OrderByDescending(t => t.Year).ToList();
         }
 
         public void OnPost()

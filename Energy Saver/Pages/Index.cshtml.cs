@@ -34,7 +34,7 @@ namespace Energy_Saver.Pages
                 ContractResolver = contractResolver
             });
             Taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-            Taxes = Taxes.Select(taxes => taxes.OrderByDescending(i => i.Year).ThenBy(j => j.Month).ToList()).OrderByDescending(taxes => taxes[0]).ToList();
+            Taxes = Taxes.Select(taxes => taxes.OrderByDescending(i => i.Month).ToList()).OrderByDescending(taxes => taxes[0]).ToList();
         }
 
         public void OnPost()

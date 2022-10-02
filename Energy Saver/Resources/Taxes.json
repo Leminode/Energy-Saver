@@ -38,5 +38,13 @@
     "electricityAmount": 3.0,
     "waterAmount": 4.0,
     "heatingAmount": 5.5
+  },
+  {
+    "year": 2022,
+    "month": 1,
+    "gasAmount": 585.0,
+    "electricityAmount": 68.0,
+    "waterAmount": 68.0,
+    "heatingAmount": 225.0
   }
 ]

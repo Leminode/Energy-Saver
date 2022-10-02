@@ -13,6 +13,7 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Input");
+    options.Conventions.AuthorizePage("/Account/Logout");
 });
 
 var app = builder.Build();

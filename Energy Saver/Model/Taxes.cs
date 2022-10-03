@@ -19,8 +19,6 @@ namespace Energy_Saver.Model
 
         public decimal HeatingAmount { get; set; }
 
-        [Required]
-        public bool Enable { get; set; }
 
         public int CompareTo(Taxes other)
         {

@@ -62,5 +62,13 @@
     "electricityAmount": 0.0,
     "waterAmount": 5.0,
     "heatingAmount": 6.0
+  },
+  {
+    "year": 2019,
+    "month": 5,
+    "gasAmount": 1.0,
+    "electricityAmount": 1.0,
+    "waterAmount": 1.0,
+    "heatingAmount": 1.0
   }
 ]

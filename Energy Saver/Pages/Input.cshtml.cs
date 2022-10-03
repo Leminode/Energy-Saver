@@ -13,11 +13,6 @@ namespace Energy_Saver.Pages
 {
     public class InputModel : PageModel
     {
-        DefaultContractResolver contractResolverCamel = new DefaultContractResolver
-        {
-            NamingStrategy = new CamelCaseNamingStrategy()
-        };
-
         public IActionResult OnGet()
         {
             return Page();
@@ -25,7 +20,7 @@ namespace Energy_Saver.Pages
 
         [BindProperty]
         public Taxes Taxes { get; set; }
-       
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
@@ -40,22 +35,7 @@ namespace Energy_Saver.Pages
 
         public void WriteToFile()
         {
-            string path = "Resources/Taxes.json";
-            string json = System.IO.File.ReadAllText(Path.GetFullPath(path));
-
-            List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, new JsonSerializerSettings
-            {
-                ContractResolver = contractResolverCamel
-            });
-
-            temp.Add(Taxes);
-
-            string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver()
-            });
-
-            System.IO.File.WriteAllText(Path.GetFullPath(path), serializedString);
+            Taxes.WriteToFile();
         }
     }
 }

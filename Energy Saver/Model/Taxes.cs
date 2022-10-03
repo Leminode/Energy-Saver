@@ -3,22 +3,28 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Energy_Saver.Model
 {
-    public class Taxes : IComparable<Taxes>, IValidatableObject
+    public class Taxes : IComparable<Taxes>
     {
         //public int Id { get; set; }
 
         public int Year { get; set; }
-
         public Months Month { get; set; }
-        
+
+        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [Required(ErrorMessage = "Gas amount is required")]
         public decimal GasAmount { get; set; }
 
+        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [Required(ErrorMessage = "Electricity amount is required")]
         public decimal ElectricityAmount { get; set; }
 
+        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [Required(ErrorMessage = "Water amount is required")]
         public decimal WaterAmount { get; set; }
 
+        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [Required(ErrorMessage = "Heating amount is required")]
         public decimal HeatingAmount { get; set; }
-
 
         public int CompareTo(Taxes other)
         {
@@ -28,21 +34,6 @@ namespace Energy_Saver.Model
                 return -1;
             else
                 return 1;
-        }
-
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-        {
-            var results = new List<ValidationResult>();
-
-            Validator.TryValidateObject(this.GasAmount, new ValidationContext(this, null, null) { MemberName = "GasAmount" }, results);
-
-            Validator.TryValidateObject(this.ElectricityAmount, new ValidationContext(this, null, null) { MemberName = "ElectricityAmount" }, results);
-
-            Validator.TryValidateObject(this.WaterAmount, new ValidationContext(this, null, null) { MemberName = "WaterAmount" }, results);
-
-            Validator.TryValidateObject(this.HeatingAmount, new ValidationContext(this, null, null) { MemberName = "HeatingAmount" }, results);
-
-            return results;
         }
     }
 }

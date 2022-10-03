@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Energy_Saver.Pages
+namespace Energy_Saver.Pages.Account
 {
     public class LogoutModel : PageModel
     {

@@ -8,6 +8,7 @@ namespace Energy_Saver.Model
         //public int Id { get; set; }
 
         public int Year { get; set; }
+
         public Months Month { get; set; }
 
         [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]

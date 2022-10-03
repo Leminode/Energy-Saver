@@ -364,8 +364,9 @@ FodyWeavers.xsd
 
 .vs/
 
-"Energy Saver"/bin
-"Energy Saver"/obj
+bin
+obj
 
-Energy*Saver.csproj
+*.user
+*.suo
 appsettings.Development.json

@@ -23,5 +23,7 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Initialise Secrets
+      run: dotnet user-secrets init
     - name: Setup Secrets
       run: dotnet user-secrets set "Auth0.ClientId" "${{ secrets.ClientId }}"

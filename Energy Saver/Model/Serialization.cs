@@ -12,7 +12,7 @@ public static class Serialization
         ContractResolver = new CamelCasePropertyNamesContractResolver()
     };
 
-public static List<List<Taxes>> ReadFromFile(this PageModel pageModel)
+    public static List<List<Taxes>> ReadFromFile(this PageModel pageModel)
     {
         List<List<Taxes>> taxes;
 

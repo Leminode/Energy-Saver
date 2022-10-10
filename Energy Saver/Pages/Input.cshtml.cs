@@ -28,14 +28,9 @@ namespace Energy_Saver.Pages
                 return Page();
             }
 
-            WriteToFile();
+            this.WriteToFile(Taxes);
 
             return RedirectToPage("./Index");
-        }
-
-        public void WriteToFile()
-        {
-            Taxes.WriteToFile();
         }
     }
 }

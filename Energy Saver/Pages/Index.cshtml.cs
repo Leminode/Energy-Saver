@@ -22,7 +22,7 @@ namespace Energy_Saver.Pages
 
         public void OnGet()
         {
-            Taxes = Taxes.ReadFromFile();
+            Taxes = this.ReadFromFile();
         }
 
         public void OnPost()

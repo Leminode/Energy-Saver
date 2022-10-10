@@ -1,6 +1,7 @@
 ﻿using Energy_Saver.Model;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 public static class Serialization
 {
@@ -11,17 +12,19 @@ public static class Serialization
         ContractResolver = new CamelCasePropertyNamesContractResolver()
     };
 
-public static List<List<Taxes>> ReadFromFile(this List<List<Taxes>> taxes)
+public static List<List<Taxes>> ReadFromFile(this PageModel pageModel)
     {
-        List<Taxes>? temp = ReadText();
+        List<List<Taxes>> taxes;
 
+        List<Taxes>? temp = ReadText();
+        
         taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
         taxes = taxes.Select(taxes => taxes.OrderByDescending(i => i.Month).ToList()).OrderByDescending(t => t[0]).ToList();
 
         return taxes;
     }
 
-    public static void WriteToFile(this Taxes taxes)
+    public static void WriteToFile(this PageModel pageModel, Taxes taxes)
     {
         List<Taxes>? temp = ReadText();
 

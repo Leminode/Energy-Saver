@@ -2,11 +2,16 @@
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 
-public static class Casing
+public static class Serialization
 {
     private static string path = "Resources/Taxes.json";
 
-    public static List<List<Taxes>> ReadFromFile(this List<List<Taxes>> taxes)
+    private static JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+    {
+        ContractResolver = new CamelCasePropertyNamesContractResolver()
+    };
+
+public static List<List<Taxes>> ReadFromFile(this List<List<Taxes>> taxes)
     {
         List<Taxes>? temp = ReadText();
 
@@ -22,10 +27,7 @@ public static class Casing
 
         temp.Add(taxes);
 
-        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        });
+        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, serializerSettings);
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }
@@ -34,10 +36,7 @@ public static class Casing
     {
         string json = File.ReadAllText(Path.GetFullPath(path));
 
-        List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, new JsonSerializerSettings
-        {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
-        });
+        List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, serializerSettings);
 
         return temp;
     }

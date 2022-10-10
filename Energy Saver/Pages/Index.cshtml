@@ -18,12 +18,13 @@
                 <th style="text-align:right">Electricity amount</th>
                 <th style="text-align:right">Water amount</th>
                 <th style="text-align:right">Heating amount</th>
+                <th> </th>
             </tr>
         </thead>
         @foreach (var year in Model.Taxes)
         {
             <tr>
-                <td colspan=5 style="text-align:left"><b>@year[0].Year</b></td>
+                <td colspan=6 style="text-align:left"><b>@year[0].Year</b></td>
             </tr>
             @foreach (var taxRecord in year)
             {
@@ -33,6 +34,7 @@
                     <td style="text-align:right">@(taxRecord.ElectricityAmount % 1 == 0 ? (int)taxRecord.ElectricityAmount : taxRecord.ElectricityAmount)</td>
                     <td style="text-align:right">@(taxRecord.WaterAmount % 1 == 0 ? (int)taxRecord.WaterAmount : taxRecord.WaterAmount)</td>
                     <td style="text-align:right">@(taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)</td>
+                    <td style="text-align:right"><button class="btn btn-primary btn-sm delBtn" data-id="@taxRecord"> Edit </button></td>
                 </tr>
             }
         }

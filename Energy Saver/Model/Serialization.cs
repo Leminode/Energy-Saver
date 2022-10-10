@@ -26,11 +26,17 @@ public static class Serialization
 
     public static void WriteToFile(this PageModel pageModel, Taxes taxes)
     {
-        List<Taxes>? temp = ReadText();
+        List<Taxes>? newList = ReadText();
 
-        temp.Add(taxes);
+        int duplicateIndex = newList.FindIndex(tax => tax.Year.Equals(taxes.Year) && tax.Month.Equals(taxes.Month));
 
-        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, serializerSettings);
+        //If duplicate was found
+        if (duplicateIndex != -1)
+            newList[duplicateIndex] = taxes;
+        else
+            newList.Add(taxes);
+
+        string serializedString = JsonConvert.SerializeObject(newList, Formatting.Indented, serializerSettings);
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }

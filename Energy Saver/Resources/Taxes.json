@@ -2,10 +2,10 @@
   {
     "year": 2022,
     "month": 5,
-    "gasAmount": 9.0,
-    "electricityAmount": 3.0,
-    "waterAmount": 7.0,
-    "heatingAmount": 7.0
+    "gasAmount": 1.0,
+    "electricityAmount": 1.0,
+    "waterAmount": 1.0,
+    "heatingAmount": 1.0
   },
   {
     "year": 2022,
@@ -76,7 +76,7 @@
     "month": 9,
     "gasAmount": 1.0,
     "electricityAmount": 1.0,
-    "waterAmount": 23.0,
-    "heatingAmount": 4.0
+    "waterAmount": 1.0,
+    "heatingAmount": 1.0
   }
 ]

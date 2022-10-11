@@ -2,10 +2,10 @@
   {
     "year": 2022,
     "month": 5,
-    "gasAmount": 1.0,
-    "electricityAmount": 1.0,
-    "waterAmount": 1.0,
-    "heatingAmount": 1.0
+    "gasAmount": 9.0,
+    "electricityAmount": 3.0,
+    "waterAmount": 7.0,
+    "heatingAmount": 7.0
   },
   {
     "year": 2022,
@@ -14,6 +14,14 @@
     "electricityAmount": 3.0,
     "waterAmount": 4.0,
     "heatingAmount": 4.0
+  },
+  {
+    "year": 2022,
+    "month": 1,
+    "gasAmount": 1.0,
+    "electricityAmount": 1.0,
+    "waterAmount": 1.0,
+    "heatingAmount": 1.0
   },
   {
     "year": 2021,
@@ -32,38 +40,6 @@
     "heatingAmount": 4.0
   },
   {
-    "year": 2016,
-    "month": 6,
-    "gasAmount": 2.25,
-    "electricityAmount": 3.0,
-    "waterAmount": 4.0,
-    "heatingAmount": 5.5
-  },
-  {
-    "year": 2022,
-    "month": 1,
-    "gasAmount": 1.0,
-    "electricityAmount": 1.0,
-    "waterAmount": 1.0,
-    "heatingAmount": 1.0
-  },
-  {
-    "year": 2003,
-    "month": 1,
-    "gasAmount": 1.0,
-    "electricityAmount": 2.0,
-    "waterAmount": 3.0,
-    "heatingAmount": 4.0
-  },
-  {
-    "year": 2002,
-    "month": 1,
-    "gasAmount": 1.2,
-    "electricityAmount": 0.0,
-    "waterAmount": 5.0,
-    "heatingAmount": 6.0
-  },
-  {
     "year": 2019,
     "month": 5,
     "gasAmount": 1.0,
@@ -72,11 +48,19 @@
     "heatingAmount": 1.0
   },
   {
-    "year": 2022,
-    "month": 9,
+    "year": 2016,
+    "month": 6,
+    "gasAmount": 2.25,
+    "electricityAmount": 3.0,
+    "waterAmount": 4.0,
+    "heatingAmount": 5.5
+  },
+  {
+    "year": 2003,
+    "month": 1,
     "gasAmount": 1.0,
-    "electricityAmount": 1.0,
-    "waterAmount": 1.0,
-    "heatingAmount": 1.0
+    "electricityAmount": 2.0,
+    "waterAmount": 3.0,
+    "heatingAmount": 4.0
   }
 ]

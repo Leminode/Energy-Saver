@@ -24,7 +24,14 @@ public static class Serialization
         return taxes;
     }
 
-    public static void WriteToFile(this PageModel pageModel, Taxes taxes)
+    public static void WriteText(this PageModel pageModel, List<Taxes> taxes)
+    {
+        string serializedString = JsonConvert.SerializeObject(taxes, Formatting.Indented, serializerSettings);
+
+        File.WriteAllText(Path.GetFullPath(path), serializedString);
+    }
+
+    public static void WriteEntryToFile(this PageModel pageModel, Taxes taxes)
     {
         List<Taxes>? newList = ReadText();
 

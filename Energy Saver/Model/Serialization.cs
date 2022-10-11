@@ -30,7 +30,7 @@ public static class Serialization
 
     public static void WriteText(this PageModel pageModel, List<Taxes> taxes)
     {
-        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
+        string serializedString = JsonConvert.SerializeObject(taxes, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }
@@ -47,7 +47,7 @@ public static class Serialization
         else
             newList.Add(taxes);
 
-        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
+        string serializedString = JsonConvert.SerializeObject(newList, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }

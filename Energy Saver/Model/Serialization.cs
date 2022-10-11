@@ -1,4 +1,4 @@
-﻿using Energy_Saver.Model;
+using Energy_Saver.Model;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -28,11 +28,24 @@ public static class Serialization
         return taxes;
     }
 
-    public static void WriteToFile(this PageModel pageModel, Taxes taxes)
+    public static void WriteText(this PageModel pageModel, List<Taxes> taxes)
     {
-        List<Taxes>? temp = ReadText();
+        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
-        temp.Add(taxes);
+        File.WriteAllText(Path.GetFullPath(path), serializedString);
+    }
+
+    public static void WriteEntryToFile(this PageModel pageModel, Taxes taxes)
+    {
+        List<Taxes>? newList = ReadText();
+
+        int duplicateIndex = newList.FindIndex(tax => tax.Year.Equals(taxes.Year) && tax.Month.Equals(taxes.Month));
+
+        //If duplicate was found
+        if (duplicateIndex != -1)
+            newList[duplicateIndex] = taxes;
+        else
+            newList.Add(taxes);
 
         string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 

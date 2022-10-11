@@ -29,5 +29,14 @@ namespace Energy_Saver.Pages
         {
 
         }
+
+        public IActionResult OnPostDelete(int index, int yearIndex)
+        {
+            Taxes = this.ReadFromFile();
+            Taxes[yearIndex].RemoveAt(index);
+            this.WriteText(Taxes.SelectMany(list => list).Distinct().ToList());
+
+            return RedirectToPage();
+        }
     }
 }

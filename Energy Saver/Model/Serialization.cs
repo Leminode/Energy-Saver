@@ -1,4 +1,4 @@
-﻿using Energy_Saver.Model;
+using Energy_Saver.Model;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,10 +7,14 @@ public static class Serialization
 {
     private static string path = "Resources/Taxes.json";
 
-    private static JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+    private static JsonSerializerSettings GetSerializerSettings<T>(T contractResolver) where T : IContractResolver
     {
-        ContractResolver = new CamelCasePropertyNamesContractResolver()
-    };
+        return new JsonSerializerSettings
+        {
+            ContractResolver = contractResolver
+        };
+    }
+
 
     public static List<List<Taxes>> ReadFromFile(this PageModel pageModel)
     {
@@ -26,7 +30,7 @@ public static class Serialization
 
     public static void WriteText(this PageModel pageModel, List<Taxes> taxes)
     {
-        string serializedString = JsonConvert.SerializeObject(taxes, Formatting.Indented, serializerSettings);
+        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }
@@ -43,7 +47,7 @@ public static class Serialization
         else
             newList.Add(taxes);
 
-        string serializedString = JsonConvert.SerializeObject(newList, Formatting.Indented, serializerSettings);
+        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }
@@ -52,7 +56,7 @@ public static class Serialization
     {
         string json = File.ReadAllText(Path.GetFullPath(path));
 
-        List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, serializerSettings);
+        List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         return temp;
     }

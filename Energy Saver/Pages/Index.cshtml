@@ -44,11 +44,14 @@
                     <td style="text-align:right">@(
                 taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)</td>
                     <td style="text-align:right">
-                        <form asp-page-handler="delete" method="post">
-                            <button class="btn btn-default btn-sm">Delete</button>
-                            <input type="hidden" name="index" value="@index"/>
-                            <input type="hidden" name="yearIndex" value="@yearIndex"/>
-                        </form>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <form asp-page-handler="delete" method="post">
+                                <button class="btn btn-default btn-sm">Delete</button>
+                                <input type="hidden" name="index" value="@index" />
+                                <input type="hidden" name="yearIndex" value="@yearIndex" />
+                            </form>
+                        }
                     </td>
                     @{index++;}
                 </tr>

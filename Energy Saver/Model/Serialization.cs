@@ -23,7 +23,8 @@ public static class Serialization
         List<Taxes>? temp = ReadText();
         
         taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-        taxes = taxes.Select(taxes => taxes.OrderByDescending(i => i.Month).ToList()).OrderByDescending(t => t[0]).ToList();
+        //taxes = taxes.Select(taxes => taxes.OrderByDescending(i => i.Month).ToList()).OrderByDescending(t => t[0]).ToList();\
+        taxes = taxes.Select(tax => OrderList<Taxes>("Descending", "Month", tax)).OrderByDescending(t => t[0]).ToList();
 
         return taxes;
     }
@@ -59,5 +60,28 @@ public static class Serialization
         List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         return temp;
+    }
+
+    public static List<T> OrderList<T>(string sortDirection, string sortExpression, List<T> data)
+    {
+        List<T> orderedList = new List<T>();
+
+        switch (sortDirection)
+        {
+            case "Ascending":
+                orderedList = (from n in data orderby GetDynamicSortProperty(n, sortExpression) ascending select n).ToList();
+                break;
+            case "Descending":
+                orderedList = (from n in data orderby GetDynamicSortProperty(n, sortExpression) descending select n).ToList();
+                break;
+            default:
+                break;
+        }
+        return orderedList;
+    }
+
+    private static object GetDynamicSortProperty(object item, string propName)
+    {
+        return item.GetType().GetProperty(propName).GetValue(item, null);
     }
 }

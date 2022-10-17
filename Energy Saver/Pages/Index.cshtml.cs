@@ -21,7 +21,7 @@ namespace Energy_Saver.Pages
 
         public void OnGet()
         {
-            Taxes = Serialization.ReadFromFile();
+            Taxes = _tableService.GetTableContents();
         }
 
         public void OnPost()
@@ -31,7 +31,7 @@ namespace Energy_Saver.Pages
 
         public IActionResult OnPostDelete(int index, int yearIndex)
         {
-            
+            _tableService.DeleteEntry(yearIndex: yearIndex, monthIndex: index);
 
             return RedirectToPage();
         }

@@ -14,7 +14,6 @@ namespace Energy_Saver.Model
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };
 
-
         public static List<List<Taxes>> ReadFromFile()
         {
             List<List<Taxes>> taxes;
@@ -22,8 +21,7 @@ namespace Energy_Saver.Model
             List<Taxes>? temp = ReadText();
         
             taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-            //taxes = taxes.Select(taxes => taxes.OrderByDescending(i => i.Month).ToList()).OrderByDescending(t => t[0]).ToList();\
-            taxes = taxes.Select(tax => OrderList<Taxes>("Descending", "Month", tax)).OrderByDescending(t => t[0]).ToList();
+            taxes = taxes.Select(tax => OrderList<Taxes>(data: tax, sortExpression: "Month", sortDirection: "Descending")).OrderByDescending(t => t[0]).ToList();
 
             return taxes;
         }
@@ -47,9 +45,7 @@ namespace Energy_Saver.Model
             else
                 newList.Add(taxes);
 
-            string serializedString = JsonConvert.SerializeObject(newList, Formatting.Indented, CamelCaseJsonSerializerSettings);
-
-            File.WriteAllText(Path.GetFullPath(path), serializedString);
+            WriteText(newList);
         }
 
         private static List<Taxes> ReadText()

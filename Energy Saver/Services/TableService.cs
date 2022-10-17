@@ -6,13 +6,26 @@ namespace Energy_Saver.Services
 {
     public class TableService : ITableService
     {
-        public void DeleteEntry()
+        public List<List<Taxes>> GetTableContents()
         {
-            Taxes taxes;
+            List<List<Taxes>> temp = Serialization.ReadFromFile();
 
-            taxes = this.ReadFromFile();
-            taxes[yearIndex].RemoveAt(index);
-            this.WriteText(taxes.SelectMany(list => list).Distinct().ToList());
+            return temp;
+        }
+
+        public void DeleteEntry(int monthIndex, int yearIndex)
+        {
+            List<List<Taxes>> taxes;
+
+            taxes = Serialization.ReadFromFile();
+            taxes[yearIndex].RemoveAt(monthIndex);
+
+            Serialization.WriteText(taxes.SelectMany(list => list).Distinct().ToList());
+        }
+
+        public void AddEntry(Taxes taxes)
+        {
+            Serialization.WriteEntryToFile(taxes);
         }
     }
 }

@@ -11,19 +11,19 @@ namespace Energy_Saver.Model
 
         public Months Month { get; set; }
 
-        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [RegularExpression(@"\d+(.\d+)?$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Gas amount is required")]
         public decimal GasAmount { get; set; }
 
-        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [RegularExpression(@"\d+(.\d+)?$$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Electricity amount is required")]
         public decimal ElectricityAmount { get; set; }
 
-        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [RegularExpression(@"\d+(.\d+)?$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Water amount is required")]
         public decimal WaterAmount { get; set; }
 
-        [RegularExpression(@"^(\d *\.)?\d+$", ErrorMessage = "Invalid input")]
+        [RegularExpression(@"\d+(.\d+)?$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Heating amount is required")]
         public decimal HeatingAmount { get; set; }
 

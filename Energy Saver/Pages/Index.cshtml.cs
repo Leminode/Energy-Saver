@@ -1,10 +1,6 @@
 ﻿using Energy_Saver.Model;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
@@ -22,7 +18,7 @@ namespace Energy_Saver.Pages
 
         public void OnGet()
         {
-            Taxes = this.ReadFromFile();
+            Taxes = Serialization.ReadFromFile();
         }
 
         public void OnPost()
@@ -32,9 +28,9 @@ namespace Energy_Saver.Pages
 
         public IActionResult OnPostDelete(int index, int yearIndex)
         {
-            Taxes = this.ReadFromFile();
+            Taxes = Serialization.ReadFromFile();
             Taxes[yearIndex].RemoveAt(index);
-            this.WriteText(Taxes.SelectMany(list => list).Distinct().ToList());
+            Serialization.WriteText(Taxes.SelectMany(list => list).Distinct().ToList());
 
             return RedirectToPage();
         }

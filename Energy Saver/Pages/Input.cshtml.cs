@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Energy_Saver.Model;
-using Newtonsoft.Json.Serialization;
-using Newtonsoft.Json;
 
 namespace Energy_Saver.Pages
 {
@@ -28,7 +21,7 @@ namespace Energy_Saver.Pages
                 return Page();
             }
 
-            this.WriteEntryToFile(Taxes);
+            Serialization.WriteEntryToFile(Taxes);
 
             return RedirectToPage("./Index");
         }

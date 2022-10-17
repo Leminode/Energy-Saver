@@ -16,7 +16,7 @@ public static class Serialization
     }
 
 
-    public static List<List<Taxes>> ReadFromFile(this PageModel pageModel)
+    public static List<List<Taxes>> ReadFromFile()
     {
         List<List<Taxes>> taxes;
 
@@ -29,14 +29,14 @@ public static class Serialization
         return taxes;
     }
 
-    public static void WriteText(this PageModel pageModel, List<Taxes> taxes)
+    public static void WriteText(List<Taxes> taxes)
     {
         string serializedString = JsonConvert.SerializeObject(taxes, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }
 
-    public static void WriteEntryToFile(this PageModel pageModel, Taxes taxes)
+    public static void WriteEntryToFile(Taxes taxes)
     {
         List<Taxes>? newList = ReadText();
 

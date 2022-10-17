@@ -1,4 +1,5 @@
 using Auth0.AspNetCore.Authentication;
+using Energy_Saver.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Input");
     options.Conventions.AuthorizePage("/Account/Logout");
 });
+
+builder.Services.AddTableServices();
 
 var app = builder.Build();
 

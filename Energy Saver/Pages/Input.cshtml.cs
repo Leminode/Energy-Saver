@@ -21,14 +21,14 @@ namespace Energy_Saver.Pages
         [BindProperty]
         public Taxes Taxes { get; set; }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPost()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            this.WriteToFile(Taxes);
+            this.WriteEntryToFile(Taxes);
 
             return RedirectToPage("./Index");
         }

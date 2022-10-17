@@ -1,4 +1,4 @@
-﻿using Energy_Saver.Model;
+using Energy_Saver.Model;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -7,10 +7,14 @@ public static class Serialization
 {
     private static string path = "Resources/Taxes.json";
 
-    private static JsonSerializerSettings serializerSettings = new JsonSerializerSettings
+    private static JsonSerializerSettings GetSerializerSettings<T>(T contractResolver) where T : IContractResolver
     {
-        ContractResolver = new CamelCasePropertyNamesContractResolver()
-    };
+        return new JsonSerializerSettings
+        {
+            ContractResolver = contractResolver
+        };
+    }
+
 
     public static List<List<Taxes>> ReadFromFile(this PageModel pageModel)
     {
@@ -24,13 +28,26 @@ public static class Serialization
         return taxes;
     }
 
-    public static void WriteToFile(this PageModel pageModel, Taxes taxes)
+    public static void WriteText(this PageModel pageModel, List<Taxes> taxes)
     {
-        List<Taxes>? temp = ReadText();
+        string serializedString = JsonConvert.SerializeObject(taxes, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
-        temp.Add(taxes);
+        File.WriteAllText(Path.GetFullPath(path), serializedString);
+    }
 
-        string serializedString = JsonConvert.SerializeObject(temp, Formatting.Indented, serializerSettings);
+    public static void WriteEntryToFile(this PageModel pageModel, Taxes taxes)
+    {
+        List<Taxes>? newList = ReadText();
+
+        int duplicateIndex = newList.FindIndex(tax => tax.Year.Equals(taxes.Year) && tax.Month.Equals(taxes.Month));
+
+        //If duplicate was found
+        if (duplicateIndex != -1)
+            newList[duplicateIndex] = taxes;
+        else
+            newList.Add(taxes);
+
+        string serializedString = JsonConvert.SerializeObject(newList, Formatting.Indented, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         File.WriteAllText(Path.GetFullPath(path), serializedString);
     }
@@ -39,7 +56,7 @@ public static class Serialization
     {
         string json = File.ReadAllText(Path.GetFullPath(path));
 
-        List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, serializerSettings);
+        List<Taxes>? temp = JsonConvert.DeserializeObject<List<Taxes>>(json, GetSerializerSettings(new CamelCasePropertyNamesContractResolver()));
 
         return temp;
     }

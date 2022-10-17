@@ -31,9 +31,7 @@ namespace Energy_Saver.Pages
 
         public IActionResult OnPostDelete(int index, int yearIndex)
         {
-            Taxes = Serialization.ReadFromFile();
-            Taxes[yearIndex].RemoveAt(index);
-            Serialization.WriteText(Taxes.SelectMany(list => list).Distinct().ToList());
+            
 
             return RedirectToPage();
         }

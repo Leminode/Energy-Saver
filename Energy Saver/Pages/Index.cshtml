@@ -47,7 +47,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <form asp-page-handler="delete" method="post">
-                                <button class="btn btn-default btn-sm">Delete</button>
+                                <button class="btn btn-default btn-sm text-color">Delete</button>
                                 <input type="hidden" name="index" value="@index" />
                                 <input type="hidden" name="yearIndex" value="@yearIndex" />
                             </form>

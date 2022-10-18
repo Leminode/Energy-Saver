@@ -14,5 +14,28 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    background-color: #0d1117;
+}
+
+.navbar-color {
+    background-color: #161b22 !important;
+}
+
+td, th {
+    color: white;
+}
+
+.text-color{
+    color: white !important;
+}
+
+select, input, option {
+    color: white !important;
+    background-color: #161b22 !important;
+    border-color: #808080 !important;
+}
+
+label {
+    color: white;
 }

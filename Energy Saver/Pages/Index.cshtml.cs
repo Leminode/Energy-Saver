@@ -1,28 +1,27 @@
 ﻿using Energy_Saver.Model;
+using Energy_Saver.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
-using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly ITableService _tableService;
 
         [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, ITableService tableService)
         {
             _logger = logger;
+            _tableService = tableService;
         }
 
         public void OnGet()
         {
-            Taxes = this.ReadFromFile();
+            Taxes = _tableService.GetTableContents();
         }
 
         public void OnPost()
@@ -32,9 +31,7 @@ namespace Energy_Saver.Pages
 
         public IActionResult OnPostDelete(int index, int yearIndex)
         {
-            Taxes = this.ReadFromFile();
-            Taxes[yearIndex].RemoveAt(index);
-            this.WriteText(Taxes.SelectMany(list => list).Distinct().ToList());
+            _tableService.DeleteEntry(yearIndex: yearIndex, monthIndex: index);
 
             return RedirectToPage();
         }

@@ -1,0 +1,16 @@
+﻿@page
+@model Energy_Saver.Pages.StatisticsModel
+@{
+    ViewData["Title"] = "Statistics";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-color">Statistics</h1>
+<div><canvas id="lineChart"></canvas></div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        @Html.Raw(Model.Chart.CreateChartCode("lineChart"))
+    </script>
+}

@@ -6,5 +6,10 @@
         {
             return services.AddTransient<ITableService, TableService>();
         }
+
+        public static IServiceCollection AddChartServices(this IServiceCollection services)
+        {
+            return services.AddTransient<IChartService, ChartService>();
+        }
     }
 }

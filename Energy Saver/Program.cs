@@ -19,6 +19,7 @@ builder.Services.AddRazorPages(options =>
 
 builder.Services.AddTableServices();
 builder.Services.AddChartServices();
+builder.Services.AddSuggestionServices();
 
 var app = builder.Build();
 

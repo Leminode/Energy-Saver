@@ -70,11 +70,48 @@
                 yearIndex++;
             }
         </table>
+        <body>
+            <div>
+                @if(Model.gasComparison >= 0)
+                {
+                    <p class="text-color" style="margin-top: 40px">Total gas consumption this month is <span class="text-negative">@Math.Abs(Model.gasComparison)%</span> higher than last month</p>
+                }
+                else{
+                    <p class="text-color" style="margin-top: 40px">Total gas consumption this month is <span class="text-positive">@Math.Abs(Model.gasComparison)%</span> lower than last month</p>
+                }
+
+                @if (Model.electricityComparison >= 0)
+                {
+                    <p class="text-color" style="margin-top: 40px">Total electricity consumption this month is <span class="text-negative">@Math.Abs(Model.electricityComparison)%</span> higher than last month</p>
+                }
+                else{
+                    <p class="text-color" style="margin-top: 40px">Total electricity consumption this month is <span class="text-positive">@Math.Abs(Model.electricityComparison)%</span> lower than last month</p>
+                }
+
+                @if (Model.waterComparison >= 0)
+                {
+                    <p class="text-color" style="margin-top: 40px">Total water consumption this month is <span class="text-negative">@Math.Abs(Model.waterComparison)%</span> higher than last month</p>
+                }
+                else
+                {
+                    <p class="text-color" style="margin-top: 40px">Total water consumption this month is <span class="text-positive">@Math.Abs(Model.waterComparison)%</span> lower than last month</p>
+                }
+
+                @if (Model.heatingComparison >= 0)
+                {
+                    <p class="text-color" style="margin-top: 40px">Total heating consumption this month is <span class="text-negative">@Math.Abs(Model.heatingComparison)%</span> higher than last month</p>
+                }
+                else
+                {
+                    <p class="text-color" style="margin-top: 40px">Total heating consumption this month is <span class="text-positive">@Math.Abs(Model.heatingComparison)%</span> lower than last month</p>
+                }
+            </div>
+        </body>
     }
     else
     {
         <body>
-            <div class="sub-div">
+            <div>
                 <p class="text-color" style="text-align:center">Please log in or sign up to see tax history</p>
             </div>
         </body>

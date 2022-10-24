@@ -17,7 +17,7 @@ namespace Energy_Saver.Services
 
             LineDataset dataset = new LineDataset()
             {
-                Label = "Amount payed all time",
+                Label = "Total paid amount",
                 Data = new List<double?>
                 {
                     (double)tableData.SelectMany(x => x.Select(item => item.GasAmount)).Sum(),

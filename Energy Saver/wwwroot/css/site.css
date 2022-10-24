@@ -40,12 +40,12 @@ select, input, option {
     border-color: #808080 !important;
 }
 
-.text-positive{
-    color: darkgreen;
+.text-positive {
+    color: #0ca73d;
 }
 
 .text-negative {
-    color: darkred;
+    color: #ff0000;
 }
 
 label {

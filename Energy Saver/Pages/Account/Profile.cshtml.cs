@@ -12,7 +12,7 @@ namespace acme.Pages
 
         public void OnGet()
         {
-            UserName = User.Identity.Name;
+            UserName = User.FindFirst(c => c.Type == "nickname")?.Value;
             UserEmailAddress = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
             UserProfileImage = User.FindFirst(c => c.Type == "picture")?.Value;
         }

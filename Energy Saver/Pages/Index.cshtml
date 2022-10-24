@@ -1,6 +1,7 @@
 ﻿@page
 @using System.ComponentModel
 @using Microsoft.AspNetCore.Mvc.ModelBinding
+@using System.Reflection
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -70,11 +71,30 @@
                 yearIndex++;
             }
         </table>
+        <body>
+            <div>
+                @{
+                    string[] comparison = new string[4];
+
+                    comparison[0] = Model.gasComparison >= 0 ? "higher" : "lower";
+                    comparison[1] = Model.electricityComparison >= 0 ? "higher" : "lower";
+                    comparison[2] = Model.waterComparison >= 0 ? "higher" : "lower";
+                    comparison[3] = Model.heatingComparison >= 0 ? "higher" : "lower";
+                }
+                <p class="text-color" style="margin-top: 40px">Total gas consumption this month is <span class="@(comparison[0] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.gasComparison)%</span> @comparison[0] than last month</p>
+
+                <p class="text-color" style="margin-top: 40px">Total electricity consumption this month is <span class="@(comparison[1] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.electricityComparison)%</span> @comparison[1] than last month</p>
+
+            <p class="text-color" style="margin-top: 40px">Total water consumption this month is <span class="@(comparison[2] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.waterComparison)%</span> @comparison[2] than last month</p>
+
+            <p class="text-color" style="margin-top: 40px">Total heating consumption this month is <span class="@(comparison[3] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.heatingComparison)%</span> @comparison[3] than last month</p>
+            </div>
+        </body>
     }
     else
     {
         <body>
-            <div class="sub-div">
+            <div>
                 <p class="text-color" style="text-align:center">Please log in or sign up to see tax history</p>
             </div>
         </body>

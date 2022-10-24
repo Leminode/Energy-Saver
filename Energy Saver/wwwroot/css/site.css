@@ -30,10 +30,22 @@ td, th {
     color: white !important;
 }
 
+p {
+    font-size: 20px;
+}
+
 select, input, option {
     color: white !important;
     background-color: #161b22 !important;
     border-color: #808080 !important;
+}
+
+.text-positive {
+    color: #0ca73d;
+}
+
+.text-negative {
+    color: #ff0000;
 }
 
 label {

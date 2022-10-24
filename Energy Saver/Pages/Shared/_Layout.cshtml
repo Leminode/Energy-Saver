@@ -37,6 +37,9 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
+                                <a class="nav-link text-color" asp-page="/Account/Profile">Profile</a>
+                            <\li>
+                            <li class="nav-item">
                                 <a class="nav-link text-color" asp-area="" asp-page="/Account/Logout">Logout</a>
                             </li>
                         } else {

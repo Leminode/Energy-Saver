@@ -49,6 +49,23 @@ namespace Energy_Saver.Services
             data.Datasets.Add(dataset);
 
             chart.Data = data;
+            
+            Dictionary<string, Scale> dict = new Dictionary<string, Scale>();
+            dict.Add("x", new Scale() 
+            { 
+                Grid = new Grid() 
+                { 
+                    Color = new List<ChartColor> { ChartColor.FromRgb(169, 169, 169) } 
+                },
+                Ticks = new Tick() { Color = ChartColor.FromRgb(169, 169, 169) }
+            });
+            dict.Add("y", new Scale() 
+            { 
+                Grid = new Grid() { Color = new List<ChartColor> { ChartColor.FromRgb(169, 169, 169) } }, 
+                Ticks = new Tick() { Color = ChartColor.FromRgb(169, 169, 169)}
+            });
+
+            chart.Options.Scales = dict;
 
             return chart;
         }

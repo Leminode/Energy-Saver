@@ -16,6 +16,7 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Input");
     options.Conventions.AuthorizePage("/Account/Logout");
     options.Conventions.AuthorizePage("/Account/Profile");
+    options.Conventions.AuthorizePage("/Statistics");
 });
 
 builder.Services.AddTableServices();

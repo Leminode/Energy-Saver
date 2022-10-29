@@ -20,8 +20,8 @@ namespace Energy_Saver.Model
 
             List<Taxes>? temp = ReadText();
         
-            taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-            taxes = taxes.Select(tax => OrderList<Taxes>(data: tax, sortExpression: "Month", sortDirection: "Descending")).OrderByDescending(t => t[0]).ToList();
+            taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+            taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
 
             return taxes;
         }
@@ -57,27 +57,28 @@ namespace Energy_Saver.Model
             return temp;
         }
 
-        public static List<T> OrderList<T>(string sortDirection, string sortExpression, List<T> data)
+        public static List<T> OrderList<T, U>(SortDirection sortDirection, List<T> data, Func<T, U> sortBy)
         {
             List<T> orderedList = new List<T>();
 
             switch (sortDirection)
             {
-                case "Ascending":
-                    orderedList = (from n in data orderby GetDynamicSortProperty(n, sortExpression) ascending select n).ToList();
+                case SortDirection.Ascending:
+                    orderedList = (from n in data orderby sortBy ascending select n).ToList();
                     break;
-                case "Descending":
-                    orderedList = (from n in data orderby GetDynamicSortProperty(n, sortExpression) descending select n).ToList();
+                case SortDirection.Descending:
+                    orderedList = (from n in data orderby sortBy descending select n).ToList();
                     break;
                 default:
-                    break;
+                    return data;
             }
             return orderedList;
         }
 
-        private static object GetDynamicSortProperty(object item, string propName)
+        public enum SortDirection
         {
-            return item.GetType().GetProperty(propName).GetValue(item, null);
+            Ascending,
+            Descending
         }
     }
 }

@@ -64,10 +64,10 @@ namespace Energy_Saver.Model
             switch (sortDirection)
             {
                 case SortDirection.Ascending:
-                    orderedList = (from n in data orderby sortBy ascending select n).ToList();
+                    orderedList = (from n in data.OrderBy(sortBy) select n).ToList();
                     break;
                 case SortDirection.Descending:
-                    orderedList = (from n in data orderby sortBy descending select n).ToList();
+                    orderedList = (from n in data.OrderByDescending(sortBy) select n).ToList();
                     break;
                 default:
                     return data;

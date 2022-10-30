@@ -4,12 +4,12 @@
     {
         public static IServiceCollection AddTableServices(this IServiceCollection services)
         {
-            return services.AddTransient<ITableService, TableService>();
+            return services.AddScoped<ITableService, TableService>();
         }
 
         public static IServiceCollection AddChartServices(this IServiceCollection services)
         {
-            return services.AddTransient<IChartService, ChartService>();
+            return services.AddScoped<IChartService, ChartService>();
         }
     }
 }

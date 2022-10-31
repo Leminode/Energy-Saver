@@ -13,7 +13,7 @@
             <form asp-page-handler="year" method="post">
                 <div class="form-group">
                     @Html.AntiForgeryToken()
-                    <select asp-for="selectedYear" class="form-control" name="Year" id="yearDropdown" onchange="editYear()">
+                    <select class="form-control" name="Year" id="yearDropdown" onchange="editYear()">
                         @for (int i = DateTime.Now.Year; i > 1919; i--)
                         {
                             <option value="@i">@i</option>
@@ -46,10 +46,9 @@
                     RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
                 },
                 success: function (result) {
-                    var chart = Chart.getChart('chart')
-                    chart.destroy();
-                    chart = new Chart(document.getElementById('chart'), JSON.parse(result));
-                    console.log(result);
+                    var chart = Chart.getChart('chart');
+                    chart.data = JSON.parse(result).data;
+                    chart.update();
                 },
                 error: function () {
                     alert("there was an error");

@@ -18,8 +18,6 @@ namespace Energy_Saver.Pages
             ChartService.FilterTypes.Water,
             ChartService.FilterTypes.Heating
         };
-        [BindProperty]
-        public int selectedYear { get; set; } = 2022;
 
         public StatisticsModel(IChartService chartService)
         {
@@ -28,7 +26,7 @@ namespace Energy_Saver.Pages
 
         public void OnGet()
         {
-            Chart = _chartService.CreateChart<Taxes>(Enums.ChartType.Line, new List<Taxes>(), allFilters, selectedYear);
+            Chart = _chartService.CreateChart<Taxes>(Enums.ChartType.Line, new List<Taxes>(), allFilters, 2022);
         }
 
         public IActionResult OnPostYear(int selectedYear)

@@ -11,5 +11,6 @@ namespace Energy_Saver.Services
         public decimal GetLatestElectricityComparison();
 
         public decimal GetLatestHeatingComparison();
+        public Taxes GetLatestTaxComparison();
     }
 }

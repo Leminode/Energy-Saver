@@ -116,7 +116,7 @@ namespace Energy_Saver.Services
 
             return lineDataset;
         }
-
+        
         private byte[] GetRandomChartColor()
         {
             byte[] random = new byte[3];

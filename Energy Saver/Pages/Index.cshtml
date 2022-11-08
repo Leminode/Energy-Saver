@@ -15,60 +15,42 @@
         <table class="table" id="tax-list">
             <thead>
                 <tr>
+                    <th style="text-align:left">Year</th>
                     <th style="text-align:left">Month</th>
-                    <th style="text-align:right">Gas amount</th>
-                    <th style="text-align:right">Electricity amount</th>
-                    <th style="text-align:right">Water amount</th>
-                    <th style="text-align:right">Heating amount</th>
-                    <th> </th>
+                    <th style="text-align:left">Gas amount</th>
+                    <th style="text-align:left">Electricity amount</th>
+                    <th style="text-align:left">Water amount</th>
+                    <th style="text-align:left">Heating amount</th>
+                    <th style="text-align:left">Options</th>
                 </tr>
             </thead>
-            @{
-                int yearIndex = 0;
-            }
-            @foreach (var year in Model.Taxes)
+            @foreach (var item in Model.Taxes)
             {
                 <tr>
-                    <td colspan=6 style="text-align:left"><b>@year[0].Year</b></td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Year)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Month)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GasAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ElectricityAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.WaterAmount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.HeatingAmount)
+                    </td>
+                    <td class="text-color">
+                        <a asp-page="./Edit" asp-route-id="@item.ID" class="text-color">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item.ID" class="text-color">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item.ID" class="text-color">Delete</a>
+                    </td>
                 </tr>
-
-                int index = 0;
-                @foreach (var taxRecord in year)
-                {
-                    <tr>
-                        <td style="text-align:left">@taxRecord.Month.ToString()</td>
-                        <td style="text-align:right">
-                            @(
-                                taxRecord.GasAmount % 1 == 0 ? (int)taxRecord.GasAmount : taxRecord.GasAmount)
-                        </td>
-                        <td style="text-align:right">
-                            @(
-                                taxRecord.ElectricityAmount % 1 == 0 ? (int)taxRecord.ElectricityAmount : taxRecord.ElectricityAmount)
-                        </td>
-                        <td style="text-align:right">
-                            @(
-                                taxRecord.WaterAmount % 1 == 0 ? (int)taxRecord.WaterAmount : taxRecord.WaterAmount)
-                        </td>
-                        <td style="text-align:right">
-                            @(
-                                taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)
-                        </td>
-                        <td style="text-align:right">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <form asp-page-handler="delete" method="post">
-                                    <button class="btn btn-default btn-sm text-color">Delete</button>
-                                    <input type="hidden" name="index" value="@index" />
-                                    <input type="hidden" name="yearIndex" value="@yearIndex" />
-                                </form>
-                            }
-                        </td>
-                        @{
-                            index++;
-                        }
-                    </tr>
-                }
-                yearIndex++;
             }
         </table>
         <body>

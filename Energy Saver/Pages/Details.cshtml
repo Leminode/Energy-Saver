@@ -1,0 +1,54 @@
+﻿@page
+@model Energy_Saver.Pages.DetailsModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="text-color">Details</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2 text-color">
+            @Html.DisplayNameFor(model => model.Taxes.Year)
+        </dt>
+        <dd class="col-sm-10 text-color">
+            @Html.DisplayFor(model => model.Taxes.Year)
+        </dd>
+        <dt class="col-sm-2 text-color">
+            @Html.DisplayNameFor(model => model.Taxes.Month)
+        </dt>
+        <dd class="col-sm-10 text-color">
+            @Html.DisplayFor(model => model.Taxes.Month)
+        </dd>
+        <dt class="col-sm-2 text-color">
+            @Html.DisplayNameFor(model => model.Taxes.GasAmount)
+        </dt>
+        <dd class="col-sm-10 text-color">
+            @Html.DisplayFor(model => model.Taxes.GasAmount)
+        </dd>
+        <dt class="col-sm-2 text-color">
+            @Html.DisplayNameFor(model => model.Taxes.ElectricityAmount)
+        </dt>
+        <dd class="col-sm-10 text-color">
+            @Html.DisplayFor(model => model.Taxes.ElectricityAmount)
+        </dd>
+        <dt class="col-sm-2 text-color">
+            @Html.DisplayNameFor(model => model.Taxes.WaterAmount)
+        </dt>
+        <dd class="col-sm-10 text-color">
+            @Html.DisplayFor(model => model.Taxes.WaterAmount)
+        </dd>
+        <dt class="col-sm-2 text-color">
+            @Html.DisplayNameFor(model => model.Taxes.HeatingAmount)
+        </dt>
+        <dd class="col-sm-10 text-color">
+            @Html.DisplayFor(model => model.Taxes.HeatingAmount)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-page="./Edit" asp-route-id="@Model.Taxes?.ID" class="text-color">Edit</a> |
+    <a asp-page="./Index" class="text-color">Back to List</a>
+</div>

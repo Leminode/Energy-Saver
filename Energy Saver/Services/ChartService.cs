@@ -42,7 +42,7 @@ namespace Energy_Saver.Services
                         function = tax => (double)tax.HeatingAmount;
                         break;
                     default:
-                        function = tax => 1;
+                        function = _ => 1;
                         break;
                 }
 
@@ -54,7 +54,7 @@ namespace Energy_Saver.Services
                     try
                     {
                         foundData = tableData.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
-                    } catch (InvalidOperationException e) {
+                    } catch (InvalidOperationException) {
                         foundData = 0;
                     }
                     monthData.Add(foundData);
@@ -99,7 +99,7 @@ namespace Energy_Saver.Services
                 BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(color[0], color[1], color[2], 0.4) },
                 BorderColor = new List<ChartColor> { chartColor },
                 BorderCapStyle = "butt",
-                BorderDash = new List<int> { },
+                BorderDash = new List<int>(),
                 BorderDashOffset = 0.0,
                 BorderJoinStyle = "miter",
                 PointBorderColor = new List<ChartColor> { chartColor },

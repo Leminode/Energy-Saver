@@ -1,6 +1,7 @@
 ﻿@page
 @using System.ComponentModel
 @using Microsoft.AspNetCore.Mvc.ModelBinding
+@using System.Reflection
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
@@ -9,55 +10,93 @@
 <div class="text-center">
     <h1 class="display-4 text-color">Energy Saver</h1>
 </div>
-<div>
-    <table class="table" id="tax-list">
-        <thead>
-            <tr>
-                <th style="text-align:left">Month</th>
-                <th style="text-align:right">Gas amount</th>
-                <th style="text-align:right">Electricity amount</th>
-                <th style="text-align:right">Water amount</th>
-                <th style="text-align:right">Heating amount</th>
-                <th> </th>
-            </tr>
-        </thead>
-        @{
-            int yearIndex = 0;
-        }
-        @foreach (var year in Model.Taxes)
-        {
-            <tr>
-                <td colspan=6 style="text-align:left"><b>@year[0].Year</b></td>
-            </tr>
-
-            int index = 0;
-            @foreach (var taxRecord in year)
+<div class="main-div">
+    @if(User.Identity.IsAuthenticated){
+        <table class="table" id="tax-list">
+            <thead>
+                <tr>
+                    <th style="text-align:left">Month</th>
+                    <th style="text-align:right">Gas amount</th>
+                    <th style="text-align:right">Electricity amount</th>
+                    <th style="text-align:right">Water amount</th>
+                    <th style="text-align:right">Heating amount</th>
+                    <th> </th>
+                </tr>
+            </thead>
+            @{
+                int yearIndex = 0;
+            }
+            @foreach (var year in Model.Taxes)
             {
                 <tr>
-                    <td style="text-align:left">@taxRecord.Month.ToString()</td>
-                    <td style="text-align:right">@(
-                taxRecord.GasAmount % 1 == 0 ? (int)taxRecord.GasAmount : taxRecord.GasAmount)</td>
-                    <td style="text-align:right">@(
-                taxRecord.ElectricityAmount % 1 == 0 ? (int)taxRecord.ElectricityAmount : taxRecord.ElectricityAmount)</td>
-                    <td style="text-align:right">@(
-                taxRecord.WaterAmount % 1 == 0 ? (int)taxRecord.WaterAmount : taxRecord.WaterAmount)</td>
-                    <td style="text-align:right">@(
-                taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)</td>
-                    <td style="text-align:right">
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <form asp-page-handler="delete" method="post">
-                                <button class="btn btn-default btn-sm text-color">Delete</button>
-                                <input type="hidden" name="index" value="@index" />
-                                <input type="hidden" name="yearIndex" value="@yearIndex" />
-                            </form>
-                        }
-                    </td>
-                    @{index++;}
+                    <td colspan=6 style="text-align:left"><b>@year[0].Year</b></td>
                 </tr>
-            }
 
-            yearIndex++;
-        }
-    </table>
+                int index = 0;
+                @foreach (var taxRecord in year)
+                {
+                    <tr>
+                        <td style="text-align:left">@taxRecord.Month.ToString()</td>
+                        <td style="text-align:right">
+                            @(
+                                taxRecord.GasAmount % 1 == 0 ? (int)taxRecord.GasAmount : taxRecord.GasAmount)
+                        </td>
+                        <td style="text-align:right">
+                            @(
+                                taxRecord.ElectricityAmount % 1 == 0 ? (int)taxRecord.ElectricityAmount : taxRecord.ElectricityAmount)
+                        </td>
+                        <td style="text-align:right">
+                            @(
+                                taxRecord.WaterAmount % 1 == 0 ? (int)taxRecord.WaterAmount : taxRecord.WaterAmount)
+                        </td>
+                        <td style="text-align:right">
+                            @(
+                                taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)
+                        </td>
+                        <td style="text-align:right">
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <form asp-page-handler="delete" method="post">
+                                    <button class="btn btn-default btn-sm text-color">Delete</button>
+                                    <input type="hidden" name="index" value="@index" />
+                                    <input type="hidden" name="yearIndex" value="@yearIndex" />
+                                </form>
+                            }
+                        </td>
+                        @{
+                            index++;
+                        }
+                    </tr>
+                }
+                yearIndex++;
+            }
+        </table>
+        <body>
+            <div>
+                @{
+                    string[] comparison = new string[4];
+
+                    comparison[0] = Model.gasComparison >= 0 ? "higher" : "lower";
+                    comparison[1] = Model.electricityComparison >= 0 ? "higher" : "lower";
+                    comparison[2] = Model.waterComparison >= 0 ? "higher" : "lower";
+                    comparison[3] = Model.heatingComparison >= 0 ? "higher" : "lower";
+                }
+                <p class="text-color" style="margin-top: 40px">Total gas consumption this month is <span class="@(comparison[0] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.gasComparison)%</span> @comparison[0] than last month</p>
+
+                <p class="text-color" style="margin-top: 40px">Total electricity consumption this month is <span class="@(comparison[1] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.electricityComparison)%</span> @comparison[1] than last month</p>
+
+            <p class="text-color" style="margin-top: 40px">Total water consumption this month is <span class="@(comparison[2] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.waterComparison)%</span> @comparison[2] than last month</p>
+
+            <p class="text-color" style="margin-top: 40px">Total heating consumption this month is <span class="@(comparison[3] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.heatingComparison)%</span> @comparison[3] than last month</p>
+            </div>
+        </body>
+    }
+    else
+    {
+        <body>
+            <div>
+                <p class="text-color" style="text-align:center">Please log in or sign up to see tax history</p>
+            </div>
+        </body>
+    }
 </div>

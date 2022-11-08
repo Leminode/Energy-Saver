@@ -15,10 +15,12 @@ builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Input");
     options.Conventions.AuthorizePage("/Account/Logout");
+    options.Conventions.AuthorizePage("/Account/Profile");
 });
 
 builder.Services.AddTableServices();
 builder.Services.AddChartServices();
+builder.Services.AddSuggestionServices();
 
 var app = builder.Build();
 

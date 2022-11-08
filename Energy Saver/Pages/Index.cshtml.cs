@@ -9,19 +9,39 @@ namespace Energy_Saver.Pages
     {
         private readonly ILogger<IndexModel> _logger;
         private readonly ITableService _tableService;
+        private readonly ISuggestionsService _suggestionsService;
+
 
         [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, ITableService tableService)
+        [BindProperty]
+        public decimal gasComparison { get; set; }
+
+        [BindProperty]
+        public decimal waterComparison { get; set; }
+
+        [BindProperty]
+        public decimal electricityComparison { get; set; }
+
+        [BindProperty]
+        public decimal heatingComparison { get; set; }
+
+        public IndexModel(ILogger<IndexModel> logger, ITableService tableService, ISuggestionsService suggestionsService)
         {
             _logger = logger;
             _tableService = tableService;
+            _suggestionsService = suggestionsService;
         }
 
         public void OnGet()
         {
             Taxes = _tableService.GetTableContents();
+
+            gasComparison = _suggestionsService.GetLatestGasComparison();
+            waterComparison = _suggestionsService.GetLatestWaterComparison();
+            electricityComparison = _suggestionsService.GetLatestElectricityComparison();
+            heatingComparison = _suggestionsService.GetLatestHeatingComparison();
         }
 
         public void OnPost()

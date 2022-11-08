@@ -4,6 +4,6 @@ namespace Energy_Saver.Services
 {
     public interface ISuggestionsService
     {
-        public Taxes GetLatestTaxComparison();
+        public List<decimal> GetLatestTaxComparison();
     }
 }

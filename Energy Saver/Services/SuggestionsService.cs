@@ -5,16 +5,19 @@ namespace Energy_Saver.Services
     public class SuggestionsService : ISuggestionsService
     {
 
-        public Taxes GetLatestTaxComparison()
+        public List<decimal> GetLatestTaxComparison()
         {
-            List<List<Taxes>> list = Serialization.ReadFromFile();
+            List<Taxes> list = Serialization.ReadFromFile().SelectMany(x => x).ToList();
 
-            Taxes comparison = new Taxes();
+            List<decimal> comparison = new List<decimal>();
 
-            comparison.GasAmount = Math.Round(list.ElementAt(0).ElementAt(0).GasAmount * 100 / list.ElementAt(0).ElementAt(1).GasAmount - 100, 1);
-            comparison.ElectricityAmount = Math.Round(list.ElementAt(0).ElementAt(0).ElectricityAmount * 100 / list.ElementAt(0).ElementAt(1).ElectricityAmount - 100, 1);
-            comparison.WaterAmount = Math.Round(list.ElementAt(0).ElementAt(0).WaterAmount * 100 / list.ElementAt(0).ElementAt(1).WaterAmount - 100, 1);
-            comparison.HeatingAmount = Math.Round(list.ElementAt(0).ElementAt(0).HeatingAmount * 100 / list.ElementAt(0).ElementAt(1).HeatingAmount - 100, 1);
+            if(list.Count > 1)
+            {
+                comparison.Add(Math.Round(list.First().GasAmount * 100 / list.ElementAt(1).GasAmount - 100));
+                comparison.Add(Math.Round(list.First().ElectricityAmount * 100 / list.ElementAt(1).ElectricityAmount - 100));
+                comparison.Add(Math.Round(list.First().WaterAmount * 100 / list.ElementAt(1).WaterAmount - 100));
+                comparison.Add(Math.Round(list.First().HeatingAmount * 100 / list.ElementAt(1).HeatingAmount - 100));
+            }
 
             return comparison;
         }

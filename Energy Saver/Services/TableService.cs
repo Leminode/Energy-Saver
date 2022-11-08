@@ -1,6 +1,4 @@
 ﻿using Energy_Saver.Model;
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 
 namespace Energy_Saver.Services
 {

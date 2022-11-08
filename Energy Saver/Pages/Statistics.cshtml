@@ -6,11 +6,54 @@
 }
 
 <h1 class="text-color">Statistics</h1>
-<div><canvas id="lineChart"></canvas></div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-2">
+            <form asp-page-handler="year" method="post">
+                <div class="form-group">
+                    @Html.AntiForgeryToken()
+                    <select class="form-control" name="Year" id="yearDropdown" onchange="editYear()">
+                        @for (int i = DateTime.Now.Year; i > 1919; i--)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-10">
+            <canvas id="chart"></canvas>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        @Html.Raw(Model.Chart.CreateChartCode("lineChart"))
+         @Html.Raw(Model.Chart.CreateChartCode("chart"))
+    </script>
+    <script>
+        function editYear() {
+            var selectedYear = $("#yearDropdown").val();
+            $.ajax({
+                type: "POST",
+                url: "?handler=Year",
+                data: { 
+                    selectedYear : selectedYear
+                },
+                headers: {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function (result) {
+                    var chart = Chart.getChart('chart');
+                    chart.data = JSON.parse(result).data;
+                    chart.update();
+                },
+                error: function () {
+                    alert("there was an error");
+                }
+            });
+        }
+        
     </script>
 }

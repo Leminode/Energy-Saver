@@ -74,20 +74,20 @@
         <body>
             <div>
                 @{
-                    string[] comparison = new string[4];
-
-                    comparison[0] = Model.gasComparison >= 0 ? "higher" : "lower";
-                    comparison[1] = Model.electricityComparison >= 0 ? "higher" : "lower";
-                    comparison[2] = Model.waterComparison >= 0 ? "higher" : "lower";
-                    comparison[3] = Model.heatingComparison >= 0 ? "higher" : "lower";
+                    List<string> taxNameList = new List<string> { "Gas", "Electricity", "Water", "Heating" };
                 }
-                <p class="text-color" style="margin-top: 40px">Total gas consumption this month is <span class="@(comparison[0] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.gasComparison)%</span> @comparison[0] than last month</p>
-
-                <p class="text-color" style="margin-top: 40px">Total electricity consumption this month is <span class="@(comparison[1] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.electricityComparison)%</span> @comparison[1] than last month</p>
-
-            <p class="text-color" style="margin-top: 40px">Total water consumption this month is <span class="@(comparison[2] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.waterComparison)%</span> @comparison[2] than last month</p>
-
-            <p class="text-color" style="margin-top: 40px">Total heating consumption this month is <span class="@(comparison[3] == "higher" ? "text-negative" : "text-positive")">@Math.Abs(Model.heatingComparison)%</span> @comparison[3] than last month</p>
+                @for(int i = 0; i < Model.taxComparison.Count(); i++)
+                {
+                    if(Model.taxComparison[i] > 0)
+                    {
+                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-negative")">+@Model.taxComparison[i]%</span></p>
+                    }
+                    else
+                    {
+                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-positive")">@Model.taxComparison[i]%</span></p>
+                    }
+                    
+                }
             </div>
         </body>
     }

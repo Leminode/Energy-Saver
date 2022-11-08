@@ -6,6 +6,8 @@ namespace Energy_Saver.Services
 {
     public class ChartService : IChartService
     {
+        private float Random { get; set; } = (float) new Random().NextDouble();
+
         public Chart CreateChart<T>(Enums.ChartType chartType, List<T> values, List<FilterTypes> filters, int year)
         {
             Chart chart = new Chart();
@@ -87,8 +89,8 @@ namespace Energy_Saver.Services
 
         private LineDataset CreateNewLineDataset(List<double?> data, string label)
         {
-            byte[] color = GetRandomChartColor();
-            ChartColor chartColor = ChartColor.FromRgb(color[0], color[1], color[2]);
+            ChartColor chartColor = GetRandomChartColor();
+            ChartColor withAlpha = new ChartColor { Red = chartColor.Red, Blue = chartColor.Blue, Green = chartColor.Green, Alpha = 0.4 };
 
             LineDataset lineDataset = new LineDataset()
             {
@@ -96,7 +98,7 @@ namespace Energy_Saver.Services
                 Data = data,
                 Fill = "false",
                 Tension = 0.1,
-                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(color[0], color[1], color[2], 0.4) },
+                BackgroundColor = new List<ChartColor> { withAlpha },
                 BorderColor = new List<ChartColor> { chartColor },
                 BorderCapStyle = "butt",
                 BorderDash = new List<int>(),
@@ -117,12 +119,20 @@ namespace Energy_Saver.Services
             return lineDataset;
         }
 
-        private byte[] GetRandomChartColor()
+        private ChartColor GetRandomChartColor(float s = 0.5F, float v = 0.95F)
         {
-            byte[] random = new byte[3];
-            new Random().NextBytes(random);
+            float golden_ratio = 0.618033988749895F;
 
-            return random;
+            Func<float, byte> f = delegate (float n)
+            {
+                float k = (n + Random * 6) % 6;
+                return (byte)((v - (v * s * (Math.Max(0, Math.Min(Math.Min(k, 4 - k), 1))))) * 255);
+            };
+
+            Random += golden_ratio;
+            Random %= 1;
+
+            return ChartColor.FromRgb(f(5), f(3), f(1));
         }
 
         public enum FilterTypes

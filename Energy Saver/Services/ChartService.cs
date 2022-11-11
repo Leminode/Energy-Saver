@@ -79,10 +79,13 @@ namespace Energy_Saver.Services
             dict.Add("y", new Scale() 
             { 
                 Grid = new Grid() { Color = new List<ChartColor> { ChartColor.FromRgb(169, 169, 169) } }, 
-                Ticks = new Tick() { Color = ChartColor.FromRgb(169, 169, 169)}
+                Min = 0,
+                Ticks = new Tick() { Color = ChartColor.FromRgb(169, 169, 169) },
             });
 
             chart.Options.Scales = dict;
+
+            chart.Options.Plugins = new Plugins { Legend = new Legend { Labels = new LegendLabel { Color = ChartColor.FromRgb(169, 169, 169) } } };
 
             return chart;
         }

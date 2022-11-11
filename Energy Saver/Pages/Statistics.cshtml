@@ -6,8 +6,10 @@
 }
 
 <h1 class="text-color">Statistics</h1>
-<div class="container-fluid">
+<div class="container-fluid text-color">
     <div class="row">
+        <fieldset class="border p-2">
+        <legend class="float-none w-auto">Yearly</legend>
         <div class="col-lg-2">
             <form asp-page-handler="year" method="post">
                 <div class="form-group">
@@ -24,6 +26,7 @@
         <div class="col-lg-10">
             <canvas id="chart"></canvas>
         </div>
+        </fieldset>
     </div>
 </div>
 

@@ -1,5 +1,6 @@
 ﻿@page
 @model Energy_Saver.Pages.StatisticsModel
+@using Energy_Saver.Model
 @{
     ViewData["Title"] = "Statistics";
     Layout = "~/Pages/Shared/_Layout.cshtml";
@@ -28,12 +29,34 @@
         </div>
         </fieldset>
     </div>
+    <div class="row">
+        <fieldset class="border p-2">
+        <legend class="float-none w-auto">Monthly</legend>
+        <div class="col-lg-2">
+            <form asp-page-handler="month" method="post">
+                <div class="form-group">
+                    @Html.AntiForgeryToken()
+                    <select class="form-control" name="Month" id="monthDropdown" onchange="editMonth()">
+                        @foreach (Months month in Enum.GetValues(typeof(Months)))
+                        {
+                            <option value="@month">@month</option>
+                        }
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="col-lg-10">
+            <canvas id="monthChart"></canvas>
+        </div>
+        </fieldset>
+    </div>
 </div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-         @Html.Raw(Model.Chart.CreateChartCode("chart"))
+         @Html.Raw(Model.YearChart.CreateChartCode("chart"));
+         @Html.Raw(Model.MonthChart.CreateChartCode("monthChart"));
     </script>
     <script>
         function editYear() {
@@ -48,8 +71,37 @@
                     RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
                 },
                 success: function (result) {
-                    var chart = Chart.getChart('chart');
+                    var yearChart = Chart.getChart('chart');
+                    var monthChart = Chart.getChart('monthChart');
+                    yearChart.data = JSON.parse(result.yearChart).data;
+                    yearChart.update();
+                    monthChart.data = JSON.parse(result.monthChart).data;
+                    monthChart.update();
+
+                    $("#monthDropdown").val("January");
+                },
+                error: function () {
+                    alert("there was an error");
+                }
+            });
+        }
+        function editMonth() {
+            var selectedMonth = $("#monthDropdown").val();
+            var selectedYear = $("#yearDropdown").val();
+            $.ajax({
+                type: "POST",
+                url: "?handler=Month",
+                data: {
+                    selectedMonth: selectedMonth,
+                    selectedYear: selectedYear
+                },
+                headers: {
+                    RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
+                },
+                success: function (result) {
+                    var chart = Chart.getChart('monthChart');
                     chart.data = JSON.parse(result).data;
+                    chart.options.plugins.legend.display = false;
                     chart.update();
                 },
                 error: function () {

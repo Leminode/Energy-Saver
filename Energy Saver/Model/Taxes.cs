@@ -22,21 +22,25 @@ namespace Energy_Saver.Model
         [RegularExpression(@"\d+(.\d+)?$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Gas amount is required")]
         [Column("gas_amount")]
+        [Display(Name = "Gas amount")]
         public decimal GasAmount { get; set; }
 
         [RegularExpression(@"\d+(.\d+)?$$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Electricity amount is required")]
         [Column("electricity_amount")]
+        [Display(Name = "Electricity amount")]
         public decimal ElectricityAmount { get; set; }
 
         [RegularExpression(@"\d+(.\d+)?$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Water amount is required")]
         [Column("water_amount")]
+        [Display(Name = "Water amount")]
         public decimal WaterAmount { get; set; }
 
         [RegularExpression(@"\d+(.\d+)?$", ErrorMessage = "Invalid input")]
         [Required(ErrorMessage = "Heating amount is required")]
         [Column("heating_amount")]
+        [Display(Name = "Heating amount")]
         public decimal HeatingAmount { get; set; }
 
         public int CompareTo(Taxes other)

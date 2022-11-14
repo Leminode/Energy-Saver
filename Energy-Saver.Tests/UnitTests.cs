@@ -1,13 +1,24 @@
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
+using static Energy_Saver.Model.Serialization;
 
 namespace Energy_Saver.Tests
 {
-    public class UnitTests
+    public class UnitTests// : IClassFixture<IndexModel>
     {
-        [Fact]
+        //private readonly ILogger<IndexModel> _logger;
+        //private readonly ISuggestionsService _suggestionsService;
+        //private readonly EnergySaverTaxesContext _context;
+
+        //public UnitTests(ILogger<IndexModel> logger, ISuggestionsService suggestionsService, EnergySaverTaxesContext context)
+        //{
+        //    _logger = logger;
+        //    _suggestionsService = suggestionsService;
+        //    _context = context;
+        //}
+
+            [Fact]
         public async void TaxInputTest()
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
@@ -24,15 +35,15 @@ namespace Energy_Saver.Tests
                     HeatingAmount = 4
                 };
 
-                List<Taxes> taxList = new List<Taxes>();
-                taxList.Add(taxes);
+                List<Taxes> expectedTaxList = new List<Taxes>();
+                expectedTaxList.Add(taxes);
 
                 db.Taxes.Add(taxes);
                 await db.SaveChangesAsync();
 
-                var list = await db.Taxes.ToListAsync();
+                var actualTaxList = await db.Taxes.ToListAsync();
 
-                Assert.Equal(taxList, list);
+                Assert.Equal(expectedTaxList, actualTaxList);
             }
         }
 
@@ -64,10 +75,13 @@ namespace Energy_Saver.Tests
         }
 
         [Fact]
-        public async void test()
+        public async void AscendingOrderListTest()
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
+                List<Taxes> actualTaxList = new List<Taxes>();
+                List<Taxes> expectedTaxList = new List<Taxes>();
+
                 var tax1 = new Taxes
                 {
                     ID = 1,
@@ -84,7 +98,7 @@ namespace Energy_Saver.Tests
                 {
                     ID = 2,
                     UserID = 4,
-                    Year = 2020,
+                    Year = 2021,
                     Month = Months.February,
                     GasAmount = 2,
                     ElectricityAmount = 4,
@@ -92,14 +106,108 @@ namespace Energy_Saver.Tests
                     HeatingAmount = 2
                 };
 
-                db.Taxes.Add(taxes);
-                await db.SaveChangesAsync();
+                actualTaxList.Add(tax1);
+                actualTaxList.Add(tax2);
 
-                db.Taxes.Remove(taxes);
-                await db.SaveChangesAsync();
+                expectedTaxList.Add(tax1);
+                expectedTaxList.Add(tax2);
 
-                Assert.False(db.Taxes.Any());
+                actualTaxList = OrderList(SortDirection.Ascending, actualTaxList, tax => tax.Year);
+
+                Assert.Equal(expectedTaxList, actualTaxList);
             }
         }
+
+        [Fact]
+        public void DescendingOrderListTest()
+        {
+            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+            {
+                List<Taxes> actualTaxList = new List<Taxes>();
+                List<Taxes> expectedTaxList = new List<Taxes>();
+
+                var tax1 = new Taxes
+                {
+                    ID = 1,
+                    UserID = 4,
+                    Year = 2020,
+                    Month = Months.January,
+                    GasAmount = 1,
+                    ElectricityAmount = 2,
+                    WaterAmount = 3,
+                    HeatingAmount = 4
+                };
+
+                var tax2 = new Taxes
+                {
+                    ID = 2,
+                    UserID = 4,
+                    Year = 2021,
+                    Month = Months.February,
+                    GasAmount = 2,
+                    ElectricityAmount = 4,
+                    WaterAmount = 3,
+                    HeatingAmount = 2
+                };
+
+                actualTaxList.Add(tax1);
+                actualTaxList.Add(tax2);
+
+                expectedTaxList.Add(tax2);
+                expectedTaxList.Add(tax1);
+
+                actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Year);
+
+                Assert.Equal(expectedTaxList, actualTaxList);
+            }
+        }
+
+        //[Fact]
+        //public void GetLatestTaxComparisonTest()
+        //{
+        //    using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+        //    {
+        //        List<List<Taxes>> taxList = new List<List<Taxes>>();
+        //        List<Taxes> taxes = new List<Taxes>();
+
+        //        List<decimal> actualTaxList = new List<decimal>();
+        //        List<decimal> expectedTaxList = new List<decimal>();
+
+        //        var tax1 = new Taxes
+        //        {
+        //            ID = 1,
+        //            UserID = 4,
+        //            Year = 2020,
+        //            Month = Months.January,
+        //            GasAmount = 1,
+        //            ElectricityAmount = 2,
+        //            WaterAmount = 3,
+        //            HeatingAmount = 4
+        //        };
+
+        //        var tax2 = new Taxes
+        //        {
+        //            ID = 2,
+        //            UserID = 4,
+        //            Year = 2020,
+        //            Month = Months.February,
+        //            GasAmount = 2,
+        //            ElectricityAmount = 4,
+        //            WaterAmount = 3,
+        //            HeatingAmount = 2
+        //        };
+
+        //        taxes.Add(tax1);
+        //        taxes.Add(tax2);
+
+        //        taxList.Add(taxes);
+
+        //        actualTaxList = _suggestionsService.GetLatestTaxComparison(taxList);
+
+        //        //expectedTaxList
+
+        //        Assert.Equal(expectedTaxList, actualTaxList);
+        //    }
+        //}
     }
 }

@@ -16,16 +16,7 @@ namespace Energy_Saver.Pages
         public List<List<Taxes>>? Taxes { get; set; }
 
         [BindProperty]
-        public decimal gasComparison { get; set; }
-
-        [BindProperty]
-        public decimal waterComparison { get; set; }
-
-        [BindProperty]
-        public decimal electricityComparison { get; set; }
-
-        [BindProperty]
-        public decimal heatingComparison { get; set; }
+        public List<decimal> taxComparison { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, ITableService tableService, ISuggestionsService suggestionsService)
         {
@@ -38,10 +29,7 @@ namespace Energy_Saver.Pages
         {
             Taxes = _tableService.GetTableContents();
 
-            gasComparison = _suggestionsService.GetLatestGasComparison();
-            waterComparison = _suggestionsService.GetLatestWaterComparison();
-            electricityComparison = _suggestionsService.GetLatestElectricityComparison();
-            heatingComparison = _suggestionsService.GetLatestHeatingComparison();
+            taxComparison = _suggestionsService.GetLatestTaxComparison();
         }
 
         public void OnPost()

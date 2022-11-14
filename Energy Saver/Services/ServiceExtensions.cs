@@ -14,7 +14,7 @@
 
         public static IServiceCollection AddSuggestionServices(this IServiceCollection services)
         {
-            return services.AddTransient<ISuggestionsService, SuggestionsService>();
+            return services.AddScoped<ISuggestionsService, SuggestionsService>();
         }
     }
 }

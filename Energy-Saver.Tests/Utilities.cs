@@ -11,18 +11,18 @@ namespace Energy_Saver.Tests
 {
     public class Utilities
     {
-        //public static DbContextOptions<EnergySaverTaxesContext> TestDbContextOptions()
-        //{
-        //    var serviceProvider = new ServiceCollection()
-        //        .AddEntityFrameworkInMemoryDatabase()
-        //        .BuildServiceProvider();
+        public static DbContextOptions<EnergySaverTaxesContext> TestDbContextOptions()
+        {
+            var serviceProvider = new ServiceCollection()
+                .AddEntityFrameworkInMemoryDatabase()
+                .BuildServiceProvider();
 
-        //    var builder = new DbContextOptionsBuilder<EnergySaverTaxesContext>()
-        //        .UseInMemoryDatabase("InMemoryDb")
-        //        .UseInternalServiceProvider(serviceProvider);
+            var builder = new DbContextOptionsBuilder<EnergySaverTaxesContext>()
+                .UseInMemoryDatabase("InMemoryDb")
+                .UseInternalServiceProvider(serviceProvider);
 
-        //    return builder.Options;
+            return builder.Options;
 
-        //}
+        }
     }
 }

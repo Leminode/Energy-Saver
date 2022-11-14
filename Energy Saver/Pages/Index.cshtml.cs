@@ -15,8 +15,8 @@ namespace Energy_Saver.Pages
         private readonly EnergySaverTaxesContext _context;
 
         //[BindProperty]
-        //public List<List<Taxes>>? Taxes { get; set; }
-        public IList<Taxes> Taxes { get; set; } = default!;
+        public List<List<Taxes>>? Taxes { get; set; }
+        //public IList<Taxes> Taxes { get; set; } = default!;
 
         [BindProperty]
         public decimal gasComparison { get; set; }
@@ -40,9 +40,12 @@ namespace Energy_Saver.Pages
 
         public async Task OnGetAsync()
         {
+            var temp = await _context.Taxes.ToListAsync();
+
             if (_context.Taxes != null)
             {
-                Taxes = await _context.Taxes.ToListAsync();
+                Taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+                Taxes = Taxes.Select(tax => Serialization.OrderList<Taxes>(data: tax, sortExpression: "Month", sortDirection: "Descending")).OrderByDescending(t => t[0]).ToList();    
             }
         }
 
@@ -60,12 +63,5 @@ namespace Energy_Saver.Pages
         {
 
         }
-
-        /*public IActionResult OnPostDelete(int index, int yearIndex)
-        {
-            _tableService.DeleteEntry(yearIndex: yearIndex, monthIndex: index);
-
-            return RedirectToPage();
-        }*/
     }
 }

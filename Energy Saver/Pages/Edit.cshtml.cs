@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
+using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
@@ -30,7 +31,10 @@ namespace Energy_Saver.Pages
                 return NotFound();
             }
 
-            var taxes =  await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id);
+            var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+            int userID = int.Parse(tempString);
+
+            var taxes =  await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
 
             if (taxes == null)
             {

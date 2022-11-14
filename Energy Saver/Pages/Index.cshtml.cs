@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using static Energy_Saver.Model.Serialization;
+using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
@@ -17,7 +18,7 @@ namespace Energy_Saver.Pages
         public List<List<Taxes>>? Taxes { get; set; }
 
         [BindProperty]
-        public List<decimal> taxComparison { get; set; }
+        public List<decimal> TaxComparison { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, ISuggestionsService suggestionsService, EnergySaverTaxesContext context)
         {
@@ -28,12 +29,18 @@ namespace Energy_Saver.Pages
 
         public async Task OnGetAsync()
         {
-            var temp = await _context.Taxes.ToListAsync();
+            if(User.Identity.IsAuthenticated)
+            {
+                var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+                int userID = int.Parse(tempString);
 
-            Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-            Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
+                var temp = await _context.Taxes.Where(taxes => taxes.UserID == userID).ToListAsync();
 
-            taxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+                Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+                Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
+
+                TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+            }
         }
 
         public void OnPost()

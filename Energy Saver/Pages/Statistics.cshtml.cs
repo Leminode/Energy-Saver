@@ -4,7 +4,7 @@ using Energy_Saver.Model;
 using Energy_Saver.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static Energy_Saver.Model.Serialization;
 using static Energy_Saver.Services.ChartService;
 
@@ -22,12 +22,12 @@ namespace Energy_Saver.Pages
         {
             _chartService = chartService;
             _context = context;
-
-            Taxes = GetTaxesFromDatabase();
         }
 
         public void OnGet()
         {
+            Taxes = GetTaxesFromDatabase();
+
             var monthsLabels = GenerateMonthsLabels();
             var filterLabels = GenerateTaxLabels();
 
@@ -173,14 +173,23 @@ namespace Energy_Saver.Pages
             return months;
         }
 
-        private List<List<Taxes>> GetTaxesFromDatabase()
+        private List<List<Taxes>>? GetTaxesFromDatabase()
         {
-            var temp = _context.Taxes.ToList();
+            if (User.Identity.IsAuthenticated)
+            {
+                var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+                int userID = int.Parse(tempString);
 
-            var taxes = OrderList<Taxes, Months>(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-            taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
+                var temp = _context.Taxes.Where(taxes => taxes.UserID == userID).ToList();
 
-            return taxes;
+                var taxes = OrderList<Taxes, Months>(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+                taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
+
+                return taxes;
+            }
+
+            return null;
+                
         }
     }
 

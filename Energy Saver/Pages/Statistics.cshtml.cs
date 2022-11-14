@@ -1,4 +1,3 @@
-using ChartJSCore.Helpers;
 using ChartJSCore.Models;
 using Energy_Saver.Model;
 using Energy_Saver.Services;
@@ -29,22 +28,25 @@ namespace Energy_Saver.Pages
             MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Months.January, 2022), filterLabels, false);
         }
 
-        public IActionResult OnPostYear(int selectedYear)
+        public IActionResult OnPostYear(int selectedYear, string selectedType)
         {
             var monthsLabels = GenerateMonthsLabels();
             var filterLabels = GenerateTaxLabels();
+            var monthType = Enum.Parse<Enums.ChartType>(selectedType);
 
             YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(selectedYear), monthsLabels);
-            MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Months.January, selectedYear), filterLabels, false);
+            MonthChart = _chartService.CreateChart(monthType, CreateDataForMonthChart(Months.January, selectedYear), filterLabels, false);
 
             return new JsonResult(new { yearChart = YearChart.SerializeBody(), monthChart = MonthChart.SerializeBody()});
         }
 
-        public IActionResult OnPostMonth(string selectedMonth, int selectedYear)
+        public IActionResult OnPostMonth(string selectedMonth, int selectedYear, string selectedType)
         {
             var filterLabels = GenerateTaxLabels();
+            var month = Enum.Parse<Months>(selectedMonth);
+            var type = Enum.Parse<Enums.ChartType>(selectedType);
 
-            MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Enum.Parse<Months>(selectedMonth), selectedYear), filterLabels, false);
+            MonthChart = _chartService.CreateChart(type, CreateDataForMonthChart(month, selectedYear), filterLabels, false);
 
             return new JsonResult(MonthChart.SerializeBody());
         }

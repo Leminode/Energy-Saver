@@ -1,6 +1,7 @@
 ﻿@page
 @model Energy_Saver.Pages.StatisticsModel
 @using Energy_Saver.Model
+@using ChartJSCore.Models;
 @{
     ViewData["Title"] = "Statistics";
     Layout = "~/Pages/Shared/_Layout.cshtml";
@@ -8,48 +9,63 @@
 
 <h1 class="text-color">Statistics</h1>
 <div class="container-fluid text-color">
-    <div class="row">
-        <fieldset class="border p-2">
-        <legend class="float-none w-auto">Yearly</legend>
-        <div class="col-lg-2">
-            <form asp-page-handler="year" method="post">
-                <div class="form-group">
-                    @Html.AntiForgeryToken()
-                    <select class="form-control" name="Year" id="yearDropdown" onchange="editYear()">
+    <fieldset class="border p-2">
+    <legend class="float-none w-auto">Yearly</legend>
+    <form asp-page-handler="year" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row">
+            <div class="col-lg-3 col-sm-6">
+                <div class="form-floating">
+                    <select class="form-select" name="Year" id="yearDropdown" onchange="editYear()">
                         @for (int i = DateTime.Now.Year; i > 1919; i--)
                         {
                             <option value="@i">@i</option>
                         }
                     </select>
+                    <label for="yearDropdown">Year</label>
                 </div>
-            </form>
+            </div>
         </div>
-        <div class="col-lg-10">
-            <canvas id="chart"></canvas>
+        <div class="row">
+            <div class="col">
+                <canvas id="chart"></canvas>
+            </div>
         </div>
-        </fieldset>
-    </div>
-    <div class="row">
-        <fieldset class="border p-2">
-        <legend class="float-none w-auto">Monthly</legend>
-        <div class="col-lg-2">
-            <form asp-page-handler="month" method="post">
-                <div class="form-group">
-                    @Html.AntiForgeryToken()
-                    <select class="form-control" name="Month" id="monthDropdown" onchange="editMonth()">
+    </form>
+    </fieldset>
+    <fieldset class="border p-2">
+    <legend class="float-none w-auto">Monthly</legend>
+    <form asp-page-handler="month" method="post">
+        @Html.AntiForgeryToken()
+        <div class="row g-2">
+                <div class="col-lg-3 col-sm-6">
+                <div class="form-floating">
+                    <select class="form-select" name="Month" id="monthDropdown" onchange="editMonth()">
                         @foreach (Months month in Enum.GetValues(typeof(Months)))
                         {
                             <option value="@month">@month</option>
                         }
                     </select>
+                    <label for="monthDropDown">Month</label>
                 </div>
-            </form>
+            </div>
+                <div class="col-lg-3 col-sm-6">
+                <div class="form-floating">
+                    <select class="form-select" name="chartType" id="chartTypeDropdown" onchange="editMonth()">
+                        <option value="@Enums.ChartType.Bar">@Enums.ChartType.Bar</option>
+                        <option value="@Enums.ChartType.Line">@Enums.ChartType.Line</option>
+                    </select>
+                    <label for="chartTypeDropdown">Chart type</label>
+                </div>
+            </div>
         </div>
-        <div class="col-lg-10">
-            <canvas id="monthChart"></canvas>
+        <div class="row">
+            <div class="col">
+                <canvas id="monthChart"></canvas>
+            </div>
         </div>
-        </fieldset>
-    </div>
+    </form>
+    </fieldset>
 </div>
 
 @section Scripts {
@@ -61,22 +77,26 @@
     <script>
         function editYear() {
             var selectedYear = $("#yearDropdown").val();
+            var selectedType = $("#chartTypeDropdown").val();
             $.ajax({
                 type: "POST",
                 url: "?handler=Year",
                 data: { 
-                    selectedYear : selectedYear
+                    selectedYear : selectedYear,
+                    selectedType: selectedType
                 },
                 headers: {
                     RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
                 },
                 success: function (result) {
-                    var yearChart = Chart.getChart('chart');
-                    var monthChart = Chart.getChart('monthChart');
+                    var yearChart = Chart.getChart("chart");
                     yearChart.data = JSON.parse(result.yearChart).data;
                     yearChart.update();
-                    monthChart.data = JSON.parse(result.monthChart).data;
-                    monthChart.update();
+
+                    var monthContext = document.getElementById("monthChart");
+                    var monthChart = Chart.getChart("monthChart");
+                    monthChart.destroy();
+                    monthChart = new Chart(monthContext, JSON.parse(result.monthChart));
 
                     $("#monthDropdown").val("January");
                 },
@@ -88,21 +108,23 @@
         function editMonth() {
             var selectedMonth = $("#monthDropdown").val();
             var selectedYear = $("#yearDropdown").val();
+            var selectedType = $("#chartTypeDropdown").val();
             $.ajax({
                 type: "POST",
                 url: "?handler=Month",
                 data: {
                     selectedMonth: selectedMonth,
-                    selectedYear: selectedYear
+                    selectedYear: selectedYear,
+                    selectedType: selectedType
                 },
                 headers: {
                     RequestVerificationToken: $('input:hidden[name="__RequestVerificationToken"]').val()
                 },
                 success: function (result) {
-                    var chart = Chart.getChart('monthChart');
-                    chart.data = JSON.parse(result).data;
-                    chart.options.plugins.legend.display = false;
-                    chart.update();
+                    var context = document.getElementById("monthChart");
+                    var chart = Chart.getChart("monthChart");
+                    chart.destroy();
+                    chart = new Chart(context, JSON.parse(result));
                 },
                 error: function () {
                     alert("there was an error");

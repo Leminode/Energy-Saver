@@ -5,6 +5,8 @@ VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Energy Saver", "Energy Saver\Energy Saver.csproj", "{81065395-4002-4FE2-90C1-6CAA4746217A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Energy-Saver.Tests", "Energy-Saver.Tests\Energy-Saver.Tests.csproj", "{587CC2C5-5EF1-4350-91CF-EB8C8E2D752F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{81065395-4002-4FE2-90C1-6CAA4746217A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81065395-4002-4FE2-90C1-6CAA4746217A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81065395-4002-4FE2-90C1-6CAA4746217A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{587CC2C5-5EF1-4350-91CF-EB8C8E2D752F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{587CC2C5-5EF1-4350-91CF-EB8C8E2D752F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{587CC2C5-5EF1-4350-91CF-EB8C8E2D752F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{587CC2C5-5EF1-4350-91CF-EB8C8E2D752F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

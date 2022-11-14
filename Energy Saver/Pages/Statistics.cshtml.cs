@@ -1,8 +1,11 @@
 using ChartJSCore.Models;
+using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using Energy_Saver.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using static Energy_Saver.Model.Serialization;
 using static Energy_Saver.Services.ChartService;
 
 namespace Energy_Saver.Pages
@@ -12,11 +15,15 @@ namespace Energy_Saver.Pages
         private readonly IChartService _chartService;
         public Chart? YearChart { get; set; }
         public Chart? MonthChart { get; set; }
-        public List<List<Taxes>>? Taxes { get; set; } = Serialization.ReadFromFile();
+        public List<List<Taxes>>? Taxes { get; set; }
+        private readonly EnergySaverTaxesContext _context;
 
-        public StatisticsModel(IChartService chartService)
+        public StatisticsModel(IChartService chartService, EnergySaverTaxesContext context)
         {
             _chartService = chartService;
+            _context = context;
+
+            Taxes = GetTaxesFromDatabase();
         }
 
         public void OnGet()
@@ -164,6 +171,16 @@ namespace Energy_Saver.Pages
             }
 
             return months;
+        }
+
+        private List<List<Taxes>> GetTaxesFromDatabase()
+        {
+            var temp = _context.Taxes.ToList();
+
+            var taxes = OrderList<Taxes, Months>(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+            taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
+
+            return taxes;
         }
     }
 

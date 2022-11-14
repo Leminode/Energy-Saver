@@ -1,4 +1,5 @@
 ﻿using ChartJSCore.Models;
+using Energy_Saver.Model;
 using static Energy_Saver.Services.ChartService;
 
 namespace Energy_Saver.Services

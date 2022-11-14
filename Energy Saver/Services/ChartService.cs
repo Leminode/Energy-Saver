@@ -6,10 +6,10 @@ namespace Energy_Saver.Services
 {
     public class ChartService : IChartService
     {
-        public Chart CreateChart<T>(Enums.ChartType chartType, List<T> values, List<FilterTypes> filters, int year)
+        public Chart CreateChart<T>(List<List<Taxes>> tableData, Enums.ChartType chartType, List<T> values, List<FilterTypes> filters, int year)
         {
             Chart chart = new Chart();
-            List<List<Taxes>> tableData = Serialization.ReadFromFile();
+            //List<List<Taxes>> tableData = Serialization.ReadFromFile();
             chart.Type = chartType;
 
             List<string> labels = new List<string>();

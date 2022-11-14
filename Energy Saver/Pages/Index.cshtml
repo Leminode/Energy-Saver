@@ -20,12 +20,9 @@
                     <th style="text-align:right">Electricity amount</th>
                     <th style="text-align:right">Water amount</th>
                     <th style="text-align:right">Heating amount</th>
-                    <th> </th>
+                    <th style="text-align:right"> </th>
                 </tr>
             </thead>
-            @{
-                int yearIndex = 0;
-            }
             @foreach (var year in Model.Taxes)
             {
                 <tr>
@@ -38,37 +35,24 @@
                     <tr>
                         <td style="text-align:left">@taxRecord.Month.ToString()</td>
                         <td style="text-align:right">
-                            @(
-                                taxRecord.GasAmount % 1 == 0 ? (int)taxRecord.GasAmount : taxRecord.GasAmount)
+                            @(taxRecord.GasAmount % 1 == 0 ? (int)taxRecord.GasAmount : taxRecord.GasAmount)
                         </td>
                         <td style="text-align:right">
-                            @(
-                                taxRecord.ElectricityAmount % 1 == 0 ? (int)taxRecord.ElectricityAmount : taxRecord.ElectricityAmount)
+                            @(taxRecord.ElectricityAmount % 1 == 0 ? (int)taxRecord.ElectricityAmount : taxRecord.ElectricityAmount)
                         </td>
                         <td style="text-align:right">
-                            @(
-                                taxRecord.WaterAmount % 1 == 0 ? (int)taxRecord.WaterAmount : taxRecord.WaterAmount)
+                            @(taxRecord.WaterAmount % 1 == 0 ? (int)taxRecord.WaterAmount : taxRecord.WaterAmount)
                         </td>
                         <td style="text-align:right">
-                            @(
-                                taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)
+                            @(taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)
                         </td>
                         <td style="text-align:right">
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <form asp-page-handler="delete" method="post">
-                                    <button class="btn btn-default btn-sm text-color">Delete</button>
-                                    <input type="hidden" name="index" value="@index" />
-                                    <input type="hidden" name="yearIndex" value="@yearIndex" />
-                                </form>
-                            }
+                            <a class="text-color" asp-page="./Edit" asp-route-id="@taxRecord.ID">Edit</a> |
+                            <a class="text-color" asp-page="./Details" asp-route-id="@taxRecord.ID">Details</a> |
+                            <a class="text-color" asp-page="./Delete" asp-route-id="@taxRecord.ID">Delete</a>
                         </td>
-                        @{
-                            index++;
-                        }
                     </tr>
                 }
-                yearIndex++;
             }
         </table>
         <body>

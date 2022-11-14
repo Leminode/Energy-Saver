@@ -60,15 +60,15 @@
                 @{
                     List<string> taxNameList = new List<string> { "Gas", "Electricity", "Water", "Heating" };
                 }
-                @for(int i = 0; i < Model.taxComparison.Count(); i++)
+                @for(int i = 0; i < Model.TaxComparison.Count(); i++)
                 {
-                    if(Model.taxComparison[i] > 0)
+                    if(Model.TaxComparison[i] > 0)
                     {
-                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-negative")">+@Model.taxComparison[i]%</span></p>
+                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-negative")">+@Model.TaxComparison[i]%</span></p>
                     }
                     else
                     {
-                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-positive")">@Model.taxComparison[i]%</span></p>
+                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-positive")">@Model.TaxComparison[i]%</span></p>
                     }
                     
                 }

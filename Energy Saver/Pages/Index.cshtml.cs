@@ -18,7 +18,7 @@ namespace Energy_Saver.Pages
         public List<List<Taxes>>? Taxes { get; set; }
 
         [BindProperty]
-        public List<decimal> taxComparison { get; set; }
+        public List<decimal> TaxComparison { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, ISuggestionsService suggestionsService, EnergySaverTaxesContext context)
         {
@@ -39,7 +39,7 @@ namespace Energy_Saver.Pages
                 Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
                 Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
 
-                taxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+                TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
             }
         }
 

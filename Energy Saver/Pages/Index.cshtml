@@ -20,7 +20,7 @@
                     <th style="text-align:right">Electricity amount</th>
                     <th style="text-align:right">Water amount</th>
                     <th style="text-align:right">Heating amount</th>
-                    <th style="text-align:right">Options</th>
+                    <th style="text-align:right"> </th>
                 </tr>
             </thead>
             @foreach (var year in Model.Taxes)
@@ -46,10 +46,10 @@
                         <td style="text-align:right">
                             @(taxRecord.HeatingAmount % 1 == 0 ? (int)taxRecord.HeatingAmount : taxRecord.HeatingAmount)
                         </td>
-                        <td class="text-color">
-                            <a asp-page="./Edit" asp-route-id="@taxRecord.ID" class="text-color" style="text-align:right">Edit</a> |
-                            <a asp-page="./Details" asp-route-id="@taxRecord.ID" class="text-color"style="text-align:right">Details</a> |
-                            <a asp-page="./Delete" asp-route-id="@taxRecord.ID" class="text-color" style="text-align:right">Delete</a>
+                        <td style="text-align:right">
+                            <a class="text-color" asp-page="./Edit" asp-route-id="@taxRecord.ID">Edit</a> |
+                            <a class="text-color" asp-page="./Details" asp-route-id="@taxRecord.ID">Details</a> |
+                            <a class="text-color" asp-page="./Delete" asp-route-id="@taxRecord.ID">Delete</a>
                         </td>
                     </tr>
                 }

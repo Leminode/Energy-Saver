@@ -4,12 +4,12 @@ namespace Energy_Saver.Services
 {
     public interface ISuggestionsService
     {
-        public decimal GetLatestGasComparison();
+        public decimal GetLatestGasComparison(List<List<Taxes>> list);
 
-        public decimal GetLatestWaterComparison();
+        public decimal GetLatestWaterComparison(List<List<Taxes>> list);
 
-        public decimal GetLatestElectricityComparison();
+        public decimal GetLatestElectricityComparison(List<List<Taxes>> list);
 
-        public decimal GetLatestHeatingComparison();
+        public decimal GetLatestHeatingComparison(List<List<Taxes>> list);
     }
 }

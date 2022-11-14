@@ -11,7 +11,7 @@ namespace Energy_Saver.Model
         public int ID { get; set; }
 
         [Column("user_id")]
-        public int user_ID { get; set; }
+        public int UserID{ get; set; }
 
         [Column("year")]
         public int Year { get; set; }

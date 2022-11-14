@@ -31,7 +31,7 @@ namespace Energy_Saver.Pages
             }
 
             //SUPER TEMP SOLUTION
-            Taxes.user_ID = 4;
+            Taxes.UserID = 4;
 
             _context.Taxes.Add(Taxes);
             await _context.SaveChangesAsync();

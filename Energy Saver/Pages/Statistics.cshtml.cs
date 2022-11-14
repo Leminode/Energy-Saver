@@ -6,6 +6,7 @@ using Energy_Saver.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using static Energy_Saver.Model.Serialization;
 
 namespace Energy_Saver.Pages
@@ -34,7 +35,10 @@ namespace Energy_Saver.Pages
 
         public void OnGet()
         {
-            List<Taxes> temp = _context.Taxes.ToList();
+            var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+            int userID = int.Parse(tempString);
+
+            List<Taxes> temp = _context.Taxes.Where(taxes => taxes.UserID == userID).ToList();
 
             Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
             Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);

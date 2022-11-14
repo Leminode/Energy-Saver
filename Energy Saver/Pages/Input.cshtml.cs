@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Energy_Saver.Model;
 using Energy_Saver.Services;
 using Energy_Saver.DataSpace;
+using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
@@ -11,7 +12,7 @@ namespace Energy_Saver.Pages
         private readonly EnergySaverTaxesContext _context;
 
         [BindProperty]
-        public Taxes Taxes { get; set; }
+        public Taxes? Taxes { get; set; }
 
         public InputModel(EnergySaverTaxesContext context)
         {
@@ -30,8 +31,9 @@ namespace Energy_Saver.Pages
                 return Page();
             }
 
-            //SUPER TEMP SOLUTION
-            Taxes.UserID = 4;
+            //will need a better implementation
+            var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+            Taxes.UserID = int.Parse(tempString);
 
             _context.Taxes.Add(Taxes);
             await _context.SaveChangesAsync();

@@ -4,37 +4,22 @@ namespace Energy_Saver.Services
 {
     public class SuggestionsService : ISuggestionsService
     {
-        public decimal GetLatestGasComparison(List<List<Taxes>> list)
+
+        public List<decimal> GetLatestTaxComparison(List<List<Taxes>> taxes)
         {
-            decimal newestGas = list.ElementAt(0).ElementAt(0).GasAmount;
-            decimal secondNewestGas = list.ElementAt(0).ElementAt(1).GasAmount;
+            List<Taxes> list = taxes.SelectMany(x => x).ToList();
 
-            return Math.Round(newestGas * 100 / secondNewestGas - 100, 1);
+            List<decimal> comparison = new List<decimal>();
+
+            if(list.Count > 1)
+            {
+                comparison.Add(Math.Round(list.First().GasAmount * 100 / list.ElementAt(1).GasAmount - 100));
+                comparison.Add(Math.Round(list.First().ElectricityAmount * 100 / list.ElementAt(1).ElectricityAmount - 100));
+                comparison.Add(Math.Round(list.First().WaterAmount * 100 / list.ElementAt(1).WaterAmount - 100));
+                comparison.Add(Math.Round(list.First().HeatingAmount * 100 / list.ElementAt(1).HeatingAmount - 100));
+            }
+
+            return comparison;
         }
-
-        public decimal GetLatestElectricityComparison(List<List<Taxes>> list)
-        {
-            decimal newestElectricity = list.ElementAt(0).ElementAt(0).ElectricityAmount;
-            decimal secondNewestElectricity = list.ElementAt(0).ElementAt(1).ElectricityAmount;
-
-            return Math.Round(newestElectricity * 100 / secondNewestElectricity - 100, 1);
-        }
-
-        public decimal GetLatestWaterComparison(List<List<Taxes>> list)
-        {
-            decimal newestWater = list.ElementAt(0).ElementAt(0).WaterAmount;
-            decimal secondNewestWater = list.ElementAt(0).ElementAt(1).WaterAmount;
-
-            return Math.Round(newestWater * 100 / secondNewestWater - 100, 1);
-        }
-
-        public decimal GetLatestHeatingComparison(List<List<Taxes>> list)
-        {
-            decimal newestHeating = list.ElementAt(0).ElementAt(0).HeatingAmount;
-            decimal secondNewestHeating = list.ElementAt(0).ElementAt(1).HeatingAmount;
-
-            return Math.Round(newestHeating * 100 / secondNewestHeating - 100, 1);
-        }
-
     }
 }

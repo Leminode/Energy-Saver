@@ -4,6 +4,7 @@ using Energy_Saver.DataSpace;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using static Energy_Saver.Model.Serialization;
 
 namespace Energy_Saver.Pages
 {
@@ -16,16 +17,7 @@ namespace Energy_Saver.Pages
         public List<List<Taxes>>? Taxes { get; set; }
 
         [BindProperty]
-        public decimal gasComparison { get; set; }
-
-        [BindProperty]
-        public decimal waterComparison { get; set; }
-
-        [BindProperty]
-        public decimal electricityComparison { get; set; }
-
-        [BindProperty]
-        public decimal heatingComparison { get; set; }
+        public List<decimal> taxComparison { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, ISuggestionsService suggestionsService, EnergySaverTaxesContext context)
         {
@@ -38,16 +30,10 @@ namespace Energy_Saver.Pages
         {
             var temp = await _context.Taxes.ToListAsync();
 
-            if (_context.Taxes != null)
-            {
-                Taxes = temp.GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-                Taxes = Taxes.Select(tax => Serialization.OrderList<Taxes>(data: tax, sortExpression: "Month", sortDirection: "Descending")).OrderByDescending(t => t[0]).ToList();
+            Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+            Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
 
-                gasComparison = _suggestionsService.GetLatestGasComparison(Taxes);
-                waterComparison = _suggestionsService.GetLatestWaterComparison(Taxes);
-                electricityComparison = _suggestionsService.GetLatestElectricityComparison(Taxes);
-                heatingComparison = _suggestionsService.GetLatestHeatingComparison(Taxes);
-            }
+            taxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
         }
 
         public void OnPost()

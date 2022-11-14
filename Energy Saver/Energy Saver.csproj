@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Energy_Saver</RootNamespace>
+    <UserSecretsId>15ff2b62-b6f8-4854-8328-e31a17cee144</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

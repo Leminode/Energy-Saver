@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<EnergySaverTaxesContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("EnergySaverTaxesContext") ?? throw new InvalidOperationException("Connection string 'EnergySaverTaxesContext' not found.")));
+    options.UseNpgsql(builder.Configuration["DatabaseConnectionString"]));
 
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {

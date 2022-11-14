@@ -6,47 +6,62 @@ namespace Energy_Saver.Services
 {
     public class ChartService : IChartService
     {
-        public Chart CreateChart()
+        public Chart CreateChart<T>(List<List<Taxes>> tableData, Enums.ChartType chartType, List<T> values, List<FilterTypes> filters, int year)
         {
             Chart chart = new Chart();
-            List<List<Taxes>> tableData = Serialization.ReadFromFile();
-            chart.Type = Enums.ChartType.Line;
+            //List<List<Taxes>> tableData = Serialization.ReadFromFile();
+            chart.Type = chartType;
+
+            List<string> labels = new List<string>();
 
             Data data = new Data();
-            data.Labels = new List<string>() { "Gas", "Electricity", "Water", "Heating" };
-
-            LineDataset dataset = new LineDataset()
-            {
-                Label = "Total paid amount",
-                Data = new List<double?>
-                {
-                    (double)tableData.SelectMany(x => x.Select(item => item.GasAmount)).Sum(),
-                    (double)tableData.SelectMany(x => x.Select(item => item.ElectricityAmount)).Sum(),
-                    (double)tableData.SelectMany(x => x.Select(item => item.WaterAmount)).Sum(),
-                    (double)tableData.SelectMany(x => x.Select(item => item.HeatingAmount)).Sum()
-                },
-                Fill = "false",
-                Tension = 0.1,
-                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(75, 192, 192, 0.4) },
-                BorderColor = new List<ChartColor> { ChartColor.FromRgb(75, 192, 192) },
-                BorderCapStyle = "butt",
-                BorderDash = new List<int> { },
-                BorderDashOffset = 0.0,
-                BorderJoinStyle = "miter",
-                PointBorderColor = new List<ChartColor> { ChartColor.FromRgb(75, 192, 192) },
-                PointBackgroundColor = new List<ChartColor> { ChartColor.FromHexString("#ffffff") },
-                PointBorderWidth = new List<int> { 1 },
-                PointHoverRadius = new List<int> { 5 },
-                PointHoverBackgroundColor = new List<ChartColor> { ChartColor.FromRgb(75, 192, 192) },
-                PointHoverBorderColor = new List<ChartColor> { ChartColor.FromRgb(220, 220, 220) },
-                PointHoverBorderWidth = new List<int> { 2 },
-                PointRadius = new List<int> { 1 },
-                PointHitRadius = new List<int> { 10 },
-                SpanGaps = false
-            };
-
             data.Datasets = new List<Dataset>();
-            data.Datasets.Add(dataset);
+
+            foreach(Months month in Enum.GetValues(typeof(Months)))
+            {
+                labels.Add(month.ToString());
+            }
+
+            data.Labels = labels;
+
+            foreach (FilterTypes filter in filters)
+            {
+                Func<Taxes, double?> function;
+                switch (filter)
+                {
+                    case FilterTypes.Gas:
+                        function = tax => (double)tax.GasAmount;
+                        break;
+                    case FilterTypes.Electricity:
+                        function = tax => (double)tax.ElectricityAmount;
+                        break;
+                    case FilterTypes.Water:
+                        function = tax => (double)tax.WaterAmount;
+                        break;
+                    case FilterTypes.Heating:
+                        function = tax => (double)tax.HeatingAmount;
+                        break;
+                    default:
+                        function = _ => 1;
+                        break;
+                }
+
+                List<double?> monthData = new List<double?>();
+
+                foreach (Months month in Enum.GetValues(typeof(Months)))
+                {
+                    double? foundData;
+                    try
+                    {
+                        foundData = tableData.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
+                    } catch (InvalidOperationException) {
+                        foundData = 0;
+                    }
+                    monthData.Add(foundData);
+                }
+
+                data.Datasets.Add(CreateNewLineDataset(monthData, filter.ToString()));
+            }
 
             chart.Data = data;
             
@@ -68,6 +83,54 @@ namespace Energy_Saver.Services
             chart.Options.Scales = dict;
 
             return chart;
+        }
+
+        private LineDataset CreateNewLineDataset(List<double?> data, string label)
+        {
+            byte[] color = GetRandomChartColor();
+            ChartColor chartColor = ChartColor.FromRgb(color[0], color[1], color[2]);
+
+            LineDataset lineDataset = new LineDataset()
+            {
+                Label = label,
+                Data = data,
+                Fill = "false",
+                Tension = 0.1,
+                BackgroundColor = new List<ChartColor> { ChartColor.FromRgba(color[0], color[1], color[2], 0.4) },
+                BorderColor = new List<ChartColor> { chartColor },
+                BorderCapStyle = "butt",
+                BorderDash = new List<int>(),
+                BorderDashOffset = 0.0,
+                BorderJoinStyle = "miter",
+                PointBorderColor = new List<ChartColor> { chartColor },
+                PointBackgroundColor = new List<ChartColor> { chartColor },
+                PointBorderWidth = new List<int> { 1 },
+                PointHoverRadius = new List<int> { 5 },
+                PointHoverBackgroundColor = new List<ChartColor> { chartColor },
+                PointHoverBorderColor = new List<ChartColor> { chartColor },
+                PointHoverBorderWidth = new List<int> { 2 },
+                PointRadius = new List<int> { 1 },
+                PointHitRadius = new List<int> { 10 },
+                SpanGaps = false
+            };
+
+            return lineDataset;
+        }
+        
+        private byte[] GetRandomChartColor()
+        {
+            byte[] random = new byte[3];
+            new Random().NextBytes(random);
+
+            return random;
+        }
+
+        public enum FilterTypes
+        {
+            Gas,
+            Electricity,
+            Water,
+            Heating
         }
     }
 }

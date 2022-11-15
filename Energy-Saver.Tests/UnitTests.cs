@@ -23,22 +23,51 @@ namespace Energy_Saver.Tests
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
-                var taxes = new Taxes
+                List<Taxes> expectedTaxList = new List<Taxes>();
+
+                var taxes = new Taxes[]
                 {
-                    ID = 1,
-                    UserID = 4,
-                    Year = 2020,
-                    Month = Months.January,
-                    GasAmount = 1,
-                    ElectricityAmount = 2,
-                    WaterAmount = 3,
-                    HeatingAmount = 4
+                    new Taxes
+                    {
+                        ID = 1,
+                        UserID = 4,
+                        Year = 2020,
+                        Month = Months.January,
+                        GasAmount = 1,
+                        ElectricityAmount = 2,
+                        WaterAmount = 3,
+                        HeatingAmount = 4
+                    },
+                    new Taxes
+                    {
+                        ID = 2,
+                        UserID = 4,
+                        Year = 2021,
+                        Month = Months.February,
+                        GasAmount = 2,
+                        ElectricityAmount = 4,
+                        WaterAmount = 3,
+                        HeatingAmount = 2
+                    },
+                    new Taxes
+                    {
+                        ID = 3,
+                        UserID = 4,
+                        Year = 2022,
+                        Month = Months.June,
+                        GasAmount = 90,
+                        ElectricityAmount = 60.4M,
+                        WaterAmount = 51.4M,
+                        HeatingAmount = 36
+                    }
                 };
 
-                List<Taxes> expectedTaxList = new List<Taxes>();
-                expectedTaxList.Add(taxes);
+                for(int i = 0; i < taxes.Length; i++)
+                {
+                    expectedTaxList.Add(taxes[i]);
+                    db.Taxes.Add(taxes[i]);
+                }
 
-                db.Taxes.Add(taxes);
                 await db.SaveChangesAsync();
 
                 var actualTaxList = await db.Taxes.ToListAsync();
@@ -82,7 +111,7 @@ namespace Energy_Saver.Tests
                 List<Taxes> actualTaxList = new List<Taxes>();
                 List<Taxes> expectedTaxList = new List<Taxes>();
 
-                var tax1 = new Taxes
+                Taxes tax1 = new Taxes
                 {
                     ID = 1,
                     UserID = 4,
@@ -93,8 +122,7 @@ namespace Energy_Saver.Tests
                     WaterAmount = 3,
                     HeatingAmount = 4
                 };
-
-                var tax2 = new Taxes
+                Taxes tax2 = new Taxes
                 {
                     ID = 2,
                     UserID = 4,
@@ -106,8 +134,8 @@ namespace Energy_Saver.Tests
                     HeatingAmount = 2
                 };
 
-                actualTaxList.Add(tax1);
                 actualTaxList.Add(tax2);
+                actualTaxList.Add(tax1);
 
                 expectedTaxList.Add(tax1);
                 expectedTaxList.Add(tax2);
@@ -126,35 +154,38 @@ namespace Energy_Saver.Tests
                 List<Taxes> actualTaxList = new List<Taxes>();
                 List<Taxes> expectedTaxList = new List<Taxes>();
 
-                var tax1 = new Taxes
+                var taxes = new Taxes[]
                 {
-                    ID = 1,
-                    UserID = 4,
-                    Year = 2020,
-                    Month = Months.January,
-                    GasAmount = 1,
-                    ElectricityAmount = 2,
-                    WaterAmount = 3,
-                    HeatingAmount = 4
+                    new Taxes
+                    {
+                        ID = 1,
+                        UserID = 4,
+                        Year = 2020,
+                        Month = Months.January,
+                        GasAmount = 1,
+                        ElectricityAmount = 2,
+                        WaterAmount = 3,
+                        HeatingAmount = 4
+                    },
+
+                    new Taxes
+                    {
+                        ID = 2,
+                        UserID = 4,
+                        Year = 2021,
+                        Month = Months.February,
+                        GasAmount = 2,
+                        ElectricityAmount = 4,
+                        WaterAmount = 3,
+                        HeatingAmount = 2
+                    }
                 };
 
-                var tax2 = new Taxes
-                {
-                    ID = 2,
-                    UserID = 4,
-                    Year = 2021,
-                    Month = Months.February,
-                    GasAmount = 2,
-                    ElectricityAmount = 4,
-                    WaterAmount = 3,
-                    HeatingAmount = 2
-                };
+                actualTaxList.Add(taxes[0]);
+                actualTaxList.Add(taxes[1]);
 
-                actualTaxList.Add(tax1);
-                actualTaxList.Add(tax2);
-
-                expectedTaxList.Add(tax2);
-                expectedTaxList.Add(tax1);
+                expectedTaxList.Add(taxes[1]);
+                expectedTaxList.Add(taxes[0]);
 
                 actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Year);
 

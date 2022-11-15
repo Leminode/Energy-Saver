@@ -1,41 +1,42 @@
 ﻿@page
 @using Energy_Saver.Model
-@model Energy_Saver.Pages.InputModel
+@model Energy_Saver.Pages.EditModel
 
 @{
-    ViewData["Title"] = "Input";
-    Layout = "~/Pages/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Edit";
 }
 
-<h1 class="text-color">Input</h1>
+<h1 class="text-color">Edit</h1>
 <hr class="text-color" />
 
 <div class="row">
     <div class="col-md-2">
         <form method="post">
+            <input type="hidden" asp-for="Taxes.ID" />
+            <input type="hidden" asp-for="Taxes.UserID" />
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Taxes.Year" class="control-label"></label>
                 <select asp-for="Taxes.Year" class="form-control">
-                @for (int i = DateTime.Now.Year; i > 1919; i--)
-                {
-                    <option value="@i">@i</option>
-                }
+                    @for (int i = DateTime.Now.Year; i > 1919; i--)
+                    {
+                        <option value="@i">@i</option>
+                    }
                 </select>
                 <span asp-validation-for="Taxes.Year" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Taxes.Month" class="control-label"></label>
                 <select asp-for="Taxes.Month" class="form-control">
-                @foreach (Months i in Enum.GetValues(typeof(Months)))
-                {
-                    <option value ="@i">@i.ToString()</option>
-                }
+                    @foreach (Months i in Enum.GetValues(typeof(Months)))
+                    {
+                        <option value="@i">@i.ToString()</option>
+                    }
                 </select>
                 <span asp-validation-for="Taxes.Month" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Taxes.GasAmount" class="control-label"> Gas price</label>
+                <label asp-for="Taxes.GasAmount" class="control-label"> Gas amount</label>
                 <input asp-for="Taxes.GasAmount" class="form-control" />
                 <span asp-validation-for="Taxes.GasAmount" class="text-danger"></span>
             </div>
@@ -54,10 +55,11 @@
                 <input asp-for="Taxes.HeatingAmount" class="form-control" />
                 <span asp-validation-for="Taxes.HeatingAmount" class="text-danger"></span>
             </div>
-            <div>   
+            <div>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Enter" class="btn btn-primary" style="margin-top: 10px"/>
+            <div class="form-group" style="margin-top: 10px">
+                <input type="submit" value="Save" class="btn btn-primary"/> |
+                <a asp-page="./Index" class="text-color">Back to List</a>
             </div>
         </form>
     </div>

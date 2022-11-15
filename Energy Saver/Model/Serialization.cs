@@ -19,7 +19,7 @@ namespace Energy_Saver.Model
             List<List<Taxes>> taxes;
 
             List<Taxes>? temp = ReadText();
-        
+
             taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
             taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
 

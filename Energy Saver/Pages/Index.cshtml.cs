@@ -1,47 +1,51 @@
 ﻿using Energy_Saver.Model;
 using Energy_Saver.Services;
+using Energy_Saver.DataSpace;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using static Energy_Saver.Model.Serialization;
+using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly ITableService _tableService;
         private readonly ISuggestionsService _suggestionsService;
+        private readonly EnergySaverTaxesContext _context;
 
-
-        [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
 
         [BindProperty]
-        public List<decimal> taxComparison { get; set; }
+        public List<decimal> TaxComparison { get; set; }
 
-        public IndexModel(ILogger<IndexModel> logger, ITableService tableService, ISuggestionsService suggestionsService)
+        public IndexModel(ILogger<IndexModel> logger, ISuggestionsService suggestionsService, EnergySaverTaxesContext context)
         {
             _logger = logger;
-            _tableService = tableService;
             _suggestionsService = suggestionsService;
+            _context = context;
         }
 
-        public void OnGet()
+        public async Task OnGetAsync()
         {
-            Taxes = _tableService.GetTableContents();
+            if(User.Identity.IsAuthenticated)
+            {
+                var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+                int userID = int.Parse(tempString);
 
-            taxComparison = _suggestionsService.GetLatestTaxComparison();
+                var temp = await _context.Taxes.Where(taxes => taxes.UserID == userID).ToListAsync();
+
+                Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+                Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
+
+                TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+            }
         }
 
         public void OnPost()
         {
 
-        }
-
-        public IActionResult OnPostDelete(int index, int yearIndex)
-        {
-            _tableService.DeleteEntry(yearIndex: yearIndex, monthIndex: index);
-
-            return RedirectToPage();
         }
     }
 }

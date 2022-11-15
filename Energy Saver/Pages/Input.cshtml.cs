@@ -2,16 +2,21 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Energy_Saver.Model;
 using Energy_Saver.Services;
+using Energy_Saver.DataSpace;
+using System.Security.Claims;
 
 namespace Energy_Saver.Pages
 {
     public class InputModel : PageModel
     {
-        private readonly ITableService _tableService;
+        private readonly EnergySaverTaxesContext _context;
 
-        public InputModel(ITableService tableService)
+        [BindProperty]
+        public Taxes? Taxes { get; set; }
+
+        public InputModel(EnergySaverTaxesContext context)
         {
-            _tableService = tableService;
+            _context = context;
         }
 
         public IActionResult OnGet()
@@ -19,17 +24,19 @@ namespace Energy_Saver.Pages
             return Page();
         }
 
-        [BindProperty]
-        public Taxes Taxes { get; set; }
-
-        public async Task<IActionResult> OnPost()
+        public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            _tableService.AddEntry(Taxes);
+            //will need a better implementation
+            var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+            Taxes.UserID = int.Parse(tempString);
+
+            _context.Taxes.Add(Taxes);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

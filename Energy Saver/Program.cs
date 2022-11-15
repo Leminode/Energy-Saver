@@ -1,7 +1,14 @@
 using Auth0.AspNetCore.Authentication;
 using Energy_Saver.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Energy_Saver.DataSpace;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<EnergySaverTaxesContext>(options =>
+    options.UseNpgsql(builder.Configuration["DatabaseConnectionString"]));
 
 builder.Services.AddAuth0WebAppAuthentication(options =>
 {

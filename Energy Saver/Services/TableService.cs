@@ -6,6 +6,7 @@ namespace Energy_Saver.Services
     {
         public List<List<Taxes>> GetTableContents()
         {
+
             List<List<Taxes>> temp = Serialization.ReadFromFile();
 
             return temp;

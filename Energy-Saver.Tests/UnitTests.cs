@@ -154,38 +154,34 @@ namespace Energy_Saver.Tests
                 List<Taxes> actualTaxList = new List<Taxes>();
                 List<Taxes> expectedTaxList = new List<Taxes>();
 
-                var taxes = new Taxes[]
+                Taxes tax1 = new Taxes
                 {
-                    new Taxes
-                    {
-                        ID = 1,
-                        UserID = 4,
-                        Year = 2020,
-                        Month = Months.January,
-                        GasAmount = 1,
-                        ElectricityAmount = 2,
-                        WaterAmount = 3,
-                        HeatingAmount = 4
-                    },
-
-                    new Taxes
-                    {
-                        ID = 2,
-                        UserID = 4,
-                        Year = 2021,
-                        Month = Months.February,
-                        GasAmount = 2,
-                        ElectricityAmount = 4,
-                        WaterAmount = 3,
-                        HeatingAmount = 2
-                    }
+                    ID = 1,
+                    UserID = 4,
+                    Year = 2020,
+                    Month = Months.January,
+                    GasAmount = 1,
+                    ElectricityAmount = 2,
+                    WaterAmount = 3,
+                    HeatingAmount = 4
+                };
+                Taxes tax2 = new Taxes
+                {
+                    ID = 2,
+                    UserID = 4,
+                    Year = 2021,
+                    Month = Months.February,
+                    GasAmount = 2,
+                    ElectricityAmount = 4,
+                    WaterAmount = 3,
+                    HeatingAmount = 2
                 };
 
-                actualTaxList.Add(taxes[0]);
-                actualTaxList.Add(taxes[1]);
+                actualTaxList.Add(tax1);
+                actualTaxList.Add(tax2);
 
-                expectedTaxList.Add(taxes[1]);
-                expectedTaxList.Add(taxes[0]);
+                expectedTaxList.Add(tax2);
+                expectedTaxList.Add(tax1);
 
                 actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Year);
 

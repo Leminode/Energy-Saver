@@ -40,32 +40,5 @@ namespace Energy_Saver.Pages
 
             return RedirectToPage("./Index");
         }
-
-        /*private readonly ITableService _tableService;
-
-        public InputModel(ITableService tableService)
-        {
-            _tableService = tableService;
-        }
-
-        public IActionResult OnGet()
-        {
-            return Page();
-        }
-
-        [BindProperty]
-        public Taxes Taxes { get; set; }
-
-        public async Task<IActionResult> OnPost()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
-            _tableService.AddEntry(Taxes);
-
-            return RedirectToPage("./Index");
-        }*/
     }
 }

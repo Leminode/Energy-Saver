@@ -4,6 +4,7 @@ using Energy_Saver.Model;
 using Energy_Saver.Services;
 using Energy_Saver.DataSpace;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
 
 namespace Energy_Saver.Pages
 {
@@ -34,6 +35,13 @@ namespace Energy_Saver.Pages
             //will need a better implementation
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             Taxes.UserID = int.Parse(tempString);
+
+            //var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
+
+            //if (taxes == null)
+            //{
+            //    return NotFound();
+            //}
 
             _context.Taxes.Add(Taxes);
             await _context.SaveChangesAsync();

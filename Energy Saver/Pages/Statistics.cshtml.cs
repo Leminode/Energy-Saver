@@ -15,6 +15,7 @@ namespace Energy_Saver.Pages
         private readonly IChartService _chartService;
         public Chart? YearChart { get; set; }
         public Chart? MonthChart { get; set; }
+        [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
         private readonly EnergySaverTaxesContext _context;
 
@@ -37,6 +38,8 @@ namespace Energy_Saver.Pages
 
         public IActionResult OnPostYear(int selectedYear, string selectedType)
         {
+            Taxes = GetTaxesFromDatabase();
+
             var monthsLabels = GenerateMonthsLabels();
             var filterLabels = GenerateTaxLabels();
             var monthType = Enum.Parse<Enums.ChartType>(selectedType);
@@ -49,6 +52,8 @@ namespace Energy_Saver.Pages
 
         public IActionResult OnPostMonth(string selectedMonth, int selectedYear, string selectedType)
         {
+            Taxes = GetTaxesFromDatabase();
+
             var filterLabels = GenerateTaxLabels();
             var month = Enum.Parse<Months>(selectedMonth);
             var type = Enum.Parse<Enums.ChartType>(selectedType);

@@ -8,16 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
+using Energy_Saver.Services;
 
 namespace Energy_Saver.Pages
 {
     public class DeleteModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
 
-        public DeleteModel(EnergySaverTaxesContext context)
+        public delegate void DeleteTaxesHandler(object source, NotificationService.NotificationArgs args);
+        public event DeleteTaxesHandler DeleteTaxes;
+
+        public DeleteModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
+            DeleteTaxes += _notificationService.CreateNotification;
         }
 
         [BindProperty]
@@ -51,6 +58,7 @@ namespace Energy_Saver.Pages
         {
             if (id == null || _context.Taxes == null)
             {
+                OnTaxDeleteError();
                 return NotFound();
             }
 
@@ -60,10 +68,36 @@ namespace Energy_Saver.Pages
             {
                 Taxes = taxes;
                 _context.Taxes.Remove(Taxes);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    OnTaxDeleteSuccess();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    OnTaxDeleteError();
+                }
             }
 
             return RedirectToPage("./Index");
+        }
+
+        protected virtual void OnTaxDeleteSuccess()
+        {
+            DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs 
+            { 
+                Message = $"Successfully deleted entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}", 
+                Type = NotificationService.NotificationType.Success 
+            });
+        }
+
+        protected virtual void OnTaxDeleteError()
+        {
+            DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs 
+            { 
+                Message = "Could not delete tax record", 
+                Type = NotificationService.NotificationType.Error 
+            });
         }
     }
 }

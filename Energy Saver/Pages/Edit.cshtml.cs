@@ -9,16 +9,23 @@ using Microsoft.EntityFrameworkCore;
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
+using Energy_Saver.Services;
 
 namespace Energy_Saver.Pages
 {
     public class EditModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
 
-        public EditModel(EnergySaverTaxesContext context)
+        public delegate void EditTaxesHandler(object source, NotificationService.NotificationArgs args);
+        public event EditTaxesHandler EditTaxes;
+
+        public EditModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
+            EditTaxes += _notificationService.CreateNotification;
         }
 
         [BindProperty]
@@ -58,11 +65,13 @@ namespace Energy_Saver.Pages
             try
             {
                 await _context.SaveChangesAsync();
+                OnTaxEditSuccess();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!TaxesExists(Taxes.ID))
                 {
+                    OnTaxEditError();
                     return NotFound();
                 }
                 else
@@ -76,7 +85,21 @@ namespace Energy_Saver.Pages
 
         private bool TaxesExists(int id)
         {
-          return _context.Taxes.Any(e => e.ID == id);
+            return _context.Taxes.Any(e => e.ID == id);
+        }
+
+        protected virtual void OnTaxEditSuccess()
+        {
+            EditTaxes?.Invoke(this, new NotificationService.NotificationArgs 
+            { 
+                Message = $"Successfully edited entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
+                Type = NotificationService.NotificationType.Success 
+            });
+        }
+
+        protected virtual void OnTaxEditError()
+        {
+            EditTaxes?.Invoke(this, new NotificationService.NotificationArgs { Message = "Could not edit tax record", Type = NotificationService.NotificationType.Error });
         }
     }
 }

@@ -16,5 +16,10 @@
         {
             return services.AddScoped<ISuggestionsService, SuggestionsService>();
         }
+
+        public static IServiceCollection AddNotificationServices(this IServiceCollection services)
+        {
+            return services.AddScoped<INotificationService, NotificationService>();
+        }
     }
 }

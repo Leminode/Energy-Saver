@@ -11,13 +11,19 @@ namespace Energy_Saver.Pages
     public class InputModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
+
+        public delegate void InputTaxesHandler(object source, NotificationService.NotificationArgs args);
+        public event InputTaxesHandler InputTaxes;
 
         [BindProperty]
         public Taxes? Taxes { get; set; }
 
-        public InputModel(EnergySaverTaxesContext context)
+        public InputModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
+            InputTaxes += _notificationService.CreateNotification;
         }
 
         public IActionResult OnGet()
@@ -29,6 +35,7 @@ namespace Energy_Saver.Pages
         {
             if (!ModelState.IsValid)
             {
+                OnTaxInputError();
                 return Page();
             }
 
@@ -44,9 +51,35 @@ namespace Energy_Saver.Pages
             //}
 
             _context.Taxes.Add(Taxes);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                OnTaxInputSuccess();
+            } 
+            catch(DbUpdateConcurrencyException)
+            {
+                OnTaxInputError();
+            }
 
             return RedirectToPage("./Index");
+        }
+
+        protected virtual void OnTaxInputSuccess()
+        {
+            InputTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            {
+                Message = $"Successfully added entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
+                Type = NotificationService.NotificationType.Success
+            });
+        }
+
+        protected virtual void OnTaxInputError()
+        {
+            InputTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            {
+                Message = "Could not add tax record",
+                Type = NotificationService.NotificationType.Error
+            });
         }
     }
 }

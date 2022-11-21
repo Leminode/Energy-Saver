@@ -5,11 +5,13 @@ using Energy_Saver.Services;
 using Energy_Saver.DataSpace;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Energy_Saver.Pages
 {
     public class InputModel : PageModel
     {
+        private readonly ILogger<InputModel> _logger;
         private readonly EnergySaverTaxesContext _context;
         private readonly INotificationService _notificationService;
 
@@ -19,8 +21,9 @@ namespace Energy_Saver.Pages
         [BindProperty]
         public Taxes? Taxes { get; set; }
 
-        public InputModel(EnergySaverTaxesContext context, INotificationService notificationService)
+        public InputModel(ILogger<InputModel> logger, EnergySaverTaxesContext context, INotificationService notificationService)
         {
+            _logger = logger;
             _context = context;
             _notificationService = notificationService;
             InputTaxes += _notificationService.CreateNotification;
@@ -39,24 +42,17 @@ namespace Energy_Saver.Pages
                 return Page();
             }
 
-            //will need a better implementation
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             Taxes.UserID = int.Parse(tempString);
 
-            //var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
-
-            //if (taxes == null)
-            //{
-            //    return NotFound();
-            //}
-
             _context.Taxes.Add(Taxes);
+
             try
             {
                 await _context.SaveChangesAsync();
                 OnTaxInputSuccess();
             } 
-            catch(DbUpdateConcurrencyException)
+            catch(DbUpdateException)
             {
                 OnTaxInputError();
             }

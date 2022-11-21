@@ -27,23 +27,29 @@ namespace Energy_Saver.Pages
             _context = context;
         }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
-            _logger.LogWarning("Index page visited at {DT}",
-            DateTime.UtcNow.ToLongTimeString());
-
             if (User.Identity.IsAuthenticated)
             {
                 var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
                 int userID = int.Parse(tempString);
 
-                var temp = await _context.Taxes.Where(taxes => taxes.UserID == userID).ToListAsync();
+                try
+                {
+                    var temp = await _context.Taxes.Where(taxes => taxes.UserID == userID).ToListAsync();
 
-                Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-                Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
+                    Taxes = OrderList(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
+                    Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
 
-                TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+                    TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+                }
+                catch (Exception)
+                {
+                    return NotFound();
+                }
             }
+
+            return Page();
         }
     }
 }

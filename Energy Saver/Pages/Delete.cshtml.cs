@@ -40,18 +40,26 @@ namespace Energy_Saver.Pages
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             int userID = int.Parse(tempString);
 
-            var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
-
-            if (taxes == null)
+            try
             {
-                return NotFound();
-            }
-            else 
-            {
-                Taxes = taxes;
-            }
+                var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
 
-            return Page();
+                if (taxes == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    Taxes = taxes;
+                }
+
+                return Page();
+            }
+            catch (Exception)
+            {
+                OnTaxGetError();
+                return RedirectToPage("./Index");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
@@ -96,6 +104,15 @@ namespace Energy_Saver.Pages
             DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs 
             { 
                 Message = "Could not delete tax record", 
+                Type = NotificationService.NotificationType.Error 
+            });
+        }
+
+        protected virtual void OnTaxGetError()
+        {
+            DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            { 
+                Message = "Could not retrieve tax list", 
                 Type = NotificationService.NotificationType.Error 
             });
         }

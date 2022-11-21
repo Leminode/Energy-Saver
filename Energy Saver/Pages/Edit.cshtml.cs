@@ -41,16 +41,24 @@ namespace Energy_Saver.Pages
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             int userID = int.Parse(tempString);
 
-            var taxes =  await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
-
-            if (taxes == null)
+            try
             {
-                return NotFound();
+                var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
+
+                if (taxes == null)
+                {
+                    return NotFound();
+                }
+
+                Taxes = taxes;
+
+                return Page();
             }
-
-            Taxes = taxes;
-
-            return Page();
+            catch (Exception)
+            {
+                OnTaxGetError();
+                return RedirectToPage("./Index");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -67,25 +75,12 @@ namespace Energy_Saver.Pages
                 await _context.SaveChangesAsync();
                 OnTaxEditSuccess();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!TaxesExists(Taxes.ID))
-                {
-                    OnTaxEditError();
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                OnTaxEditError();
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool TaxesExists(int id)
-        {
-            return _context.Taxes.Any(e => e.ID == id);
         }
 
         protected virtual void OnTaxEditSuccess()
@@ -100,6 +95,11 @@ namespace Energy_Saver.Pages
         protected virtual void OnTaxEditError()
         {
             EditTaxes?.Invoke(this, new NotificationService.NotificationArgs { Message = "Could not edit tax record", Type = NotificationService.NotificationType.Error });
+        }
+
+        protected virtual void OnTaxGetError()
+        {
+            EditTaxes?.Invoke(this, new NotificationService.NotificationArgs { Message = "Could not retrieve tax list", Type = NotificationService.NotificationType.Error });
         }
     }
 }

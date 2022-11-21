@@ -29,9 +29,12 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Input");
+    options.Conventions.AuthorizePage("/Delete");
+    options.Conventions.AuthorizePage("/Details");
+    options.Conventions.AuthorizePage("/Edit");
+    options.Conventions.AuthorizePage("/Statistics");
     options.Conventions.AuthorizePage("/Account/Logout");
     options.Conventions.AuthorizePage("/Account/Profile");
-    options.Conventions.AuthorizePage("/Statistics");
 }).AddNToastNotifyToastr(new NToastNotify.ToastrOptions
 {
     ProgressBar = true,

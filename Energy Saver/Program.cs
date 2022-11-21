@@ -24,11 +24,16 @@ builder.Services.AddRazorPages(options =>
     options.Conventions.AuthorizePage("/Account/Logout");
     options.Conventions.AuthorizePage("/Account/Profile");
     options.Conventions.AuthorizePage("/Statistics");
+}).AddNToastNotifyToastr(new NToastNotify.ToastrOptions
+{
+    ProgressBar = true,
+    TimeOut = 5000
 });
 
 builder.Services.AddTableServices();
 builder.Services.AddChartServices();
 builder.Services.AddSuggestionServices();
+builder.Services.AddNotificationServices();
 
 var app = builder.Build();
 
@@ -47,6 +52,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseNToastNotify();
 
 app.MapRazorPages();
 

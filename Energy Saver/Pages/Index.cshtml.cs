@@ -42,10 +42,5 @@ namespace Energy_Saver.Pages
                 TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
             }
         }
-
-        public void OnPost()
-        {
-
-        }
     }
 }

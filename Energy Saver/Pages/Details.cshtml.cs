@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
+using Energy_Saver.Services;
 
 namespace Energy_Saver.Pages
 {
     public class DetailsModel : PageModel
     {
-        private readonly EnergySaverTaxesContext _context;
+        private EventHandler<NotificationService.NotificationArgs> TaxesDetailsHandler;
 
-        public DetailsModel(EnergySaverTaxesContext context)
+        private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
+
+        public DetailsModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
+            TaxesDetailsHandler += _notificationService.CreateNotification;
         }
 
         public Taxes Taxes { get; set; }
@@ -26,7 +32,8 @@ namespace Energy_Saver.Pages
         {
             if (id == null || _context.Taxes == null)
             {
-                return NotFound();
+                OnTaxesNotFound();
+                return RedirectToPage("./Index");
             }
 
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
@@ -36,7 +43,8 @@ namespace Energy_Saver.Pages
 
             if (taxes == null)
             {
-                return NotFound();
+                OnTaxesNotFound();
+                return RedirectToPage("./Index");
             }
             else 
             {
@@ -44,6 +52,15 @@ namespace Energy_Saver.Pages
             }
 
             return Page();
+        }
+
+        protected virtual void OnTaxesNotFound()
+        {
+            TaxesDetailsHandler?.Invoke(this, new NotificationService.NotificationArgs
+            {
+                Message = "Could not find specified tax record",
+                Type = NotificationService.NotificationType.Error
+            });
         }
     }
 }

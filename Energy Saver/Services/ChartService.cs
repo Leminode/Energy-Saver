@@ -99,7 +99,7 @@ namespace Energy_Saver.Services
             var backGroundColor = new List<ChartColor>();
             var borderColor = new List<ChartColor>();
 
-            foreach (double value in data)
+            foreach (double? value in data)
             {
                 var chartColor = GetRandomChartColor();
                 var withAlpha = new ChartColor { Red = chartColor.Red, Blue = chartColor.Blue, Green = chartColor.Green, Alpha = 0.4 };

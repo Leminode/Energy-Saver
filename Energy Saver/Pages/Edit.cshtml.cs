@@ -34,7 +34,7 @@ namespace Energy_Saver.Pages
         {
             if (id == null || _context.Taxes == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
@@ -44,7 +44,7 @@ namespace Energy_Saver.Pages
 
             if (taxes == null)
             {
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             Taxes = taxes;
@@ -71,7 +71,7 @@ namespace Energy_Saver.Pages
                 if (!TaxesExists(Taxes.ID))
                 {
                     OnTaxEditError();
-                    return NotFound();
+                    return RedirectToPage("./Index");
                 }
                 else
                 {

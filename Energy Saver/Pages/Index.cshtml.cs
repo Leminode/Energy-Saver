@@ -29,7 +29,10 @@ namespace Energy_Saver.Pages
 
         public async Task OnGetAsync()
         {
-            if(User.Identity.IsAuthenticated)
+            _logger.LogWarning("Index page visited at {DT}",
+            DateTime.UtcNow.ToLongTimeString());
+
+            if (User.Identity.IsAuthenticated)
             {
                 var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
                 int userID = int.Parse(tempString);

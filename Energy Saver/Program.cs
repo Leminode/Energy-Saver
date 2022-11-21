@@ -4,8 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Energy_Saver.DataSpace;
 using Microsoft.AspNetCore.Identity;
+using NLog.Web;
+using NLog;
+
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("init main");
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
 builder.Services.AddDbContext<EnergySaverTaxesContext>(options =>
     options.UseNpgsql(builder.Configuration["DatabaseConnectionString"]));
@@ -58,3 +66,5 @@ app.UseNToastNotify();
 app.MapRazorPages();
 
 app.Run();
+
+LogManager.Shutdown();

@@ -13,8 +13,7 @@ namespace Energy_Saver.Pages
         private readonly EnergySaverTaxesContext _context;
         private readonly INotificationService _notificationService;
 
-        public delegate void InputTaxesHandler(object source, NotificationService.NotificationArgs args);
-        public event InputTaxesHandler InputTaxes;
+        public event EventHandler<NotificationService.NotificationArgs> InputTaxesHandler;
 
         [BindProperty]
         public Taxes? Taxes { get; set; }
@@ -23,7 +22,7 @@ namespace Energy_Saver.Pages
         {
             _context = context;
             _notificationService = notificationService;
-            InputTaxes += _notificationService.CreateNotification;
+            InputTaxesHandler += _notificationService.CreateNotification;
         }
 
         public IActionResult OnGet()
@@ -66,7 +65,7 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxInputSuccess()
         {
-            InputTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
             {
                 Message = $"Successfully added entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
                 Type = NotificationService.NotificationType.Success
@@ -75,7 +74,7 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxInputError()
         {
-            InputTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
             {
                 Message = "Could not add tax record",
                 Type = NotificationService.NotificationType.Error

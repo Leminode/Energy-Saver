@@ -18,14 +18,13 @@ namespace Energy_Saver.Pages
         private readonly EnergySaverTaxesContext _context;
         private readonly INotificationService _notificationService;
 
-        public delegate void EditTaxesHandler(object source, NotificationService.NotificationArgs args);
-        public event EditTaxesHandler EditTaxes;
+        public event EventHandler<NotificationService.NotificationArgs> EditTaxesHandler;
 
         public EditModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
-            EditTaxes += _notificationService.CreateNotification;
+            EditTaxesHandler += _notificationService.CreateNotification;
         }
 
         [BindProperty]
@@ -90,7 +89,7 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxEditSuccess()
         {
-            EditTaxes?.Invoke(this, new NotificationService.NotificationArgs 
+            EditTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
                 Message = $"Successfully edited entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
                 Type = NotificationService.NotificationType.Success 
@@ -99,7 +98,11 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxEditError()
         {
-            EditTaxes?.Invoke(this, new NotificationService.NotificationArgs { Message = "Could not edit tax record", Type = NotificationService.NotificationType.Error });
+            EditTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
+            { 
+                Message = "Could not edit tax record", 
+                Type = NotificationService.NotificationType.Error 
+            });
         }
     }
 }

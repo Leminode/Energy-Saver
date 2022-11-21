@@ -14,17 +14,16 @@ namespace Energy_Saver.Pages
 {
     public class DetailsModel : PageModel
     {
+        private EventHandler<NotificationService.NotificationArgs> TaxesDetailsHandler;
+
         private readonly EnergySaverTaxesContext _context;
         private readonly INotificationService _notificationService;
-
-        public delegate void DetailsTaxesHandler(object source, NotificationService.NotificationArgs args);
-        public event DetailsTaxesHandler DetailsTaxes;
 
         public DetailsModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
-            DetailsTaxes += _notificationService.CreateNotification;
+            TaxesDetailsHandler += _notificationService.CreateNotification;
         }
 
         public Taxes? Taxes { get; set; }
@@ -33,7 +32,8 @@ namespace Energy_Saver.Pages
         {
             if (id == null || _context.Taxes == null)
             {
-                return NotFound();
+                OnTaxesNotFound();
+                return RedirectToPage("./Index");
             }
 
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
@@ -45,7 +45,8 @@ namespace Energy_Saver.Pages
 
                 if (taxes == null)
                 {
-                    return NotFound();
+                    OnTaxesNotFound();
+                    return RedirectToPage("./Index");
                 }
                 else
                 {
@@ -56,16 +57,16 @@ namespace Energy_Saver.Pages
             }
             catch (Exception)
             {
-                OnTaxGetError();
+                OnTaxesNotFound();
                 return RedirectToPage("./Index");
             }
         }
 
-        protected virtual void OnTaxGetError()
+        protected virtual void OnTaxesNotFound()
         {
-            DetailsTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            TaxesDetailsHandler?.Invoke(this, new NotificationService.NotificationArgs
             {
-                Message = "Could not retrieve tax list",
+                Message = "Could not find specified tax record",
                 Type = NotificationService.NotificationType.Error
             });
         }

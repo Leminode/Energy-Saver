@@ -23,6 +23,9 @@ namespace Energy_Saver.Pages
         public Chart? MonthChart { get; set; }
         [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
+        private Lazy<List<string>> MonthLabels { get; set; } = new Lazy<List<string>>(() => GenerateMonthsLabels());
+        private Lazy<List<string>> TaxLabels { get; set; } = new Lazy<List<string>>(() => GenerateTaxLabels());
+
 
         public StatisticsModel(IChartService chartService, EnergySaverTaxesContext context, INotificationService notificationService)
         {
@@ -36,36 +39,30 @@ namespace Energy_Saver.Pages
         {
             Taxes = GetTaxesFromDatabase();
 
-            var monthsLabels = GenerateMonthsLabels();
-            var filterLabels = GenerateTaxLabels();
-
-            YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(2022), monthsLabels);
-            MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Months.January, 2022), filterLabels, false);
+            YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(2022), MonthLabels.Value);
+            MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Months.January, 2022), TaxLabels.Value, false);
         }
 
         public IActionResult OnPostYear(int selectedYear, string selectedType)
         {
             Taxes = GetTaxesFromDatabase();
 
-            var monthsLabels = GenerateMonthsLabels();
-            var filterLabels = GenerateTaxLabels();
             var monthType = Enum.Parse<Enums.ChartType>(selectedType);
 
-            YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(selectedYear), monthsLabels);
-            MonthChart = _chartService.CreateChart(monthType, CreateDataForMonthChart(Months.January, selectedYear), filterLabels, false);
+            YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(selectedYear), MonthLabels.Value);
+            MonthChart = _chartService.CreateChart(monthType, CreateDataForMonthChart(Months.January, selectedYear), TaxLabels.Value, false);
 
-            return new JsonResult(new { yearChart = YearChart.SerializeBody(), monthChart = MonthChart.SerializeBody()});
+            return new JsonResult(new { yearChart = YearChart.SerializeBody(), monthChart = MonthChart.SerializeBody() });
         }
 
         public IActionResult OnPostMonth(string selectedMonth, int selectedYear, string selectedType)
         {
             Taxes = GetTaxesFromDatabase();
 
-            var filterLabels = GenerateTaxLabels();
             var month = Enum.Parse<Months>(selectedMonth);
             var type = Enum.Parse<Enums.ChartType>(selectedType);
 
-            MonthChart = _chartService.CreateChart(type, CreateDataForMonthChart(month, selectedYear), filterLabels, false);
+            MonthChart = _chartService.CreateChart(type, CreateDataForMonthChart(month, selectedYear), TaxLabels.Value, false);
 
             return new JsonResult(MonthChart.SerializeBody());
         }
@@ -100,15 +97,10 @@ namespace Energy_Saver.Pages
 
                 foreach (Months month in Enum.GetValues(typeof(Months)))
                 {
-                    double? foundData;
-                    try
-                    {
-                        foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
-                    }
-                    catch (InvalidOperationException)
-                    {
-                        foundData = 0;
-                    }
+                    double? foundData = Taxes
+                        .SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month)
+                        .Select(function))
+                        .FirstOrDefault();
                     data.Data.Add(foundData);
                 }
 
@@ -146,7 +138,10 @@ namespace Energy_Saver.Pages
                         break;
                 }
 
-                double? foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).FirstOrDefault();
+                double? foundData = Taxes
+                    .SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month)
+                    .Select(function))
+                    .FirstOrDefault();
                 data.Data.Add(foundData);
             }
             monthData.Add(data);
@@ -155,7 +150,7 @@ namespace Energy_Saver.Pages
             return monthData;
         }
 
-        public List<string> GenerateTaxLabels()
+        private static List<string> GenerateTaxLabels()
         {
             var filters = new List<string>();
             foreach (FilterTypes filter in Enum.GetValues(typeof(FilterTypes)))
@@ -166,7 +161,7 @@ namespace Energy_Saver.Pages
             return filters;
         }
 
-        public List<string> GenerateMonthsLabels()
+        private static List<string> GenerateMonthsLabels()
         {
             var months = new List<string>();
             foreach (Months month in Enum.GetValues(typeof(Months)))
@@ -188,8 +183,11 @@ namespace Energy_Saver.Pages
                 {
                     var temp = _context.Taxes.Where(taxes => taxes.UserID == userID).ToList();
 
-                    var taxes = OrderList<Taxes, Months>(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
-                    taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
+                var taxes = OrderList<Taxes, Months>(SortDirection.Descending, temp, tax => tax.Month)
+                    .GroupBy(t => t.Year)
+                    .Select(year => year.ToList())
+                    .ToList();
+                taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
 
                     return taxes;
                 }
@@ -201,7 +199,7 @@ namespace Energy_Saver.Pages
             }
 
             return null;
-                
+
         }
 
         protected virtual void OnTaxGetError()
@@ -214,5 +212,5 @@ namespace Energy_Saver.Pages
         }
     }
 
-    
+
 }

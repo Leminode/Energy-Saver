@@ -17,14 +17,13 @@ namespace Energy_Saver.Pages
         private readonly EnergySaverTaxesContext _context;
         private readonly INotificationService _notificationService;
 
-        public delegate void DeleteTaxesHandler(object source, NotificationService.NotificationArgs args);
-        public event DeleteTaxesHandler DeleteTaxes;
+        public event EventHandler<NotificationService.NotificationArgs> DeleteTaxesHandler;
 
         public DeleteModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
             _notificationService = notificationService;
-            DeleteTaxes += _notificationService.CreateNotification;
+            DeleteTaxesHandler += _notificationService.CreateNotification;
         }
 
         [BindProperty]
@@ -67,7 +66,7 @@ namespace Energy_Saver.Pages
             if (id == null || _context.Taxes == null)
             {
                 OnTaxDeleteError();
-                return NotFound();
+                return RedirectToPage("./Index");
             }
 
             var taxes = await _context.Taxes.FindAsync(id);
@@ -92,7 +91,7 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxDeleteSuccess()
         {
-            DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs 
+            DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
                 Message = $"Successfully deleted entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}", 
                 Type = NotificationService.NotificationType.Success 
@@ -101,7 +100,7 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxDeleteError()
         {
-            DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs 
+            DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
                 Message = "Could not delete tax record", 
                 Type = NotificationService.NotificationType.Error 
@@ -110,7 +109,7 @@ namespace Energy_Saver.Pages
 
         protected virtual void OnTaxGetError()
         {
-            DeleteTaxes?.Invoke(this, new NotificationService.NotificationArgs
+            DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
             { 
                 Message = "Could not retrieve tax list", 
                 Type = NotificationService.NotificationType.Error 

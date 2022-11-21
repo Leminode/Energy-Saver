@@ -11,7 +11,7 @@ namespace Energy_Saver.Services
             _toastNotification = toastNotification;
         }
 
-        public void CreateNotification(object source, NotificationArgs args)
+        public void CreateNotification(object? source, NotificationArgs args)
         {
             switch (args.Type)
             {
@@ -35,7 +35,7 @@ namespace Energy_Saver.Services
 
         public class NotificationArgs : EventArgs
         {
-            public string Message { get; set; }
+            public string Message { get; set; } = "";
             public NotificationType Type { get; set; }
         }
 

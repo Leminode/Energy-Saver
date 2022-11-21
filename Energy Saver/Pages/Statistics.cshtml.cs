@@ -58,7 +58,7 @@ namespace Energy_Saver.Pages
             return new JsonResult(MonthChart.SerializeBody());
         }
 
-        private List<DataWithLabel> CreateDataForYearChart(int year)
+        public List<DataWithLabel> CreateDataForYearChart(int year)
         {
             var flattenedList = new List<DataWithLabel>();
 
@@ -173,7 +173,7 @@ namespace Energy_Saver.Pages
             return months;
         }
 
-        private List<List<Taxes>>? GetTaxesFromDatabase()
+        public List<List<Taxes>>? GetTaxesFromDatabase()
         {
             if (User.Identity.IsAuthenticated)
             {

@@ -105,7 +105,7 @@ namespace Energy_Saver.Pages
         {
             EditTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
-                Message = $"Successfully edited entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
+                Message = $"Successfully edited entry for {Taxes.Year}-{Utilities.FormatMonth(Taxes.Month)}",
                 Type = NotificationService.NotificationType.Success 
             });
         }

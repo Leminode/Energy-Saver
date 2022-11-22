@@ -4,27 +4,27 @@ namespace Energy_Saver.Services
 {
     public class TableService : ITableService
     {
-        public List<List<Taxes>> GetTableContents()
-        {
+        //public List<List<Taxes>> GetTableContents()
+        //{
 
-            List<List<Taxes>> temp = Utilities.ReadFromFile();
+        //    List<List<Taxes>> temp = Serialization.ReadFromFile();
 
-            return temp;
-        }
+        //    return temp;
+        //}
 
-        public void DeleteEntry(int monthIndex, int yearIndex)
-        {
-            List<List<Taxes>> taxes;
+        //public void DeleteEntry(int monthIndex, int yearIndex)
+        //{
+        //    List<List<Taxes>> taxes;
 
-            taxes = Utilities.ReadFromFile();
-            taxes[yearIndex].RemoveAt(monthIndex);
+        //    taxes = Serialization.ReadFromFile();
+        //    taxes[yearIndex].RemoveAt(monthIndex);
 
-            Utilities.WriteText(taxes.SelectMany(list => list).Distinct().ToList());
-        }
+        //    Serialization.WriteText(taxes.SelectMany(list => list).Distinct().ToList());
+        //}
 
-        public void AddEntry(Taxes taxes)
-        {
-            Utilities.WriteEntryToFile(taxes);
-        }
+        //public void AddEntry(Taxes taxes)
+        //{
+        //    Serialization.WriteEntryToFile(taxes);
+        //}
     }
 }

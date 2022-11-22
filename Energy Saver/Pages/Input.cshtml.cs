@@ -80,7 +80,7 @@ namespace Energy_Saver.Pages
         {
             InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
             {
-                Message = $"Successfully added entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
+                Message = $"Successfully added entry for {Taxes.Year}-{Utilities.FormatMonth(Taxes.Month)}",
                 Type = NotificationService.NotificationType.Success
             });
         }

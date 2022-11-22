@@ -121,10 +121,10 @@ namespace Energy_Saver.Services
             return barDataset;
         }
 
-        private ChartColor GetRandomChartColor(float s = 0.5F, float v = 0.95F)
+        public ChartColor GetRandomChartColor(float s = 0.5F, float v = 0.95F)
         {
             float golden_ratio = 0.618033988749895F;
-
+            
             Func<float, byte> f = delegate (float n)
             {
                 float k = (n + Random * 6) % 6;

@@ -93,7 +93,7 @@ namespace Energy_Saver.Pages
         {
             DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
-                Message = $"Successfully deleted entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}", 
+                Message = $"Successfully deleted entry for {Taxes.Year}-{Utilities.FormatMonth(Taxes.Month)}", 
                 Type = NotificationService.NotificationType.Success 
             });
         }

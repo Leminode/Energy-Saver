@@ -5,24 +5,32 @@ using Energy_Saver.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using static Energy_Saver.Model.Serialization;
+using static Energy_Saver.Model.Utilities;
 using static Energy_Saver.Services.ChartService;
 
 namespace Energy_Saver.Pages
 {
     public class StatisticsModel : PageModel
     {
+        public delegate void StatisticsTaxesHandler(object source, NotificationService.NotificationArgs args);
+        public event StatisticsTaxesHandler TaxGet;
+
         private readonly IChartService _chartService;
+        private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
+
         public Chart? YearChart { get; set; }
         public Chart? MonthChart { get; set; }
         [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
-        private readonly EnergySaverTaxesContext _context;
 
-        public StatisticsModel(IChartService chartService, EnergySaverTaxesContext context)
+
+        public StatisticsModel(IChartService chartService, EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _chartService = chartService;
             _context = context;
+            _notificationService = notificationService;
+            TaxGet += _notificationService.CreateNotification;
         }
 
         public void OnGet()
@@ -63,7 +71,7 @@ namespace Energy_Saver.Pages
             return new JsonResult(MonthChart.SerializeBody());
         }
 
-        private List<DataWithLabel> CreateDataForYearChart(int year)
+        public List<DataWithLabel> CreateDataForYearChart(int year)
         {
             var flattenedList = new List<DataWithLabel>();
 
@@ -111,7 +119,7 @@ namespace Energy_Saver.Pages
             return flattenedList;
         }
 
-        private List<DataWithLabel> CreateDataForMonthChart(Months month, int year)
+        public List<DataWithLabel> CreateDataForMonthChart(Months month, int year)
         {
             var monthData = new List<DataWithLabel>();
 
@@ -178,23 +186,40 @@ namespace Energy_Saver.Pages
             return months;
         }
 
-        private List<List<Taxes>>? GetTaxesFromDatabase()
+        public List<List<Taxes>>? GetTaxesFromDatabase()
         {
             if (User.Identity.IsAuthenticated)
             {
                 var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
                 int userID = int.Parse(tempString);
 
-                var temp = _context.Taxes.Where(taxes => taxes.UserID == userID).ToList();
+                try
+                {
+                    var temp = _context.Taxes.Where(taxes => taxes.UserID == userID).ToList();
 
                 var taxes = OrderList<Taxes, Months>(SortDirection.Descending, temp, tax => tax.Month).GroupBy(t => t.Year).Select(year => year.ToList()).ToList();
                 taxes = OrderList(SortDirection.Descending, taxes, taxes => taxes[0]);
 
-                return taxes;
+                    return taxes;
+                }
+                catch (Exception)
+                {
+                    OnTaxGetError();
+                    RedirectToPage("./Index");
+                }
             }
 
             return null;
                 
+        }
+
+        protected virtual void OnTaxGetError()
+        {
+            TaxGet?.Invoke(this, new NotificationService.NotificationArgs
+            {
+                Message = "Could not retrieve tax list",
+                Type = NotificationService.NotificationType.Error
+            });
         }
     }
 

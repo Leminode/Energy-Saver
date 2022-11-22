@@ -8,16 +8,22 @@ using Microsoft.EntityFrameworkCore;
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
+using Energy_Saver.Services;
 
 namespace Energy_Saver.Pages
 {
     public class DeleteModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
 
-        public DeleteModel(EnergySaverTaxesContext context)
+        public event EventHandler<NotificationService.NotificationArgs> DeleteTaxesHandler;
+
+        public DeleteModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
+            DeleteTaxesHandler += _notificationService.CreateNotification;
         }
 
         [BindProperty]
@@ -33,25 +39,34 @@ namespace Energy_Saver.Pages
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             int userID = int.Parse(tempString);
 
-            var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
-
-            if (taxes == null)
+            try
             {
-                return NotFound();
-            }
-            else 
-            {
-                Taxes = taxes;
-            }
+                var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
 
-            return Page();
+                if (taxes == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    Taxes = taxes;
+                }
+
+                return Page();
+            }
+            catch (Exception)
+            {
+                OnTaxGetError();
+                return RedirectToPage("./Index");
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
             if (id == null || _context.Taxes == null)
             {
-                return NotFound();
+                OnTaxDeleteError();
+                return RedirectToPage("./Index");
             }
 
             var taxes = await _context.Taxes.FindAsync(id);
@@ -60,10 +75,45 @@ namespace Energy_Saver.Pages
             {
                 Taxes = taxes;
                 _context.Taxes.Remove(Taxes);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    OnTaxDeleteSuccess();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    OnTaxDeleteError();
+                }
             }
 
             return RedirectToPage("./Index");
+        }
+
+        protected virtual void OnTaxDeleteSuccess()
+        {
+            DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
+            { 
+                Message = $"Successfully deleted entry for {Taxes.Year}-{Utilities.FormatMonth(Taxes.Month)}", 
+                Type = NotificationService.NotificationType.Success 
+            });
+        }
+
+        protected virtual void OnTaxDeleteError()
+        {
+            DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
+            { 
+                Message = "Could not delete tax record", 
+                Type = NotificationService.NotificationType.Error 
+            });
+        }
+
+        protected virtual void OnTaxGetError()
+        {
+            DeleteTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
+            { 
+                Message = "Could not retrieve tax list", 
+                Type = NotificationService.NotificationType.Error 
+            });
         }
     }
 }

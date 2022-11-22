@@ -4,8 +4,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Energy_Saver.DataSpace;
 using Microsoft.AspNetCore.Identity;
+using NLog.Web;
+using NLog;
+
+var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+logger.Debug("init main");
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Logging.ClearProviders();
+builder.Host.UseNLog();
 
 builder.Services.AddDbContext<EnergySaverTaxesContext>(options =>
     options.UseNpgsql(builder.Configuration["DatabaseConnectionString"]));
@@ -21,9 +29,12 @@ builder.Services.AddAuth0WebAppAuthentication(options =>
 builder.Services.AddRazorPages(options =>
 {
     options.Conventions.AuthorizePage("/Input");
+    options.Conventions.AuthorizePage("/Delete");
+    options.Conventions.AuthorizePage("/Details");
+    options.Conventions.AuthorizePage("/Edit");
+    options.Conventions.AuthorizePage("/Statistics");
     options.Conventions.AuthorizePage("/Account/Logout");
     options.Conventions.AuthorizePage("/Account/Profile");
-    options.Conventions.AuthorizePage("/Statistics");
 }).AddNToastNotifyToastr(new NToastNotify.ToastrOptions
 {
     ProgressBar = true,
@@ -58,3 +69,5 @@ app.UseNToastNotify();
 app.MapRazorPages();
 
 app.Run();
+
+LogManager.Shutdown();

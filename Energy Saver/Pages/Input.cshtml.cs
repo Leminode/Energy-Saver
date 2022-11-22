@@ -5,11 +5,13 @@ using Energy_Saver.Services;
 using Energy_Saver.DataSpace;
 using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Energy_Saver.Pages
 {
     public class InputModel : PageModel
     {
+        private readonly ILogger<InputModel> _logger;
         private readonly EnergySaverTaxesContext _context;
         private readonly INotificationService _notificationService;
 
@@ -18,8 +20,9 @@ namespace Energy_Saver.Pages
         [BindProperty]
         public Taxes? Taxes { get; set; }
 
-        public InputModel(EnergySaverTaxesContext context, INotificationService notificationService)
+        public InputModel(ILogger<InputModel> logger, EnergySaverTaxesContext context, INotificationService notificationService)
         {
+            _logger = logger;
             _context = context;
             _notificationService = notificationService;
             InputTaxesHandler += _notificationService.CreateNotification;
@@ -34,30 +37,40 @@ namespace Energy_Saver.Pages
         {
             if (!ModelState.IsValid)
             {
-                OnTaxInputError();
+                OnTaxInputError("An error has occured");
                 return Page();
             }
 
-            //will need a better implementation
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
-            Taxes.UserID = int.Parse(tempString);
+            int userID = int.Parse(tempString);
+            Taxes.UserID = userID;
 
-            //var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
+            try
+            {
+                var temp = await _context.Taxes.FirstOrDefaultAsync(t => t.UserID == userID && t.Year == Taxes.Year && t.Month == Taxes.Month);
 
-            //if (taxes == null)
-            //{
-            //    return NotFound();
-            //}
+                if (temp != null)
+                {
+                    OnTaxInputError("The selected year and month already exist in your tax list");
+                    return RedirectToPage("./Index");
+                }
+            }
+            catch (Exception)
+            {
+                OnTaxInputError("There has been an error when connecting to the database.");
+                return RedirectToPage("./Index");
+            }
 
             _context.Taxes.Add(Taxes);
+
             try
             {
                 await _context.SaveChangesAsync();
                 OnTaxInputSuccess();
             } 
-            catch(DbUpdateConcurrencyException)
+            catch(DbUpdateException)
             {
-                OnTaxInputError();
+                OnTaxInputError("Could not write enrty. Please try again.");
             }
 
             return RedirectToPage("./Index");
@@ -72,11 +85,11 @@ namespace Energy_Saver.Pages
             });
         }
 
-        protected virtual void OnTaxInputError()
+        protected virtual void OnTaxInputError(string errorMessage)
         {
             InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
             {
-                Message = "Could not add tax record",
+                Message = errorMessage,
                 Type = NotificationService.NotificationType.Error
             });
         }

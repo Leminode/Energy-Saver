@@ -25,6 +25,11 @@ namespace Energy_Saver.Model
             return orderedList;
         }
 
+        public static string FormatMonth(Months month)
+        {
+            return ((int)month).ToString().PadLeft(2, '0');
+        }
+
         public enum SortDirection
         {
             Ascending,

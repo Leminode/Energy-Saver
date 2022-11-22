@@ -11,13 +11,18 @@ namespace Energy_Saver.Pages
     public class InputModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;
+        private readonly INotificationService _notificationService;
+
+        public event EventHandler<NotificationService.NotificationArgs> InputTaxesHandler;
 
         [BindProperty]
         public Taxes? Taxes { get; set; }
 
-        public InputModel(EnergySaverTaxesContext context)
+        public InputModel(EnergySaverTaxesContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
+            InputTaxesHandler += _notificationService.CreateNotification;
         }
 
         public IActionResult OnGet()
@@ -29,6 +34,7 @@ namespace Energy_Saver.Pages
         {
             if (!ModelState.IsValid)
             {
+                OnTaxInputError();
                 return Page();
             }
 
@@ -44,9 +50,35 @@ namespace Energy_Saver.Pages
             //}
 
             _context.Taxes.Add(Taxes);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+                OnTaxInputSuccess();
+            } 
+            catch(DbUpdateConcurrencyException)
+            {
+                OnTaxInputError();
+            }
 
             return RedirectToPage("./Index");
+        }
+
+        protected virtual void OnTaxInputSuccess()
+        {
+            InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
+            {
+                Message = $"Successfully added entry for {Taxes.Year}-{Serialization.FormatMonth(Taxes.Month)}",
+                Type = NotificationService.NotificationType.Success
+            });
+        }
+
+        protected virtual void OnTaxInputError()
+        {
+            InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
+            {
+                Message = "Could not add tax record",
+                Type = NotificationService.NotificationType.Error
+            });
         }
     }
 }

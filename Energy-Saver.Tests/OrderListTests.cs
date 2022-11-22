@@ -1,13 +1,18 @@
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
+using Newtonsoft.Json;
 using static Energy_Saver.Model.Serialization;
 
 namespace Energy_Saver.Tests
 {
     public class OrderListTests
     {
-        [Fact]
-        public void OrderList_TwoTaxesExist_ReturnsAscendingSortedListByYear()
+        [Theory]
+        [InlineData(2020, 2021)]
+        [InlineData(0, 1)]
+        [InlineData(7, 10023)]
+        [InlineData(1, 3)]
+        public void OrderList_TwoTaxesExist_ReturnsAscendingSortedListByYear(int year1, int year2)
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
@@ -16,11 +21,11 @@ namespace Energy_Saver.Tests
 
                 Taxes tax1 = new Taxes
                 {
-                    Year = 2020,
+                    Year = year1,
                 };
                 Taxes tax2 = new Taxes
                 {
-                    Year = 2021,
+                    Year = year2,
                 };
 
                 actualTaxList.Add(tax2);
@@ -31,12 +36,19 @@ namespace Energy_Saver.Tests
 
                 actualTaxList = OrderList(SortDirection.Ascending, actualTaxList, tax => tax.Year);
 
-                Assert.Equal(expectedTaxList, actualTaxList);
+                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
+                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
+
+                Assert.Equal(expectedTaxListString, actualTaxListString);
             }
         }
 
-        [Fact]
-        public void OrderList_TwoTaxesExist_ReturnsDescendingSortedListByYear()
+        [Theory]
+        [InlineData(2020, 2021)]
+        [InlineData(0, 1)]
+        [InlineData(7, 10023)]
+        [InlineData(1, 3)]
+        public void OrderList_TwoTaxesExist_ReturnsDescendingSortedListByYear(int year1, int year2)
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
@@ -45,11 +57,11 @@ namespace Energy_Saver.Tests
 
                 Taxes tax1 = new Taxes
                 {
-                    Year = 2020,
+                    Year = year1,
                 };
                 Taxes tax2 = new Taxes
                 {
-                    Year = 2021,
+                    Year = year2,
                 };
 
                 actualTaxList.Add(tax1);
@@ -60,12 +72,19 @@ namespace Energy_Saver.Tests
 
                 actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Year);
 
-                Assert.Equal(expectedTaxList, actualTaxList);
+                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
+                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
+
+                Assert.Equal(expectedTaxListString, actualTaxListString);
             }
         }
 
-        [Fact]
-        public void OrderList_FourTaxesExist_ReturnsDescendingSortedListByMonth()
+        [Theory]
+        [InlineData(Months.January, Months.March, Months.February, Months.April)]
+        [InlineData(Months.February, Months.November, Months.October, Months.December)]
+        [InlineData(Months.April, Months.August, Months.June, Months.October)]
+        [InlineData(Months.June, Months.September, Months.July, Months.November)]
+        public void OrderList_FourTaxesExist_ReturnsDescendingSortedListByMonth(Months month1, Months month2, Months month3, Months month4)
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
@@ -77,25 +96,25 @@ namespace Energy_Saver.Tests
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.January,
+                        Month = month1,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.April,
+                        Month = month2,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.February,
+                        Month = month3,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.July,
+                        Month = month4,
                     }
                 };
 
@@ -111,12 +130,19 @@ namespace Energy_Saver.Tests
 
                 actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Month);
 
-                Assert.Equal(expectedTaxList, actualTaxList);
+                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
+                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
+
+                Assert.Equal(expectedTaxListString, actualTaxListString);
             }
         }
 
-        [Fact]
-        public void OrderList_FiveTaxesExist_ReturnsAscendingSortedListByMonth()
+        [Theory]
+        [InlineData(Months.May, Months.April, Months.March, Months.February, Months.January)]
+        [InlineData(Months.December, Months.November, Months.October, Months.September, Months.August)]
+        [InlineData(Months.November, Months.August, Months.June, Months.April, Months.January)]
+        [InlineData(Months.December, Months.September, Months.July, Months.April, Months.March)]
+        public void OrderList_FiveTaxesExist_ReturnsAscendingSortedListByMonth(Months month1, Months month2, Months month3, Months month4, Months month5)
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
@@ -128,31 +154,31 @@ namespace Energy_Saver.Tests
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.August,
+                        Month = month1,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.April,
+                        Month = month2,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.February,
+                        Month = month3,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.July,
+                        Month = month4,
                     },
 
                     new Taxes
                     {
                         Year = 2020,
-                        Month = Months.January,
+                        Month = month5,
                     }
                 };
 
@@ -162,14 +188,17 @@ namespace Energy_Saver.Tests
                 }
 
                 expectedTaxList.Add(taxList[4]);
+                expectedTaxList.Add(taxList[3]);
                 expectedTaxList.Add(taxList[2]);
                 expectedTaxList.Add(taxList[1]);
-                expectedTaxList.Add(taxList[3]);
                 expectedTaxList.Add(taxList[0]);
 
                 actualTaxList = OrderList(SortDirection.Ascending, actualTaxList, taxes => taxes.Month);
 
-                Assert.Equal(expectedTaxList, actualTaxList);
+                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
+                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
+
+                Assert.Equal(expectedTaxListString, actualTaxListString);
             }
         }
     }

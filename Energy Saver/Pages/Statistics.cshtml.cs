@@ -111,7 +111,7 @@ namespace Energy_Saver.Pages
             return flattenedList;
         }
 
-        private List<DataWithLabel> CreateDataForMonthChart(Months month, int year)
+        public List<DataWithLabel> CreateDataForMonthChart(Months month, int year)
         {
             var monthData = new List<DataWithLabel>();
 

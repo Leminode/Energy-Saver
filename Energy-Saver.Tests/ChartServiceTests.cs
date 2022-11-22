@@ -7,29 +7,14 @@ using Energy_Saver.DataSpace;
 using Energy_Saver.Pages;
 using Energy_Saver.Services;
 using Energy_Saver.Model;
+using ChartJSCore.Helpers;
+using Newtonsoft.Json;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace Energy_Saver.Tests
 {
     public class ChartServiceTests
     {
-        [Fact]
-        public void GetTaxesFromDatabaseTest()
-        {
-            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
-            {
-                ChartService chartService = new ChartService();
-
-                StatisticsModel mod = new StatisticsModel(chartService, db);
-
-                List<List<Taxes>> tax = new List<List<Taxes>>();
-
-                tax = mod.GetTaxesFromDatabase();
-
-                Assert.Equal(new List<List<Taxes>>{ }, tax);
-            }
-            
-        }
-
         [Fact]
         public void GenerateMonthsLabelsTest()
         {
@@ -69,11 +54,44 @@ namespace Energy_Saver.Tests
         }
 
         [Fact]
-        public void CreateDataForYearChartTest()
+        public void CreateDataForYearChart_FourTaxesAndDataWithLabels_ReturnsEqualsTaxesAndDataWithLabels()
         {
             using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
             {
-                Taxes[] taxList = new Taxes[]
+                ChartService chartService = new ChartService();
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+
+                List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
+                {
+                    new ChartService.DataWithLabel
+                    {
+                        Label = ChartService.FilterTypes.Gas.ToString(),
+                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                    },
+
+                    new ChartService.DataWithLabel
+                    {
+                        Label = ChartService.FilterTypes.Electricity.ToString(),
+                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                    },
+
+                    new ChartService.DataWithLabel
+                    {
+                        Label = ChartService.FilterTypes.Water.ToString(),
+                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                    },
+
+                    new ChartService.DataWithLabel
+                    {
+                        Label = ChartService.FilterTypes.Heating.ToString(),
+                        Data = new List <double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                    }
+                };
+
+                statisticsModel.Taxes = new List<List<Taxes>>();
+
+                List<Taxes> taxList = new List<Taxes>
                 {
                     new Taxes
                     {
@@ -115,19 +133,96 @@ namespace Energy_Saver.Tests
                         HeatingAmount = 1
                     }
                 };
+
+                statisticsModel.Taxes.Add(taxList);
+
+                var actualData = statisticsModel.CreateDataForYearChart(2020);
+
+                var expectedDataString = JsonConvert.SerializeObject(expectedData);
+                var actualDataString = JsonConvert.SerializeObject(actualData);
+
+                Assert.Equal(expectedDataString, actualDataString);
+            }
+        }
+
+        [Theory]
+        [InlineData(Months.January, 1, 1, 1, 1)]
+        [InlineData(Months.December, 321, 543, 82, 9832)]
+        [InlineData(Months.October, 98.9, 98.1, 732.1, 89.2)]
+        [InlineData(Months.July, 0, 0, 0, 0)]
+        public void CreateDataForMonthChart_SingleTaxAndDataWithLabel_ReturnsEqualTaxAndDataWithLabel(Months month, decimal gas, decimal electricity, decimal water, decimal heating)
+        {
+            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+            {
                 ChartService chartService = new ChartService();
 
-                List<ChartService.DataWithLabel> expectedMonths = new List<ChartService.DataWithLabel>();
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
 
+                List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
+                {
+                    new ChartService.DataWithLabel
+                    {
+                        Label = Months.January.ToString(),
+                        Data = new List<double?> { (double)gas, (double)electricity, (double)water, (double)heating }
+                    }
+                };
 
+                statisticsModel.Taxes = new List<List<Taxes>>();
 
-                StatisticsModel mod = new StatisticsModel(chartService, db);
-                var actualMonths = mod.CreateDataForYearChart(2022);
+                List<Taxes> taxList = new List<Taxes>
+                {
+                    new Taxes
+                    {
+                        Year = 2020,
+                        Month = Months.January,
+                        GasAmount = gas,
+                        ElectricityAmount = electricity,
+                        WaterAmount = water,
+                        HeatingAmount = heating
+                    },
+                };
 
-                
+                statisticsModel.Taxes.Add(taxList);
 
-                //Assert.Equal(expectedMonths, actualMonths);
+                List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForMonthChart(Months.January, 2020);
+
+                var expectedDataString = JsonConvert.SerializeObject(expectedData);
+                var actualDataString = JsonConvert.SerializeObject(actualData);
+
+                Assert.Equal(expectedDataString, actualDataString);
             }
+        }
+
+        [Fact]
+        public void GetRandomChartColorTest()
+        {
+            int actualColor;
+            ChartColor chartColor;
+
+            float[] luminance = new float[2];
+
+            int[] r = new int[2];
+            int[] g = new int[2];
+            int[] b = new int[2];
+
+            ChartService chartService = new ChartService();
+
+            for(int i = 0; i < 2; i++)
+            {
+                chartColor = chartService.GetRandomChartColor();
+
+                r[i] = chartColor.Red;
+                g[i] = chartColor.Green;
+                b[i] = chartColor.Blue;
+            } 
+
+            r[0] -= r[1];
+            g[0] -= g[1];
+            b[0] -= b[1];
+
+            actualColor = Math.Abs(r[0] + g[0] + b[0]);
+
+            Assert.True(actualColor <= 50);
         }
     }
 }

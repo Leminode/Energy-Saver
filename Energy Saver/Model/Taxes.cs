@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Energy_Saver.Model
 {
     [Table("taxes")]
-    public class Taxes// : IComparable<Taxes>
+    public class Taxes : IComparable<Taxes>
     {
         [Column("id")]
         public int ID { get; set; }
@@ -43,14 +43,14 @@ namespace Energy_Saver.Model
         [Display(Name = "Heating amount")]
         public decimal HeatingAmount { get; set; }
 
-        //public int CompareTo(Taxes other)
-        //{
-        //    if (this.Year == other.Year)
-        //        return 0;
-        //    else if (this.Year < other.Year)
-        //        return -1;
-        //    else
-        //        return 1;
-        //}
+        public int CompareTo(Taxes other)
+        {
+            if (this.Year == other.Year)
+                return 0;
+            else if (this.Year < other.Year)
+                return -1;
+            else
+                return 1;
+        }
     }
 }

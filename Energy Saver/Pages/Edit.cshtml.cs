@@ -10,6 +10,8 @@ using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
 using Energy_Saver.Services;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Energy_Saver.Pages
 {
@@ -55,7 +57,7 @@ namespace Energy_Saver.Pages
             }
             catch (Exception)
             {
-                OnTaxGetError();
+                OnTaxEditError("There has been an error when conneting to the database");
                 return RedirectToPage("./Index");
             }
         }
@@ -67,6 +69,23 @@ namespace Energy_Saver.Pages
                 return Page();
             }
 
+            try
+            {
+                var temp = await _context.Taxes.FirstOrDefaultAsync(m => m.ID != Taxes.ID && m.UserID == Taxes.UserID
+                && m.Year == Taxes.Year && m.Month == Taxes.Month);
+
+                if (temp != null)
+                {
+                    OnTaxEditError("The selected year and month already exist in your tax list");
+                    return RedirectToPage("./Index");
+                }
+            }
+            catch (Exception)
+            {
+                OnTaxEditError("There has been an error when conneting to the database");
+                return RedirectToPage("./Index");
+            }
+
             _context.Attach(Taxes).State = EntityState.Modified;
 
             try
@@ -76,7 +95,7 @@ namespace Energy_Saver.Pages
             }
             catch (DbUpdateException)
             {
-                OnTaxEditError();
+                OnTaxEditError("Could not edit tax record");
             }
 
             return RedirectToPage("./Index");
@@ -91,18 +110,13 @@ namespace Energy_Saver.Pages
             });
         }
 
-        protected virtual void OnTaxEditError()
+        protected virtual void OnTaxEditError(string errorMessage)
         {
             EditTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
-                Message = "Could not edit tax record", 
+                Message = errorMessage, 
                 Type = NotificationService.NotificationType.Error 
             });
-        }
-
-        protected virtual void OnTaxGetError()
-        {
-            EditTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs { Message = "Could not retrieve tax list", Type = NotificationService.NotificationType.Error });
         }
     }
 }

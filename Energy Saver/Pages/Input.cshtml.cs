@@ -37,12 +37,29 @@ namespace Energy_Saver.Pages
         {
             if (!ModelState.IsValid)
             {
-                OnTaxInputError();
+                OnTaxInputError("An error has occured");
                 return Page();
             }
 
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
-            Taxes.UserID = int.Parse(tempString);
+            int userID = int.Parse(tempString);
+            Taxes.UserID = userID;
+
+            try
+            {
+                var temp = await _context.Taxes.FirstOrDefaultAsync(t => t.UserID == userID && t.Year == Taxes.Year && t.Month == Taxes.Month);
+
+                if (temp != null)
+                {
+                    OnTaxInputError("The selected year and month already exist in your tax list");
+                    return RedirectToPage("./Index");
+                }
+            }
+            catch (Exception)
+            {
+                OnTaxInputError("There has been an error when connecting to the database.");
+                return RedirectToPage("./Index");
+            }
 
             _context.Taxes.Add(Taxes);
 
@@ -53,7 +70,7 @@ namespace Energy_Saver.Pages
             } 
             catch(DbUpdateException)
             {
-                OnTaxInputError();
+                OnTaxInputError("Could not write enrty. Please try again.");
             }
 
             return RedirectToPage("./Index");
@@ -68,11 +85,11 @@ namespace Energy_Saver.Pages
             });
         }
 
-        protected virtual void OnTaxInputError()
+        protected virtual void OnTaxInputError(string errorMessage)
         {
             InputTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs
             {
-                Message = "Could not add tax record",
+                Message = errorMessage,
                 Type = NotificationService.NotificationType.Error
             });
         }

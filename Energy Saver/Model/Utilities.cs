@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Energy_Saver.Model
 {
-    public static class Serialization
+    public static class Utilities
     {
         private static string path = "Resources/Taxes.json";
 

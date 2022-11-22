@@ -1,7 +1,7 @@
 using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using Newtonsoft.Json;
-using static Energy_Saver.Model.Serialization;
+using static Energy_Saver.Model.Utilities;
 
 namespace Energy_Saver.Tests
 {

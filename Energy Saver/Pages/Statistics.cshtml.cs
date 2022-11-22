@@ -5,7 +5,7 @@ using Energy_Saver.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
-using static Energy_Saver.Model.Serialization;
+using static Energy_Saver.Model.Utilities;
 using static Energy_Saver.Services.ChartService;
 
 namespace Energy_Saver.Pages

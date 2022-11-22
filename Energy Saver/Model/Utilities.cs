@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Energy_Saver.Model
 {
-    public static class Serialization
+    public static class Utilities
     {
         public static List<T> OrderList<T, U>(SortDirection sortDirection, List<T> data, Func<T, U> sortBy)
         {

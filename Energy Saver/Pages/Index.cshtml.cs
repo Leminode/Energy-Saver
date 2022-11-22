@@ -4,7 +4,7 @@ using Energy_Saver.DataSpace;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using static Energy_Saver.Model.Serialization;
+using static Energy_Saver.Model.Utilities;
 using System.Security.Claims;
 
 namespace Energy_Saver.Pages

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Energy_Saver.DataSpace;
+﻿using Energy_Saver.DataSpace;
 using Energy_Saver.Pages;
 using Energy_Saver.Services;
 using Energy_Saver.Model;
 using ChartJSCore.Helpers;
 using Newtonsoft.Json;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using Moq;
+using NToastNotify;
 
 namespace Energy_Saver.Tests
 {
@@ -22,10 +18,15 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object); 
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
+
                 List<string> expectedMonths = new List<string>();
 
-                StatisticsModel mod = new StatisticsModel(chartService, db);
-                var actualMonths = mod.GenerateMonthsLabels();
+                var actualMonths = statisticsModel.GenerateMonthsLabels();
 
                 foreach (Months month in Enum.GetValues(typeof(Months)))
                 {
@@ -41,10 +42,15 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object);
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
+
                 List<string> expectedMonths = new List<string>();
 
-                StatisticsModel mod = new StatisticsModel(chartService, db);
-                var actualMonths = mod.GenerateTaxLabels();
+                var actualMonths = statisticsModel.GenerateTaxLabels();
 
                 foreach (ChartService.FilterTypes filterTypes in Enum.GetValues(typeof(ChartService.FilterTypes)))
                 {
@@ -60,7 +66,11 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object);
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
                 List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
                 {
@@ -156,7 +166,11 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object);
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
                 List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
                 {

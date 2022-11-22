@@ -7,7 +7,7 @@ namespace Energy_Saver.Services
         public List<List<Taxes>> GetTableContents()
         {
 
-            List<List<Taxes>> temp = Serialization.ReadFromFile();
+            List<List<Taxes>> temp = Utilities.ReadFromFile();
 
             return temp;
         }
@@ -16,15 +16,15 @@ namespace Energy_Saver.Services
         {
             List<List<Taxes>> taxes;
 
-            taxes = Serialization.ReadFromFile();
+            taxes = Utilities.ReadFromFile();
             taxes[yearIndex].RemoveAt(monthIndex);
 
-            Serialization.WriteText(taxes.SelectMany(list => list).Distinct().ToList());
+            Utilities.WriteText(taxes.SelectMany(list => list).Distinct().ToList());
         }
 
         public void AddEntry(Taxes taxes)
         {
-            Serialization.WriteEntryToFile(taxes);
+            Utilities.WriteEntryToFile(taxes);
         }
     }
 }

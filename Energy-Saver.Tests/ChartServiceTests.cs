@@ -67,7 +67,7 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                var mock = new Mock<IToastNotification>();
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
 
                 NotificationService notificationService = new NotificationService(mock.Object);
 
@@ -167,7 +167,7 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                var mock = new Mock<IToastNotification>();
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
 
                 NotificationService notificationService = new NotificationService(mock.Object);
 

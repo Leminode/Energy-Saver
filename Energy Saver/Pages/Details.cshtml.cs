@@ -26,7 +26,7 @@ namespace Energy_Saver.Pages
             TaxesDetailsHandler += _notificationService.CreateNotification;
         }
 
-        public Taxes Taxes { get; set; }
+        public Taxes? Taxes { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -39,19 +39,27 @@ namespace Energy_Saver.Pages
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             int userID = int.Parse(tempString);
 
-            var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
+            try
+            {
+                var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
 
-            if (taxes == null)
+                if (taxes == null)
+                {
+                    OnTaxesNotFound();
+                    return RedirectToPage("./Index");
+                }
+                else
+                {
+                    Taxes = taxes;
+                }
+
+                return Page();
+            }
+            catch (Exception)
             {
                 OnTaxesNotFound();
                 return RedirectToPage("./Index");
             }
-            else 
-            {
-                Taxes = taxes;
-            }
-
-            return Page();
         }
 
         protected virtual void OnTaxesNotFound()

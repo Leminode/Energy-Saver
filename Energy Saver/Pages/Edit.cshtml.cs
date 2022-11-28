@@ -10,6 +10,8 @@ using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
 using Energy_Saver.Services;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Energy_Saver.Pages
 {
@@ -34,22 +36,30 @@ namespace Energy_Saver.Pages
         {
             if (id == null || _context.Taxes == null)
             {
-                return RedirectToPage("./Index");
+                return NotFound();
             }
 
             var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
             int userID = int.Parse(tempString);
 
-            var taxes =  await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
-
-            if (taxes == null)
+            try
             {
+                var taxes = await _context.Taxes.FirstOrDefaultAsync(m => m.ID == id && m.UserID == userID);
+
+                if (taxes == null)
+                {
+                    return NotFound();
+                }
+
+                Taxes = taxes;
+
+                return Page();
+            }
+            catch (Exception)
+            {
+                OnTaxEditError("There has been an error when conneting to the database");
                 return RedirectToPage("./Index");
             }
-
-            Taxes = taxes;
-
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -59,6 +69,23 @@ namespace Energy_Saver.Pages
                 return Page();
             }
 
+            try
+            {
+                var temp = await _context.Taxes.FirstOrDefaultAsync(m => m.ID != Taxes.ID && m.UserID == Taxes.UserID
+                && m.Year == Taxes.Year && m.Month == Taxes.Month);
+
+                if (temp != null)
+                {
+                    OnTaxEditError("The selected year and month already exist in your tax list");
+                    return RedirectToPage("./Index");
+                }
+            }
+            catch (Exception)
+            {
+                OnTaxEditError("There has been an error when conneting to the database");
+                return RedirectToPage("./Index");
+            }
+
             _context.Attach(Taxes).State = EntityState.Modified;
 
             try
@@ -66,25 +93,12 @@ namespace Energy_Saver.Pages
                 await _context.SaveChangesAsync();
                 OnTaxEditSuccess();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateException)
             {
-                if (!TaxesExists(Taxes.ID))
-                {
-                    OnTaxEditError();
-                    return RedirectToPage("./Index");
-                }
-                else
-                {
-                    throw;
-                }
+                OnTaxEditError("Could not edit tax record");
             }
 
             return RedirectToPage("./Index");
-        }
-
-        private bool TaxesExists(int id)
-        {
-            return _context.Taxes.Any(e => e.ID == id);
         }
 
         protected virtual void OnTaxEditSuccess()
@@ -96,11 +110,11 @@ namespace Energy_Saver.Pages
             });
         }
 
-        protected virtual void OnTaxEditError()
+        protected virtual void OnTaxEditError(string errorMessage)
         {
             EditTaxesHandler?.Invoke(this, new NotificationService.NotificationArgs 
             { 
-                Message = "Could not edit tax record", 
+                Message = errorMessage, 
                 Type = NotificationService.NotificationType.Error 
             });
         }

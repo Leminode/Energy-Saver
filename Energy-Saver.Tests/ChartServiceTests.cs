@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Energy_Saver.DataSpace;
+﻿using Energy_Saver.DataSpace;
 using Energy_Saver.Pages;
 using Energy_Saver.Services;
 using Energy_Saver.Model;
 using ChartJSCore.Helpers;
 using Newtonsoft.Json;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using Moq;
+using NToastNotify;
+using ChartJSCore.Models;
 
 namespace Energy_Saver.Tests
 {
@@ -22,10 +19,15 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object); 
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
+
                 List<string> expectedMonths = new List<string>();
 
-                StatisticsModel mod = new StatisticsModel(chartService, db);
-                var actualMonths = mod.GenerateMonthsLabels();
+                var actualMonths = statisticsModel.GenerateMonthsLabels();
 
                 foreach (Months month in Enum.GetValues(typeof(Months)))
                 {
@@ -41,10 +43,15 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object);
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
+
                 List<string> expectedMonths = new List<string>();
 
-                StatisticsModel mod = new StatisticsModel(chartService, db);
-                var actualMonths = mod.GenerateTaxLabels();
+                var actualMonths = statisticsModel.GenerateTaxLabels();
 
                 foreach (ChartService.FilterTypes filterTypes in Enum.GetValues(typeof(ChartService.FilterTypes)))
                 {
@@ -60,7 +67,11 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object);
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
                 List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
                 {
@@ -156,7 +167,11 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+                var mock = new Mock<IToastNotification>();
+
+                NotificationService notificationService = new NotificationService(mock.Object);
+
+                StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
                 List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
                 {
@@ -223,6 +238,102 @@ namespace Energy_Saver.Tests
             actualColor = Math.Abs(r[0] + g[0] + b[0]);
 
             Assert.True(actualColor <= 50);
+        }
+
+        [Fact]
+        public void CreateNewBarDatasetTest()
+        {
+            ChartService chartService = new ChartService();
+
+            List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
+
+            var actualBarDataset = chartService.CreateNewBarDataset(data, "Gas");
+
+            BarDataset expectedBarDataSet = new BarDataset()
+            {
+                Label = "Gas",
+                Data = data,
+                BackgroundColor = actualBarDataset.BackgroundColor,
+                BorderColor = actualBarDataset.BorderColor,
+                BorderWidth = new List<int>() { 1 },
+                BarPercentage = 0.5
+            };
+
+            var expectedBarDatasetString = JsonConvert.SerializeObject(expectedBarDataSet);
+            var actualBarDatasetString = JsonConvert.SerializeObject(actualBarDataset);
+
+            Assert.Equal(expectedBarDatasetString, actualBarDatasetString);
+        }
+
+        [Fact]
+        public void CreateNewLineDatasetTest()
+        {
+            ChartService chartService = new ChartService();
+
+            List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
+
+            var actualLineDataset = chartService.CreateNewLineDataset(data, "Gas");
+
+            LineDataset expectedLineDataSet = new LineDataset()
+            {
+                Label = "Gas",
+                Data = data,
+                Fill = "false",
+                Tension = 0.1,
+                BackgroundColor = actualLineDataset.BackgroundColor,
+                BorderColor = actualLineDataset.BorderColor,
+                BorderCapStyle = "butt",
+                BorderDash = new List<int>(),
+                BorderDashOffset = 0.0,
+                BorderJoinStyle = "miter",
+                PointBorderColor = actualLineDataset.PointBorderColor,
+                PointBackgroundColor = actualLineDataset.PointBackgroundColor,
+                PointBorderWidth = new List<int> { 1 },
+                PointHoverRadius = new List<int> { 5 },
+                PointHoverBackgroundColor = actualLineDataset.PointHoverBackgroundColor,
+                PointHoverBorderColor = actualLineDataset.PointHoverBorderColor,
+                PointHoverBorderWidth = new List<int> { 2 },
+                PointRadius = new List<int> { 1 },
+                PointHitRadius = new List<int> { 10 },
+                SpanGaps = false
+            };
+
+            var expectedLineDatasetString = JsonConvert.SerializeObject(expectedLineDataSet);
+            var actualLineDatasetString = JsonConvert.SerializeObject(actualLineDataset);
+
+            Assert.Equal(expectedLineDatasetString, actualLineDatasetString);
+        }
+
+        [Fact]
+        public void CreateChartTest()
+        {
+            ChartService chartService = new ChartService();
+
+            List<double?> data = new List<double?>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+            List<string> labels = new List<string>();
+
+            foreach(Months month in Enum.GetValues(typeof(Months)))
+            {
+                labels.Add(month.ToString());
+            }
+
+            List<ChartService.DataWithLabel> tableData = new List<ChartService.DataWithLabel>()
+            {
+                new ChartService.DataWithLabel()
+                {
+                    Label = "Gas",
+                    Data = data
+                }
+            };
+
+            Chart actualChart = chartService.CreateChart(ChartJSCore.Models.Enums.ChartType.Line, tableData, labels);
+
+            Chart expectedChart = new Chart();
+
+            expectedChart.Type = ChartJSCore.Models.Enums.ChartType.Line;
+
+            
         }
     }
 }

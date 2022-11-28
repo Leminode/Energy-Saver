@@ -1,5 +1,4 @@
-﻿using Energy_Saver.DataSpace;
-using Energy_Saver.Model;
+﻿using Energy_Saver.Model;
 using Energy_Saver.Services;
 using Moq;
 using Newtonsoft.Json;
@@ -250,6 +249,68 @@ namespace Energy_Saver.Tests
 
                 Assert.Equal(expectedTaxListString, actualTaxListString);
             }
+        }
+
+        [Fact]
+        public void CheckForZerosTest_TwoTaxesNotZero_ReturnsTrue()
+        {
+            SuggestionsService suggestionsService = new SuggestionsService(); ;
+
+            List<Taxes> list = new List<Taxes>()
+            {
+                new Taxes
+                {
+                    ID = 1,
+                    UserID = 4,
+                    Year = 2020,
+                    GasAmount = 1,
+                    ElectricityAmount = 1,
+                    WaterAmount = 1,
+                    HeatingAmount = 1
+                },
+                new Taxes
+                {
+                    ID = 2,
+                    UserID = 4,
+                    Year = 2021,
+                    GasAmount = 2,
+                    ElectricityAmount = 2,
+                    WaterAmount = 2,
+                    HeatingAmount = 2
+                }
+            };
+
+            Assert.True(suggestionsService.CheckForZeros(list));
+        }
+
+        [Theory]
+        [InlineData(1, 0, 0, 0)]
+        [InlineData(0, 1, 0, 0)]
+        [InlineData(0, 0, 1, 0)]
+        [InlineData(0, 0, 0, 1)]
+        public void CheckForZerosTest_TwoTaxZero_ReturnsFalse(decimal gas, decimal electricity, decimal water, decimal heating)
+        {
+            SuggestionsService suggestionsService = new SuggestionsService(); ;
+
+            List<Taxes> list = new List<Taxes>()
+            {
+                new Taxes
+                {
+                    GasAmount = 100,
+                    ElectricityAmount = 90.2M,
+                    WaterAmount = 23,
+                    HeatingAmount = 0
+                },
+                new Taxes
+                {
+                    GasAmount = gas,
+                    ElectricityAmount = electricity,
+                    WaterAmount = water,
+                    HeatingAmount = heating
+                }
+            };
+
+            Assert.False(suggestionsService.CheckForZeros(list));
         }
     }
 }

@@ -4,7 +4,6 @@ namespace Energy_Saver.Services
 {
     public class SuggestionsService : ISuggestionsService
     {
-
         public List<decimal> GetLatestTaxComparison(List<List<Taxes>> taxes)
         {
             List<Taxes> list = taxes.SelectMany(x => x).ToList();

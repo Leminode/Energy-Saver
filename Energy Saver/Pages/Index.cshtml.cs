@@ -45,7 +45,7 @@ namespace Energy_Saver.Pages
                 }
                 catch (Exception)
                 {
-                    return NotFound();
+                    return RedirectToPage("./Index");
                 }
             }
 

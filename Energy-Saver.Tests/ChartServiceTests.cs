@@ -31,8 +31,10 @@ namespace Energy_Saver.Tests
 
                 foreach (Months month in Enum.GetValues(typeof(Months)))
                 {
-                    Assert.Equal(month.ToString(), actualMonths.ElementAt((int)month - 1));
+                    expectedMonths.Add(month.ToString());
                 }
+
+                Assert.Equal(expectedMonths, actualMonths);
             }
         }
 
@@ -49,14 +51,16 @@ namespace Energy_Saver.Tests
 
                 StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
-                List<string> expectedMonths = new List<string>();
+                List<string> expectedTaxLabels = new List<string>();
 
-                var actualMonths = statisticsModel.GenerateTaxLabels();
+                var actualTaxLabels = statisticsModel.GenerateTaxLabels();
 
                 foreach (ChartService.FilterTypes filterTypes in Enum.GetValues(typeof(ChartService.FilterTypes)))
                 {
-                    Assert.Equal(filterTypes.ToString(), actualMonths.ElementAt((int)filterTypes));
+                    expectedTaxLabels.Add(filterTypes.ToString());
                 }
+
+                Assert.Equal(expectedTaxLabels, actualTaxLabels);
             }
         }
 
@@ -67,85 +71,86 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+                var mock = new Mock<IToastNotification>();
 
                 NotificationService notificationService = new NotificationService(mock.Object);
 
                 StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
+
+                List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
 
                 List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
                 {
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Gas.ToString(),
-                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     },
 
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Electricity.ToString(),
-                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     },
 
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Water.ToString(),
-                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     },
 
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Heating.ToString(),
-                        Data = new List <double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     }
                 };
 
-                statisticsModel.Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>
+                statisticsModel.Taxes = new List<List<Taxes>>()
                 {
-                    new Taxes
+                    new List<Taxes>()
                     {
-                        Year = 2020,
-                        Month = Months.January,
-                        GasAmount = 4,
-                        ElectricityAmount = 4,
-                        WaterAmount = 4,
-                        HeatingAmount = 4
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.January,
+                            GasAmount = 4,
+                            ElectricityAmount = 4,
+                            WaterAmount = 4,
+                            HeatingAmount = 4
+                        },
 
-                    new Taxes
-                    {
-                        Year = 2020,
-                        Month = Months.February,
-                        GasAmount = 3,
-                        ElectricityAmount = 3,
-                        WaterAmount = 3,
-                        HeatingAmount = 3
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.February,
+                            GasAmount = 3,
+                            ElectricityAmount = 3,
+                            WaterAmount = 3,
+                            HeatingAmount = 3
+                        },
 
-                    new Taxes
-                    {
-                        Year = 2020,
-                        Month = Months.March,
-                        GasAmount = 2,
-                        ElectricityAmount = 2,
-                        WaterAmount = 2,
-                        HeatingAmount = 2
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.March,
+                            GasAmount = 2,
+                            ElectricityAmount = 2,
+                            WaterAmount = 2,
+                            HeatingAmount = 2
+                        },
 
-                    new Taxes
-                    {
-                        Year = 2020,
-                        Month = Months.July,
-                        GasAmount = 1,
-                        ElectricityAmount = 1,
-                        WaterAmount = 1,
-                        HeatingAmount = 1
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.July,
+                            GasAmount = 1,
+                            ElectricityAmount = 1,
+                            WaterAmount = 1,
+                            HeatingAmount = 1
+                        }
                     }
                 };
-
-                statisticsModel.Taxes.Add(taxList);
 
                 var actualData = statisticsModel.CreateDataForYearChart(2020);
 
@@ -167,7 +172,7 @@ namespace Energy_Saver.Tests
             {
                 ChartService chartService = new ChartService();
 
-                StatisticsModel statisticsModel = new StatisticsModel(chartService, db);
+                var mock = new Mock<IToastNotification>();
 
                 NotificationService notificationService = new NotificationService(mock.Object);
 
@@ -177,29 +182,28 @@ namespace Energy_Saver.Tests
                 {
                     new ChartService.DataWithLabel
                     {
-                        Label = Months.January.ToString(),
+                        Label = month.ToString(),
                         Data = new List<double?> { (double)gas, (double)electricity, (double)water, (double)heating }
                     }
                 };
 
-                statisticsModel.Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>
+                statisticsModel.Taxes = new List<List<Taxes>>()
                 {
-                    new Taxes
+                    new List<Taxes>()
                     {
-                        Year = 2020,
-                        Month = Months.January,
-                        GasAmount = gas,
-                        ElectricityAmount = electricity,
-                        WaterAmount = water,
-                        HeatingAmount = heating
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = month,
+                            GasAmount = gas,
+                            ElectricityAmount = electricity,
+                            WaterAmount = water,
+                            HeatingAmount = heating
+                        }
+                    }
                 };
 
-                statisticsModel.Taxes.Add(taxList);
-
-                List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForMonthChart(Months.January, 2020);
+                List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForMonthChart(month, 2020);
 
                 var expectedDataString = JsonConvert.SerializeObject(expectedData);
                 var actualDataString = JsonConvert.SerializeObject(actualData);
@@ -213,8 +217,6 @@ namespace Energy_Saver.Tests
         {
             int actualColor;
             ChartColor chartColor;
-
-            float[] luminance = new float[2];
 
             int[] r = new int[2];
             int[] g = new int[2];
@@ -332,8 +334,6 @@ namespace Energy_Saver.Tests
             Chart expectedChart = new Chart();
 
             expectedChart.Type = ChartJSCore.Models.Enums.ChartType.Line;
-
-            
         }
     }
 }

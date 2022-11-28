@@ -1,4 +1,5 @@
-﻿using Energy_Saver.Model;
+﻿using Energy_Saver.DataSpace;
+using Energy_Saver.Model;
 using Energy_Saver.Services;
 using Moq;
 using Newtonsoft.Json;
@@ -10,26 +11,16 @@ namespace Energy_Saver.Tests
         [Fact]
         public void GetLatestTaxComparison_NoTaxesExist_ReturnsEmptyList()
         {
-            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
-            {
-                SuggestionsService suggestionsService = new SuggestionsService();
+            SuggestionsService suggestionsService = new SuggestionsService();
 
-                List<decimal> expectedTaxList = new List<decimal>();
-                List<decimal> actualTaxList = new List<decimal>();
+            List<decimal> actualTaxList = new List<decimal>();
 
-                List<List<Taxes>> Taxes = new List<List<Taxes>>();
+            actualTaxList = suggestionsService.GetLatestTaxComparison(new List<List<Taxes>>());
 
-                var mock = new Mock<ISuggestionsService>();
-                mock.Setup(s => s.GetLatestTaxComparison(Taxes)).Returns(() => new List<decimal> {});
+            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { });
+            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
 
-                expectedTaxList = mock.Object.GetLatestTaxComparison(Taxes);
-                actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
-
-                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-                Assert.Equal(expectedTaxListString, actualTaxListString);
-            }
+            Assert.Equal(expectedTaxListString, actualTaxListString);
         }
 
         [Theory]
@@ -39,16 +30,13 @@ namespace Energy_Saver.Tests
         [InlineData(0, 0, 0, 1)]
         public void GetLatestTaxComparison_AnyTaxEqualsZero_ReturnsEmptyList(decimal gas, decimal electricity, decimal water, decimal heating)
         {
-            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+            SuggestionsService suggestionsService = new SuggestionsService();
+
+            List<decimal> actualTaxList = new List<decimal>();
+
+            List<List<Taxes>> Taxes = new List<List<Taxes>>()
             {
-                SuggestionsService suggestionsService = new SuggestionsService();
-
-                List<decimal> expectedTaxList = new List<decimal>();
-                List<decimal> actualTaxList = new List<decimal>();
-
-                List<List<Taxes>> Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>()
+                new List<Taxes>()
                 {
                     new Taxes
                     {
@@ -60,19 +48,15 @@ namespace Energy_Saver.Tests
                         WaterAmount = water,
                         HeatingAmount = heating
                     }
-                };
+                }
+            };
 
-                var mock = new Mock<ISuggestionsService>();
-                mock.Setup(s => s.GetLatestTaxComparison(Taxes)).Returns(() => new List<decimal> { });
+            actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-                expectedTaxList = mock.Object.GetLatestTaxComparison(Taxes);
-                actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
+            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { });
+            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
 
-                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-                Assert.Equal(expectedTaxListString, actualTaxListString);
-            }
+            Assert.Equal(expectedTaxListString, actualTaxListString);
         }
 
         [Theory]
@@ -82,16 +66,13 @@ namespace Energy_Saver.Tests
         [InlineData(78, 150, 44, 100, 39, 75, 22, 50)]
         public void GetLatestTaxComparison_TwoTaxesExist_ReturnsPositivePercent(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
         {
-            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+            SuggestionsService suggestionsService = new SuggestionsService();
+
+            List<decimal> actualTaxList = new List<decimal>();
+
+            List<List<Taxes>> Taxes = new List<List<Taxes>>()
             {
-                SuggestionsService suggestionsService = new SuggestionsService();
-
-                List<decimal> expectedTaxList = new List<decimal>();
-                List<decimal> actualTaxList = new List<decimal>();
-
-                List<List<Taxes>> Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>()
+                new List<Taxes>()
                 {
                     new Taxes
                     {
@@ -113,21 +94,15 @@ namespace Energy_Saver.Tests
                         WaterAmount = water2,
                         HeatingAmount = heating2
                     }
-                };
+                }
+            };
 
-                Taxes.Add(taxList);
+            actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-                var mock = new Mock<ISuggestionsService>();
-                mock.Setup(s => s.GetLatestTaxComparison(Taxes)).Returns(() => new List<decimal> { 100, 100, 100, 100 });
+            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { 100, 100, 100, 100 });
+            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
 
-                expectedTaxList = mock.Object.GetLatestTaxComparison(Taxes);
-                actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
-
-                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-                Assert.Equal(expectedTaxListString, actualTaxListString);
-            }
+            Assert.Equal(expectedTaxListString, actualTaxListString);
         }
 
         [Theory]
@@ -137,16 +112,13 @@ namespace Energy_Saver.Tests
         [InlineData(31, 47, 42, 50, 62, 94, 84, 100)]
         public void GetLatestTaxComparison_TwoTaxesExist_ReturnsNegativePercent(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
         {
-            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+            SuggestionsService suggestionsService = new SuggestionsService();
+
+            List<decimal> actualTaxList = new List<decimal>();
+
+            List<List<Taxes>> Taxes = new List<List<Taxes>>()
             {
-                SuggestionsService suggestionsService = new SuggestionsService();
-
-                List<decimal> expectedTaxList = new List<decimal>();
-                List<decimal> actualTaxList = new List<decimal>();
-
-                List<List<Taxes>> Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>()
+                new List<Taxes>()
                 {
                     new Taxes
                     {
@@ -168,21 +140,15 @@ namespace Energy_Saver.Tests
                         WaterAmount = water2,
                         HeatingAmount = heating2
                     }
-                };
+                }
+            };
 
-                Taxes.Add(taxList);
+            actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-                var mock = new Mock<ISuggestionsService>();
-                mock.Setup(s => s.GetLatestTaxComparison(Taxes)).Returns(() => new List<decimal> { -50, -50, -50, -50 });
+            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { -50, -50, -50, -50 });
+            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
 
-                expectedTaxList = mock.Object.GetLatestTaxComparison(Taxes);
-                actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
-
-                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-                Assert.Equal(expectedTaxListString, actualTaxListString);
-            }
+            Assert.Equal(expectedTaxListString, actualTaxListString);
         }
 
         [Theory]
@@ -192,16 +158,13 @@ namespace Energy_Saver.Tests
         [InlineData(142.2, 142.2, 142.2, 142.2)]
         public void GetLatestTaxComparison_ThreeTaxesExist_ReturnsZero(decimal gas, decimal electricity, decimal water, decimal heating)
         {
-            using (var db = new EnergySaverTaxesContext(Utilities.TestDbContextOptions()))
+            SuggestionsService suggestionsService = new SuggestionsService();
+
+            List<decimal> actualTaxList = new List<decimal>();
+
+            List<List<Taxes>> Taxes = new List<List<Taxes>>()
             {
-                SuggestionsService suggestionsService = new SuggestionsService();
-
-                List<decimal> expectedTaxList = new List<decimal>();
-                List<decimal> actualTaxList = new List<decimal>();
-
-                List<List<Taxes>> Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>()
+                new List<Taxes>()
                 {
                     new Taxes
                     {
@@ -234,21 +197,15 @@ namespace Energy_Saver.Tests
                         WaterAmount = 5302,
                         HeatingAmount = 3254
                     }
-                };
+                }
+            };
 
-                Taxes.Add(taxList);
+            actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-                var mock = new Mock<ISuggestionsService>();
-                mock.Setup(s => s.GetLatestTaxComparison(Taxes)).Returns(() => new List<decimal> { 0, 0, 0, 0 });
+            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { 0, 0, 0, 0, });
+            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
 
-                expectedTaxList = mock.Object.GetLatestTaxComparison(Taxes);
-                actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
-
-                var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-                var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-                Assert.Equal(expectedTaxListString, actualTaxListString);
-            }
+            Assert.Equal(expectedTaxListString, actualTaxListString);
         }
 
         [Fact]

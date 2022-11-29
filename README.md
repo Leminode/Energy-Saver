@@ -11,3 +11,9 @@
 - Sukurti leaderboardą naudojant taškų sistemą (?) 
 
 (Inputas tikriausiai bus parsinamas per email'us)
+
+## Test email credentials
+
+Email: __akebabiausius@gmail.com__ 
+
+Password: __nlzcpvxhoypqnjfh__

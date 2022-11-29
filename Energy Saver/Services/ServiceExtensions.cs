@@ -21,5 +21,10 @@
         {
             return services.AddScoped<INotificationService, NotificationService>();
         }
+
+        public static IServiceCollection AddEmailDataExtractorService(this IServiceCollection services)
+        {
+            return services.AddScoped<IEmailDataExtractorService, EmailDataExtractorService>();
+        }
     }
 }

@@ -2,6 +2,8 @@
 using MailKit.Net.Imap;
 using MailKit;
 using MailKit.Search;
+using System.Text.RegularExpressions;
+using System.Net.Mail;
 
 namespace Energy_Saver.Services
 {
@@ -11,7 +13,9 @@ namespace Energy_Saver.Services
         {
             using (var client = new ImapClient())
             {
-                await client.ConnectAsync("imap.gmail.com", 993, true);
+                var imapServer = "imap." + emailAddress.Split("@")[1];
+                
+                await client.ConnectAsync(imapServer, 993, true);
 
                 await client.AuthenticateAsync(emailAddress, password);
 

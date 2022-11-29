@@ -7,11 +7,6 @@
     "mssql2": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:EnergySaverTaxesContext"
-    },
-    "postgresql1": {
-      "type": "postgresql",
-      "connectionId": "DatabaseConnectionString",
-      "dynamicId": null
     }
   }
 }

@@ -17,7 +17,7 @@
         <div class="col-2">
             <div class="form-floating">
                 <select asp-for="Taxes.Year" class="form-control">
-                @for (int i = DateTime.Now.Year; i > 1919; i--)
+                @for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 25; i--)
                 {
                     <option value="@i">@i</option>
                 }

@@ -101,7 +101,15 @@ namespace Energy_Saver.Pages
 
                 foreach (Months month in Enum.GetValues(typeof(Months)))
                 {
-                    double? foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).FirstOrDefault();
+                    double? foundData;
+                    try
+                    {
+                        foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
+                    } catch (Exception)
+                    {
+                        foundData = 0;
+                    }
+                    
                     data.Data.Add(foundData);
                 }
 
@@ -139,7 +147,15 @@ namespace Energy_Saver.Pages
                         break;
                 }
 
-                double? foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).FirstOrDefault();
+                double? foundData;
+                try
+                {
+                    foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
+                }
+                catch (Exception)
+                {
+                    foundData = 0;
+                }
                 data.Data.Add(foundData);
             }
             monthData.Add(data);

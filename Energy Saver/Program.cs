@@ -44,6 +44,7 @@ builder.Services.AddRazorPages(options =>
 builder.Services.AddChartServices();
 builder.Services.AddSuggestionServices();
 builder.Services.AddNotificationServices();
+builder.Services.AddEmailDataExtractorService();
 
 var app = builder.Build();
 

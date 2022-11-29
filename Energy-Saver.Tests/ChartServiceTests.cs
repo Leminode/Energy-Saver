@@ -6,6 +6,7 @@ using ChartJSCore.Helpers;
 using Newtonsoft.Json;
 using Moq;
 using NToastNotify;
+using ChartJSCore.Models;
 
 namespace Energy_Saver.Tests
 {
@@ -30,8 +31,10 @@ namespace Energy_Saver.Tests
 
                 foreach (Months month in Enum.GetValues(typeof(Months)))
                 {
-                    Assert.Equal(month.ToString(), actualMonths.ElementAt((int)month - 1));
+                    expectedMonths.Add(month.ToString());
                 }
+
+                Assert.Equal(expectedMonths, actualMonths);
             }
         }
 
@@ -48,14 +51,16 @@ namespace Energy_Saver.Tests
 
                 StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
-                List<string> expectedMonths = new List<string>();
+                List<string> expectedTaxLabels = new List<string>();
 
-                var actualMonths = statisticsModel.GenerateTaxLabels();
+                var actualTaxLabels = statisticsModel.GenerateTaxLabels();
 
                 foreach (ChartService.FilterTypes filterTypes in Enum.GetValues(typeof(ChartService.FilterTypes)))
                 {
-                    Assert.Equal(filterTypes.ToString(), actualMonths.ElementAt((int)filterTypes));
+                    expectedTaxLabels.Add(filterTypes.ToString());
                 }
+
+                Assert.Equal(expectedTaxLabels, actualTaxLabels);
             }
         }
 
@@ -72,79 +77,80 @@ namespace Energy_Saver.Tests
 
                 StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
+                List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
+
                 List<ChartService.DataWithLabel> expectedData = new List<ChartService.DataWithLabel>()
                 {
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Gas.ToString(),
-                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     },
 
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Electricity.ToString(),
-                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     },
 
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Water.ToString(),
-                        Data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     },
 
                     new ChartService.DataWithLabel
                     {
                         Label = ChartService.FilterTypes.Heating.ToString(),
-                        Data = new List <double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 }
+                        Data = data
                     }
                 };
 
-                statisticsModel.Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>
+                statisticsModel.Taxes = new List<List<Taxes>>()
                 {
-                    new Taxes
+                    new List<Taxes>()
                     {
-                        Year = 2020,
-                        Month = Months.January,
-                        GasAmount = 4,
-                        ElectricityAmount = 4,
-                        WaterAmount = 4,
-                        HeatingAmount = 4
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.January,
+                            GasAmount = 4,
+                            ElectricityAmount = 4,
+                            WaterAmount = 4,
+                            HeatingAmount = 4
+                        },
 
-                    new Taxes
-                    {
-                        Year = 2020,
-                        Month = Months.February,
-                        GasAmount = 3,
-                        ElectricityAmount = 3,
-                        WaterAmount = 3,
-                        HeatingAmount = 3
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.February,
+                            GasAmount = 3,
+                            ElectricityAmount = 3,
+                            WaterAmount = 3,
+                            HeatingAmount = 3
+                        },
 
-                    new Taxes
-                    {
-                        Year = 2020,
-                        Month = Months.March,
-                        GasAmount = 2,
-                        ElectricityAmount = 2,
-                        WaterAmount = 2,
-                        HeatingAmount = 2
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.March,
+                            GasAmount = 2,
+                            ElectricityAmount = 2,
+                            WaterAmount = 2,
+                            HeatingAmount = 2
+                        },
 
-                    new Taxes
-                    {
-                        Year = 2020,
-                        Month = Months.July,
-                        GasAmount = 1,
-                        ElectricityAmount = 1,
-                        WaterAmount = 1,
-                        HeatingAmount = 1
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = Months.July,
+                            GasAmount = 1,
+                            ElectricityAmount = 1,
+                            WaterAmount = 1,
+                            HeatingAmount = 1
+                        }
                     }
                 };
-
-                statisticsModel.Taxes.Add(taxList);
 
                 var actualData = statisticsModel.CreateDataForYearChart(2020);
 
@@ -176,29 +182,28 @@ namespace Energy_Saver.Tests
                 {
                     new ChartService.DataWithLabel
                     {
-                        Label = Months.January.ToString(),
+                        Label = month.ToString(),
                         Data = new List<double?> { (double)gas, (double)electricity, (double)water, (double)heating }
                     }
                 };
 
-                statisticsModel.Taxes = new List<List<Taxes>>();
-
-                List<Taxes> taxList = new List<Taxes>
+                statisticsModel.Taxes = new List<List<Taxes>>()
                 {
-                    new Taxes
+                    new List<Taxes>()
                     {
-                        Year = 2020,
-                        Month = Months.January,
-                        GasAmount = gas,
-                        ElectricityAmount = electricity,
-                        WaterAmount = water,
-                        HeatingAmount = heating
-                    },
+                        new Taxes
+                        {
+                            Year = 2020,
+                            Month = month,
+                            GasAmount = gas,
+                            ElectricityAmount = electricity,
+                            WaterAmount = water,
+                            HeatingAmount = heating
+                        }
+                    }
                 };
 
-                statisticsModel.Taxes.Add(taxList);
-
-                List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForMonthChart(Months.January, 2020);
+                List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForMonthChart(month, 2020);
 
                 var expectedDataString = JsonConvert.SerializeObject(expectedData);
                 var actualDataString = JsonConvert.SerializeObject(actualData);
@@ -212,8 +217,6 @@ namespace Energy_Saver.Tests
         {
             int actualColor;
             ChartColor chartColor;
-
-            float[] luminance = new float[2];
 
             int[] r = new int[2];
             int[] g = new int[2];
@@ -237,6 +240,100 @@ namespace Energy_Saver.Tests
             actualColor = Math.Abs(r[0] + g[0] + b[0]);
 
             Assert.True(actualColor <= 50);
+        }
+
+        [Fact]
+        public void CreateNewBarDatasetTest()
+        {
+            ChartService chartService = new ChartService();
+
+            List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
+
+            var actualBarDataset = chartService.CreateNewBarDataset(data, "Gas");
+
+            BarDataset expectedBarDataSet = new BarDataset()
+            {
+                Label = "Gas",
+                Data = data,
+                BackgroundColor = actualBarDataset.BackgroundColor,
+                BorderColor = actualBarDataset.BorderColor,
+                BorderWidth = new List<int>() { 1 },
+                BarPercentage = 0.5
+            };
+
+            var expectedBarDatasetString = JsonConvert.SerializeObject(expectedBarDataSet);
+            var actualBarDatasetString = JsonConvert.SerializeObject(actualBarDataset);
+
+            Assert.Equal(expectedBarDatasetString, actualBarDatasetString);
+        }
+
+        [Fact]
+        public void CreateNewLineDatasetTest()
+        {
+            ChartService chartService = new ChartService();
+
+            List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
+
+            var actualLineDataset = chartService.CreateNewLineDataset(data, "Gas");
+
+            LineDataset expectedLineDataSet = new LineDataset()
+            {
+                Label = "Gas",
+                Data = data,
+                Fill = "false",
+                Tension = 0.1,
+                BackgroundColor = actualLineDataset.BackgroundColor,
+                BorderColor = actualLineDataset.BorderColor,
+                BorderCapStyle = "butt",
+                BorderDash = new List<int>(),
+                BorderDashOffset = 0.0,
+                BorderJoinStyle = "miter",
+                PointBorderColor = actualLineDataset.PointBorderColor,
+                PointBackgroundColor = actualLineDataset.PointBackgroundColor,
+                PointBorderWidth = new List<int> { 1 },
+                PointHoverRadius = new List<int> { 5 },
+                PointHoverBackgroundColor = actualLineDataset.PointHoverBackgroundColor,
+                PointHoverBorderColor = actualLineDataset.PointHoverBorderColor,
+                PointHoverBorderWidth = new List<int> { 2 },
+                PointRadius = new List<int> { 1 },
+                PointHitRadius = new List<int> { 10 },
+                SpanGaps = false
+            };
+
+            var expectedLineDatasetString = JsonConvert.SerializeObject(expectedLineDataSet);
+            var actualLineDatasetString = JsonConvert.SerializeObject(actualLineDataset);
+
+            Assert.Equal(expectedLineDatasetString, actualLineDatasetString);
+        }
+
+        [Fact]
+        public void CreateChartTest()
+        {
+            ChartService chartService = new ChartService();
+
+            List<double?> data = new List<double?>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
+            List<string> labels = new List<string>();
+
+            foreach(Months month in Enum.GetValues(typeof(Months)))
+            {
+                labels.Add(month.ToString());
+            }
+
+            List<ChartService.DataWithLabel> tableData = new List<ChartService.DataWithLabel>()
+            {
+                new ChartService.DataWithLabel()
+                {
+                    Label = "Gas",
+                    Data = data
+                }
+            };
+
+            Chart actualChart = chartService.CreateChart(ChartJSCore.Models.Enums.ChartType.Line, tableData, labels);
+
+            Chart expectedChart = new Chart();
+
+            expectedChart.Type = ChartJSCore.Models.Enums.ChartType.Line;
         }
     }
 }

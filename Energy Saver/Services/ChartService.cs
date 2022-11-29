@@ -62,7 +62,7 @@ namespace Energy_Saver.Services
             return chart;
         }
 
-        private LineDataset CreateNewLineDataset(List<double?> data, string label)
+        public LineDataset CreateNewLineDataset(List<double?> data, string label)
         {
             ChartColor chartColor = GetRandomChartColor();
             ChartColor withAlpha = new ChartColor { Red = chartColor.Red, Blue = chartColor.Blue, Green = chartColor.Green, Alpha = 0.4 };
@@ -94,7 +94,7 @@ namespace Energy_Saver.Services
             return lineDataset;
         }
 
-        private BarDataset CreateNewBarDataset(List<double?> data, string label)
+        public BarDataset CreateNewBarDataset(List<double?> data, string label)
         {
             var backGroundColor = new List<ChartColor>();
             var borderColor = new List<ChartColor>();

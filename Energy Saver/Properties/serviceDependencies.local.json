@@ -7,6 +7,15 @@
     "mssql2": {
       "type": "mssql.local",
       "connectionId": "ConnectionStrings:EnergySaverTaxesContext"
+    },
+    "postgresql1": {
+      "containerPorts": "5432:5432",
+      "secretStore": "LocalSecretsFile",
+      "containerName": "postgresql",
+      "containerImage": "postgres",
+      "type": "postgresql.container",
+      "connectionId": "DatabaseConnectionString",
+      "dynamicId": null
     }
   }
 }

@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using static Energy_Saver.Model.Utilities;
 using System.Security.Claims;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;

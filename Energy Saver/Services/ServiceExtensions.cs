@@ -1,5 +1,8 @@
-﻿namespace Energy_Saver.Services
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Energy_Saver.Services
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceExtensions
     {
         public static IServiceCollection AddChartServices(this IServiceCollection services)

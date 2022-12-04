@@ -19,8 +19,6 @@ namespace Energy_Saver.Model
                 case SortDirection.Descending:
                     orderedList = (from n in data.OrderByDescending(sortBy) select n).ToList();
                     break;
-                default:
-                    return data;
             }
             return orderedList;
         }

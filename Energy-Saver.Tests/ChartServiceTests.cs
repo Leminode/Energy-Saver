@@ -25,14 +25,23 @@ namespace Energy_Saver.Tests
 
                 StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
-                List<string> expectedMonths = new List<string>();
+                List<string> expectedMonths = new List<string>()
+                {
+                    "January",
+                    "February",
+                    "March",
+                    "April",
+                    "May",
+                    "June",
+                    "July",
+                    "August",
+                    "September",
+                    "October",
+                    "November",
+                    "December"
+                };
 
                 var actualMonths = statisticsModel.GenerateMonthsLabels();
-
-                foreach (Months month in Enum.GetValues(typeof(Months)))
-                {
-                    expectedMonths.Add(month.ToString());
-                }
 
                 Assert.Equal(expectedMonths, actualMonths);
             }
@@ -51,14 +60,15 @@ namespace Energy_Saver.Tests
 
                 StatisticsModel statisticsModel = new StatisticsModel(chartService, db, notificationService);
 
-                List<string> expectedTaxLabels = new List<string>();
+                List<string> expectedTaxLabels = new List<string>()
+                {
+                    "Gas",
+                    "Electricity",
+                    "Water",
+                    "Heating"
+                };
 
                 var actualTaxLabels = statisticsModel.GenerateTaxLabels();
-
-                foreach (ChartService.FilterTypes filterTypes in Enum.GetValues(typeof(ChartService.FilterTypes)))
-                {
-                    expectedTaxLabels.Add(filterTypes.ToString());
-                }
 
                 Assert.Equal(expectedTaxLabels, actualTaxLabels);
             }
@@ -152,12 +162,9 @@ namespace Energy_Saver.Tests
                     }
                 };
 
-                var actualData = statisticsModel.CreateDataForYearChart(2020);
+                List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForYearChart(2020);
 
-                var expectedDataString = JsonConvert.SerializeObject(expectedData);
-                var actualDataString = JsonConvert.SerializeObject(actualData);
-
-                Assert.Equal(expectedDataString, actualDataString);
+                actualData.Should().BeEquivalentTo(expectedData, d => d.ComparingByMembers<ChartService.DataWithLabel>());
             }
         }
 
@@ -205,10 +212,7 @@ namespace Energy_Saver.Tests
 
                 List<ChartService.DataWithLabel> actualData = statisticsModel.CreateDataForMonthChart(month, 2020);
 
-                var expectedDataString = JsonConvert.SerializeObject(expectedData);
-                var actualDataString = JsonConvert.SerializeObject(actualData);
-
-                Assert.Equal(expectedDataString, actualDataString);
+                actualData.Should().BeEquivalentTo(expectedData, d => d.ComparingByMembers<ChartService.DataWithLabel>());
             }
         }
 
@@ -249,22 +253,19 @@ namespace Energy_Saver.Tests
 
             List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
 
-            var actualBarDataset = chartService.CreateNewBarDataset(data, "Gas");
+            var actualDataset = chartService.CreateNewBarDataset(data, "Gas");
 
-            BarDataset expectedBarDataSet = new BarDataset()
+            BarDataset expectedDataset = new BarDataset()
             {
                 Label = "Gas",
                 Data = data,
-                BackgroundColor = actualBarDataset.BackgroundColor,
-                BorderColor = actualBarDataset.BorderColor,
+                BackgroundColor = actualDataset.BackgroundColor,
+                BorderColor = actualDataset.BorderColor,
                 BorderWidth = new List<int>() { 1 },
                 BarPercentage = 0.5
             };
 
-            var expectedBarDatasetString = JsonConvert.SerializeObject(expectedBarDataSet);
-            var actualBarDatasetString = JsonConvert.SerializeObject(actualBarDataset);
-
-            Assert.Equal(expectedBarDatasetString, actualBarDatasetString);
+            actualDataset.Should().BeEquivalentTo(expectedDataset);
         }
 
         [Fact]
@@ -274,66 +275,33 @@ namespace Energy_Saver.Tests
 
             List<double?> data = new List<double?> { 4, 3, 2, 0, 0, 0, 1, 0, 0, 0, 0, 0 };
 
-            var actualLineDataset = chartService.CreateNewLineDataset(data, "Gas");
+            var actualDataset = chartService.CreateNewLineDataset(data, "Gas");
 
-            LineDataset expectedLineDataSet = new LineDataset()
+            LineDataset expectedDataset = new LineDataset()
             {
                 Label = "Gas",
                 Data = data,
                 Fill = "false",
                 Tension = 0.1,
-                BackgroundColor = actualLineDataset.BackgroundColor,
-                BorderColor = actualLineDataset.BorderColor,
+                BackgroundColor = actualDataset.BackgroundColor,
+                BorderColor = actualDataset.BorderColor,
                 BorderCapStyle = "butt",
                 BorderDash = new List<int>(),
                 BorderDashOffset = 0.0,
                 BorderJoinStyle = "miter",
-                PointBorderColor = actualLineDataset.PointBorderColor,
-                PointBackgroundColor = actualLineDataset.PointBackgroundColor,
+                PointBorderColor = actualDataset.PointBorderColor,
+                PointBackgroundColor = actualDataset.PointBackgroundColor,
                 PointBorderWidth = new List<int> { 1 },
                 PointHoverRadius = new List<int> { 5 },
-                PointHoverBackgroundColor = actualLineDataset.PointHoverBackgroundColor,
-                PointHoverBorderColor = actualLineDataset.PointHoverBorderColor,
+                PointHoverBackgroundColor = actualDataset.PointHoverBackgroundColor,
+                PointHoverBorderColor = actualDataset.PointHoverBorderColor,
                 PointHoverBorderWidth = new List<int> { 2 },
                 PointRadius = new List<int> { 1 },
                 PointHitRadius = new List<int> { 10 },
                 SpanGaps = false
             };
 
-            var expectedLineDatasetString = JsonConvert.SerializeObject(expectedLineDataSet);
-            var actualLineDatasetString = JsonConvert.SerializeObject(actualLineDataset);
-
-            Assert.Equal(expectedLineDatasetString, actualLineDatasetString);
-        }
-
-        [Fact]
-        public void CreateChartTest()
-        {
-            ChartService chartService = new ChartService();
-
-            List<double?> data = new List<double?>() { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-
-            List<string> labels = new List<string>();
-
-            foreach(Months month in Enum.GetValues(typeof(Months)))
-            {
-                labels.Add(month.ToString());
-            }
-
-            List<ChartService.DataWithLabel> tableData = new List<ChartService.DataWithLabel>()
-            {
-                new ChartService.DataWithLabel()
-                {
-                    Label = "Gas",
-                    Data = data
-                }
-            };
-
-            Chart actualChart = chartService.CreateChart(ChartJSCore.Models.Enums.ChartType.Line, tableData, labels);
-
-            Chart expectedChart = new Chart();
-
-            expectedChart.Type = ChartJSCore.Models.Enums.ChartType.Line;
+            actualDataset.Should().BeEquivalentTo(expectedDataset);
         }
     }
 }

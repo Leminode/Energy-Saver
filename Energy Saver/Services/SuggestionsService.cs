@@ -32,5 +32,17 @@ namespace Energy_Saver.Services
             }
             return false;
         }
+
+        public decimal PercetangeAboveOrBelowAverage(List<List<Taxes>> taxes, Months month, int year)
+        {
+            decimal averageAllTime = taxes.SelectMany(taxesList => taxesList)
+                .Select(taxes => taxes.HeatingAmount + taxes.ElectricityAmount + taxes.WaterAmount + taxes.GasAmount)
+                .Average();
+
+            decimal monthSum = taxes.SelectMany(taxesList => taxesList.Where(x => x.Month == month && x.Year == year))
+                .Select(taxes => taxes.HeatingAmount + taxes.ElectricityAmount + taxes.WaterAmount + taxes.GasAmount)
+                .Sum();
+            return Math.Round(((monthSum - averageAllTime) / Math.Abs(monthSum)) * 100, 2);
+        }
     }
 }

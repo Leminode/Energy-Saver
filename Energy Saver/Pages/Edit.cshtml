@@ -9,24 +9,27 @@
 <h1 class="text-color">Edit</h1>
 <hr class="text-color" />
 
-<div class="row">
-    <div class="col-md-2">
-        <form method="post">
-            <input type="hidden" asp-for="Taxes.ID" />
-            <input type="hidden" asp-for="Taxes.UserID" />
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Taxes.Year" class="control-label"></label>
+<form method="post">
+    <input type="hidden" asp-for="Taxes.ID" />
+    <input type="hidden" asp-for="Taxes.UserID" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="form-floating">
                 <select asp-for="Taxes.Year" class="form-control">
-                    @for (int i = DateTime.Now.Year; i > 1919; i--)
+                    @for (int i = DateTime.Now.Year; i > DateTime.Now.Year - 25; i--)
                     {
                         <option value="@i">@i</option>
                     }
                 </select>
                 <span asp-validation-for="Taxes.Year" class="text-danger"></span>
+                <label asp-for="Taxes.Year" class="control-label"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="Taxes.Month" class="control-label"></label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="form-floating">
                 <select asp-for="Taxes.Month" class="form-control">
                     @foreach (Months i in Enum.GetValues(typeof(Months)))
                     {
@@ -34,36 +37,51 @@
                     }
                 </select>
                 <span asp-validation-for="Taxes.Month" class="text-danger"></span>
+                <label asp-for="Taxes.Month" class="control-label"></label>
             </div>
-            <div class="form-group">
-                <label asp-for="Taxes.GasAmount" class="control-label"> Gas amount</label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="form-floating">
                 <input asp-for="Taxes.GasAmount" class="form-control" />
                 <span asp-validation-for="Taxes.GasAmount" class="text-danger"></span>
+                <label asp-for="Taxes.GasAmount" class="control-label"> Gas amount</label>
             </div>
-            <div class="form-group">
-                <label asp-for="Taxes.ElectricityAmount" class="control-label">Electricity amount</label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="form-floating">
                 <input asp-for="Taxes.ElectricityAmount" class="form-control" />
                 <span asp-validation-for="Taxes.ElectricityAmount" class="text-danger"></span>
+                <label asp-for="Taxes.ElectricityAmount" class="control-label">Electricity amount</label>
             </div>
-            <div class="form-group">
-                <label asp-for="Taxes.WaterAmount" class="control-label">Water amount</label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="form-floating">
                 <input asp-for="Taxes.WaterAmount" class="form-control" />
                 <span asp-validation-for="Taxes.WaterAmount" class="text-danger"></span>
+                <label asp-for="Taxes.WaterAmount" class="control-label">Water amount</label>
             </div>
-            <div class="form-group">
-                <label asp-for="Taxes.HeatingAmount" class="control-label">Heating amount</label>
+        </div>
+    </div>
+    <div class="row mb-2">
+        <div class="col-2">
+            <div class="form-floating">
                 <input asp-for="Taxes.HeatingAmount" class="form-control" />
                 <span asp-validation-for="Taxes.HeatingAmount" class="text-danger"></span>
+                <label asp-for="Taxes.HeatingAmount" class="control-label">Heating amount</label>
             </div>
-            <div>
-            </div>
-            <div class="form-group" style="margin-top: 10px">
-                <input type="submit" value="Save" class="btn btn-primary"/> |
-                <a asp-page="./Index" class="text-color">Back to List</a>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+    <div class="form-group mt-3" >
+        <input type="submit" value="Save" class="btn btn-primary" /> |
+        <a asp-page="./Index" class="text-color">Back to List</a>
+    </div>
+</form>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -105,11 +105,11 @@ namespace Energy_Saver.Pages
                     try
                     {
                         foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
-                    }
-                    catch (InvalidOperationException)
+                    } catch (Exception)
                     {
                         foundData = 0;
                     }
+                    
                     data.Data.Add(foundData);
                 }
 
@@ -152,7 +152,7 @@ namespace Energy_Saver.Pages
                 {
                     foundData = Taxes.SelectMany(x => x.Where(tax => tax.Year == year && tax.Month == month).Select(function)).First();
                 }
-                catch (InvalidOperationException)
+                catch (Exception)
                 {
                     foundData = 0;
                 }

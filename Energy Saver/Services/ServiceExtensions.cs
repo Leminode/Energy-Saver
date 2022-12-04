@@ -2,11 +2,6 @@
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection AddTableServices(this IServiceCollection services)
-        {
-            return services.AddScoped<ITableService, TableService>();
-        }
-
         public static IServiceCollection AddChartServices(this IServiceCollection services)
         {
             return services.AddScoped<IChartService, ChartService>();
@@ -20,6 +15,11 @@
         public static IServiceCollection AddNotificationServices(this IServiceCollection services)
         {
             return services.AddScoped<INotificationService, NotificationService>();
+        }
+
+        public static IServiceCollection AddEmailDataExtractorService(this IServiceCollection services)
+        {
+            return services.AddScoped<IEmailDataExtractorService, EmailDataExtractorService>();
         }
     }
 }

@@ -41,10 +41,10 @@ builder.Services.AddRazorPages(options =>
     TimeOut = 5000
 });
 
-builder.Services.AddTableServices();
 builder.Services.AddChartServices();
 builder.Services.AddSuggestionServices();
 builder.Services.AddNotificationServices();
+builder.Services.AddEmailDataExtractorService();
 
 var app = builder.Build();
 

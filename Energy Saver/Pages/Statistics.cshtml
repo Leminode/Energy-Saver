@@ -38,7 +38,7 @@
     <form asp-page-handler="month" method="post">
         @Html.AntiForgeryToken()
         <div class="row g-2">
-                <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-3 col-sm-6">
                 <div class="form-floating">
                     <select class="form-select" name="Month" id="monthDropdown" onchange="editMonth()">
                         @foreach (Months month in Enum.GetValues(typeof(Months)))
@@ -49,7 +49,7 @@
                     <label for="monthDropDown">Month</label>
                 </div>
             </div>
-                <div class="col-lg-3 col-sm-6">
+            <div class="col-lg-3 col-sm-6">
                 <div class="form-floating">
                     <select class="form-select" name="chartType" id="chartTypeDropdown" onchange="editMonth()">
                         <option value="@Enums.ChartType.Bar">@Enums.ChartType.Bar</option>

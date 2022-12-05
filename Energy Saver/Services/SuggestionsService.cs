@@ -42,7 +42,11 @@ namespace Energy_Saver.Services
             decimal monthSum = taxes.SelectMany(taxesList => taxesList.Where(x => x.Month == month && x.Year == year))
                 .Select(taxes => taxes.HeatingAmount + taxes.ElectricityAmount + taxes.WaterAmount + taxes.GasAmount)
                 .Sum();
-            return Math.Round(((monthSum - averageAllTime) / Math.Abs(monthSum)) * 100, 2);
+
+            if (averageAllTime == 0)
+                return 0;
+            else
+                return Math.Round(((monthSum - averageAllTime) / Math.Abs(averageAllTime)) * 100, 2);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using ChartJSCore.Helpers;
 using ChartJSCore.Models;
-using Energy_Saver.Model;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Services
 {
@@ -8,6 +8,7 @@ namespace Energy_Saver.Services
     {
         private float Random { get; set; } = (float) new Random().NextDouble();
 
+        [ExcludeFromCodeCoverage]
         public Chart CreateChart(Enums.ChartType chartType, List<DataWithLabel> tableData, List<string> labels, bool withLegend = true)
         {
             Chart chart = new Chart();
@@ -62,6 +63,7 @@ namespace Energy_Saver.Services
             return chart;
         }
 
+        [ExcludeFromCodeCoverage]
         public LineDataset CreateNewLineDataset(List<double?> data, string label)
         {
             ChartColor chartColor = GetRandomChartColor();
@@ -94,6 +96,7 @@ namespace Energy_Saver.Services
             return lineDataset;
         }
 
+        [ExcludeFromCodeCoverage]
         public BarDataset CreateNewBarDataset(List<double?> data, string label)
         {
             var backGroundColor = new List<ChartColor>();

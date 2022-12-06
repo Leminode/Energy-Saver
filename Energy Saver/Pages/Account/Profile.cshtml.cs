@@ -9,9 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using RestSharp;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Diagnostics.CodeAnalysis;
 
 namespace acme.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class ProfileModel : PageModel
     {
         private readonly ILogger<ProfileModel> _logger;

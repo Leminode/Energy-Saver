@@ -12,9 +12,11 @@ using System.Security.Claims;
 using Energy_Saver.Services;
 using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class EditModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;

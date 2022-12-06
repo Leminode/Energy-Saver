@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages.Account
 {
+    [ExcludeFromCodeCoverage]
     public class LogoutModel : PageModel
     {
         public async Task OnGet()

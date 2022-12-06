@@ -1,5 +1,8 @@
-﻿namespace Energy_Saver.Services
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Energy_Saver.Services
 {
+    [ExcludeFromCodeCoverage]
     public static class ServiceExtensions
     {
         public static IServiceCollection AddChartServices(this IServiceCollection services)
@@ -20,6 +23,11 @@
         public static IServiceCollection AddEmailDataExtractorService(this IServiceCollection services)
         {
             return services.AddScoped<IEmailDataExtractorService, EmailDataExtractorService>();
+        }
+
+        public static IServiceCollection AddUserProfileServices(this IServiceCollection services)
+        {
+            return services.AddScoped<IUserProfileService, UserProfileService>();
         }
     }
 }

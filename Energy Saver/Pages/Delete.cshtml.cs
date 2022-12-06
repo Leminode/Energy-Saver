@@ -9,9 +9,11 @@ using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using System.Security.Claims;
 using Energy_Saver.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class DeleteModel : PageModel
     {
         private readonly EnergySaverTaxesContext _context;

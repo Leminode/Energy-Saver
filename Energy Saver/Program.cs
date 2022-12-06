@@ -45,6 +45,7 @@ builder.Services.AddChartServices();
 builder.Services.AddSuggestionServices();
 builder.Services.AddNotificationServices();
 builder.Services.AddEmailDataExtractorService();
+builder.Services.AddUserProfileServices();
 
 var app = builder.Build();
 

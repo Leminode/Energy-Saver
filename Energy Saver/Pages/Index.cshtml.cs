@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using static Energy_Saver.Model.Utilities;
 using System.Security.Claims;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
@@ -42,6 +44,7 @@ namespace Energy_Saver.Pages
                     Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
 
                     TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+                    Console.WriteLine(_suggestionsService.PercetangeAboveOrBelowAverage(Taxes, Months.May, 2022));
                 }
                 catch (Exception)
                 {
@@ -55,6 +58,11 @@ namespace Energy_Saver.Pages
         public void OnPost()
         {
 
+        }
+
+        public decimal GetComparison(Months month, int year)
+        {
+            return _suggestionsService.PercetangeAboveOrBelowAverage(Taxes, month, year);
         }
     }
 }

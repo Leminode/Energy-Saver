@@ -32,7 +32,21 @@
                 @foreach (var taxRecord in year)
                 {
                     <tr>
-                        <td style="text-align:left">@taxRecord.Month.ToString()</td>
+                        <td>
+                            <div class="row">
+                                <div style="text-align:left; font-weight: bold" class="col-2">
+                                    @taxRecord.Month.ToString()
+                                </div>
+                                <div style="text-align:right" class="col">
+                                    <div class="row toEvaluate">
+                                        <div class="col">
+                                            <i class="icon"></i>
+                                        </div>
+                                        <div class="number col-5">@Model.GetComparison(taxRecord.Month, taxRecord.Year) %</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
                         <td style="text-align:right">
                             @(taxRecord.GasAmount % 1 == 0 ? (int)taxRecord.GasAmount : taxRecord.GasAmount)
                         </td>
@@ -54,25 +68,23 @@
                 }
             }
         </table>
-        <body>
-            <div>
-                @{
-                    List<string> taxNameList = new List<string> { "Gas", "Electricity", "Water", "Heating" };
-                }
-                @for(int i = 0; i < Model.TaxComparison.Count(); i++)
+        <div>
+            @{
+                List<string> taxNameList = new List<string> { "Gas", "Electricity", "Water", "Heating" };
+            }
+            @for(int i = 0; i < Model.TaxComparison.Count(); i++)
+            {
+                if(Model.TaxComparison[i] > 0)
                 {
-                    if(Model.TaxComparison[i] > 0)
-                    {
-                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-negative")">+@Model.TaxComparison[i]%</span></p>
-                    }
-                    else
-                    {
-                        <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-positive")">@Model.TaxComparison[i]%</span></p>
-                    }
-                    
+                    <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-negative")">+@Model.TaxComparison[i]%</span></p>
                 }
-            </div>
-        </body>
+                else
+                {
+                    <p class="text-color" style="margin-top: 40px">@taxNameList[i] consumption this month compared to last month: <span class="text-positive")">@Model.TaxComparison[i]%</span></p>
+                }
+                    
+            }
+        </div>
     }
     else
     {
@@ -83,3 +95,30 @@
         </body>
     }
 </div>
+
+@section Scripts {
+    @*<script src="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.2.1/"></script>*@
+    @*for coloring positive, negative or neutral numbers*@
+    <script>
+        $(document).ready(function() {
+            $('.toEvaluate').each(function() {
+                var number = $(this).find($('.number'));
+                var icon = $(this).find($('.icon'));
+                var value = parseInt(number.html());
+                if (value < 0) {
+                    number.css('color', '#0ca73d');
+                    icon.addClass('bi-arrow-down');
+                    icon.css('color', '#0ca73d');
+                } else if (value > 0) {
+                    number.css('color', '#ff0000');
+                    icon.addClass('bi-arrow-up');
+                    icon.css('color', '#ff0000');
+                } else {
+                    number.css('color', 'gray');
+                    icon.addClass('bi-arrow-down-up');
+                    icon.css('color', 'gray');
+                }
+            });
+        });
+    </script>
+}

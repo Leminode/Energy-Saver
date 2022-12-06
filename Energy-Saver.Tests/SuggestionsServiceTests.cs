@@ -1,6 +1,7 @@
 ﻿using Energy_Saver.DataSpace;
 using Energy_Saver.Model;
 using Energy_Saver.Services;
+using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using Xunit.Sdk;
@@ -18,10 +19,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = suggestionsService.GetLatestTaxComparison(new List<List<Taxes>>());
 
-            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { });
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(new List<decimal> { });
         }
 
         [Theory]
@@ -54,10 +52,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { });
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(new List<decimal> { });
         }
 
         [Theory]
@@ -100,10 +95,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { 100, 100, 100, 100 });
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(new List<decimal> { 100, 100, 100, 100 });
         }
 
         [Theory]
@@ -146,10 +138,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { -50, -50, -50, -50 });
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(new List<decimal> { -50, -50, -50, -50 });
         }
 
         [Theory]
@@ -203,10 +192,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = suggestionsService.GetLatestTaxComparison(Taxes);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(new List<decimal> { 0, 0, 0, 0, });
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(new List<decimal> { 0, 0, 0, 0, });
         }
 
         [Fact]
@@ -276,7 +262,7 @@ namespace Energy_Saver.Tests
         [InlineData(300, 300, 300, 300)]
         [InlineData(0, 0, 0, 0)]
         [InlineData(4.3, 4.3, 4.3, 4.3)]
-        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsZero(decimal gas1, decimal electricity1, decimal water1, decimal heating1)
+        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsZero(decimal gas, decimal electricity, decimal water, decimal heating)
         {
             SuggestionsService suggestionsService = new SuggestionsService();
 
@@ -290,19 +276,19 @@ namespace Energy_Saver.Tests
                     {
                         Year = 2000,
                         Month = Months.January,
-                        GasAmount = gas1,
-                        ElectricityAmount = electricity1,
-                        WaterAmount = water1,
-                        HeatingAmount = heating1
+                        GasAmount = gas,
+                        ElectricityAmount = electricity,
+                        WaterAmount = water,
+                        HeatingAmount = heating
                     },
                     new Taxes()
                     {
                         Year = 2000,
                         Month = Months.February,
-                        GasAmount = gas1,
-                        ElectricityAmount = electricity1,
-                        WaterAmount = water1,
-                        HeatingAmount = heating1
+                        GasAmount = gas,
+                        ElectricityAmount = electricity,
+                        WaterAmount = water,
+                        HeatingAmount = heating
                     }
                 }
             };

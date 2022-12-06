@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Moq;
 using NToastNotify;
 using ChartJSCore.Models;
+using FluentAssertions;
 
 namespace Energy_Saver.Tests
 {

@@ -272,11 +272,11 @@ namespace Energy_Saver.Tests
         }
 
         [Theory]
-        [InlineData(1, 1, 1, 1, 1, 1, 1, 1)]
-        [InlineData(300, 300, 300, 300, 300, 300, 300, 300)]
-        [InlineData(0, 0, 0, 0, 0, 0, 0, 0)]
-        [InlineData(4.3, 4.3, 4.3, 4.3, 4.3, 4.3, 4.3, 4.3)]
-        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsZero(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
+        [InlineData(1, 1, 1, 1)]
+        [InlineData(300, 300, 300, 300)]
+        [InlineData(0, 0, 0, 0)]
+        [InlineData(4.3, 4.3, 4.3, 4.3)]
+        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsZero(decimal gas1, decimal electricity1, decimal water1, decimal heating1)
         {
             SuggestionsService suggestionsService = new SuggestionsService();
 
@@ -299,10 +299,10 @@ namespace Energy_Saver.Tests
                     {
                         Year = 2000,
                         Month = Months.February,
-                        GasAmount = gas2,
-                        ElectricityAmount = electricity2,
-                        WaterAmount = water2,
-                        HeatingAmount = heating2
+                        GasAmount = gas1,
+                        ElectricityAmount = electricity1,
+                        WaterAmount = water1,
+                        HeatingAmount = heating1
                     }
                 }
             };

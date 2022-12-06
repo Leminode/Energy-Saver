@@ -4,6 +4,7 @@ using MailKit;
 using MailKit.Search;
 using System.Text.RegularExpressions;
 using System.Net.Mail;
+using Energy_Saver.Email;
 
 namespace Energy_Saver.Services
 {
@@ -34,14 +35,9 @@ namespace Energy_Saver.Services
 
                 foreach (var e in emails) 
                 {
-                    if (e.Subject.Contains("Gas"))
-                        taxes.GasAmount = int.Parse(e.GetTextBody(MimeKit.Text.TextFormat.Text));
-                    else if (e.Subject.Contains("Water"))
-                        taxes.WaterAmount = int.Parse(e.GetTextBody(MimeKit.Text.TextFormat.Text));
-                    else if (e.Subject.Contains("Electricity"))
-                        taxes.ElectricityAmount = int.Parse(e.GetTextBody(MimeKit.Text.TextFormat.Text));
-                    else if (e.Subject.Contains("Heating"))
-                        taxes.HeatingAmount = int.Parse(e.GetTextBody(MimeKit.Text.TextFormat.Text));
+                    EmailParser? parser = EmailParserFactory.GetParser(e);
+                    if (parser != null)
+                        parser.Parse(taxes);
                 }
 
                 client.Disconnect(true);

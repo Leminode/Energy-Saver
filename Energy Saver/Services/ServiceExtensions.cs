@@ -21,5 +21,10 @@
         {
             return services.AddScoped<IEmailDataExtractorService, EmailDataExtractorService>();
         }
+
+        public static IServiceCollection AddUserProfileServices(this IServiceCollection services)
+        {
+            return services.AddScoped<IUserProfileService, UserProfileService>();
+        }
     }
 }

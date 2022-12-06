@@ -42,6 +42,7 @@ namespace Energy_Saver.Pages
                     Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
 
                     TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
+                    Console.WriteLine(_suggestionsService.PercetangeAboveOrBelowAverage(Taxes, Months.May, 2022));
                 }
                 catch (Exception)
                 {
@@ -55,6 +56,11 @@ namespace Energy_Saver.Pages
         public void OnPost()
         {
 
+        }
+
+        public decimal GetComparison(Months month, int year)
+        {
+            return _suggestionsService.PercetangeAboveOrBelowAverage(Taxes, month, year);
         }
     }
 }

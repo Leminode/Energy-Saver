@@ -48,6 +48,10 @@ select, input, option {
     color: #ff0000;
 }
 
+.text-neutral {
+    color: dimgray
+}
+
 label {
     color: white;
 }

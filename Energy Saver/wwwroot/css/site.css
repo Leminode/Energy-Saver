@@ -41,11 +41,15 @@ select, input, option {
 }
 
 .text-positive {
-    color: #0ca73d;
+    color: #77DD77;
 }
 
 .text-negative {
-    color: #ff0000;
+    color: #FF7575;
+}
+
+.text-neutral {
+    color: #9F9F8E
 }
 
 label {

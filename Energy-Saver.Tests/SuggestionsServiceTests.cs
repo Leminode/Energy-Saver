@@ -280,7 +280,26 @@ namespace Energy_Saver.Tests
         {
             SuggestionsService suggestionsService = new SuggestionsService();
 
-            decimal expectedData = 0;
+            List<ISuggestionsService.TaxesWithSum> expectedData = new List<ISuggestionsService.TaxesWithSum>()
+            {
+                new ISuggestionsService.TaxesWithSum()
+                {
+                    Year = 2000,
+                    Month = Months.January,
+                    Percentage = 0,
+                    Style = "text-neutral",
+                    Icon = "bi-arrow-down-up"
+                },
+
+                new ISuggestionsService.TaxesWithSum()
+                {
+                    Year = 2000,
+                    Month = Months.February,
+                    Percentage = 0,
+                    Style = "text-neutral",
+                    Icon = "bi-arrow-down-up"
+                }
+            };
 
             List<List<Taxes>> taxList = new List<List<Taxes>>()
             {
@@ -307,19 +326,40 @@ namespace Energy_Saver.Tests
                 }
             };
 
-            decimal actualData = suggestionsService.PercetangeAboveOrBelowAverage(taxList, Months.January, 2000);
+            List<ISuggestionsService.TaxesWithSum> actualData = suggestionsService.PercetangeAboveOrBelowAverage(taxList);
 
-            Assert.Equal(actualData, expectedData);
+            actualData.Should().BeEquivalentTo(expectedData, d => d.ComparingByMembers<ISuggestionsService.TaxesWithSum>());
         }
 
         [Theory]
-        [InlineData(2, 2, 2, 2, 1, 1, 1, 1)]
-        [InlineData(300, 300, 300, 300, 3, 233, 54, 213)]
+        [InlineData(2, 2, 2, 2, 0, 0, 0, 0)]
+        [InlineData(300, 300, 300, 300, 0, 0, 0, 0)]
         [InlineData(1, 1, 1, 1, 0, 0, 0, 0)]
-        [InlineData(4.3, 4.3, 4.3, 4.3, 2.1, 1.2, 0.3, 0.09)]
-        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsPositivePercent(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
+        [InlineData(4.3, 4.3, 4.3, 4.3, 0, 0, 0, 0)]
+        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsOneHundredPercent(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
         {
             SuggestionsService suggestionsService = new SuggestionsService();
+
+            List<ISuggestionsService.TaxesWithSum> expectedData = new List<ISuggestionsService.TaxesWithSum>()
+            {
+                new ISuggestionsService.TaxesWithSum()
+                {
+                    Year = 2000,
+                    Month = Months.January,
+                    Percentage = -100,
+                    Style = "text-positive",
+                    Icon = "bi-arrow-down"
+                },
+
+                new ISuggestionsService.TaxesWithSum()
+                {
+                    Year = 2000,
+                    Month = Months.February,
+                    Percentage = 100,
+                    Style = "text-negative",
+                    Icon = "bi-arrow-up"
+                }
+            };
 
             List<List<Taxes>> taxList = new List<List<Taxes>>()
             {
@@ -329,36 +369,57 @@ namespace Energy_Saver.Tests
                     {
                         Year = 2000,
                         Month = Months.January,
-                        GasAmount = gas1,
-                        ElectricityAmount = electricity1,
-                        WaterAmount = water1,
-                        HeatingAmount = heating1
-                    },
-                    new Taxes()
-                    {
-                        Year = 2000,
-                        Month = Months.February,
                         GasAmount = gas2,
                         ElectricityAmount = electricity2,
                         WaterAmount = water2,
                         HeatingAmount = heating2
+                    },
+                    new Taxes()
+                    {
+                        Year = 2000,
+                        Month = Months.February,
+                        GasAmount = gas1,
+                        ElectricityAmount = electricity1,
+                        WaterAmount = water1,
+                        HeatingAmount = heating1
                     }
                 }
             };
 
-            decimal actualData = suggestionsService.PercetangeAboveOrBelowAverage(taxList, Months.January, 2000);
+            List<ISuggestionsService.TaxesWithSum> actualData = suggestionsService.PercetangeAboveOrBelowAverage(taxList);
 
-            Assert.True(actualData > 0);
+            actualData.Should().BeEquivalentTo(expectedData, d => d.ComparingByMembers<ISuggestionsService.TaxesWithSum>());
         }
 
         [Theory]
         [InlineData(2, 2, 2, 2, 1, 1, 1, 1)]
-        [InlineData(300, 300, 300, 300, 3, 233, 54, 213)]
-        [InlineData(1, 1, 1, 1, 0, 0, 0, 0)]
-        [InlineData(4.3, 4.3, 4.3, 4.3, 2.1, 1.2, 0.3, 0.09)]
-        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsNegativePercent(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
+        [InlineData(300, 300, 300, 300, 150, 150, 150, 150)]
+        [InlineData(6, 6, 6, 6, 3, 3, 3, 3)]
+        [InlineData(4.2, 4.2, 4.2, 4.2, 2.1, 2.1, 2.1, 2.1)]
+        public void PercentageAboveOrBelowAverageTest_TwoTaxesExist_ReturnsNegativeAndPositivePercent(decimal gas1, decimal electricity1, decimal water1, decimal heating1, decimal gas2, decimal electricity2, decimal water2, decimal heating2)
         {
             SuggestionsService suggestionsService = new SuggestionsService();
+
+            List<ISuggestionsService.TaxesWithSum> expectedData = new List<ISuggestionsService.TaxesWithSum>()
+            {
+                new ISuggestionsService.TaxesWithSum()
+                {
+                    Year = 2000,
+                    Month = Months.January,
+                    Percentage = -33.33M,
+                    Style = "text-positive",
+                    Icon = "bi-arrow-down"
+                },
+
+                new ISuggestionsService.TaxesWithSum()
+                {
+                    Year = 2000,
+                    Month = Months.February,
+                    Percentage = 33.33M,
+                    Style = "text-negative",
+                    Icon = "bi-arrow-up"
+                }
+            };
 
             List<List<Taxes>> taxList = new List<List<Taxes>>()
             {
@@ -385,9 +446,11 @@ namespace Energy_Saver.Tests
                 }
             };
 
-            decimal actualData = suggestionsService.PercetangeAboveOrBelowAverage(taxList, Months.January, 2000);
+            List<ISuggestionsService.TaxesWithSum> actualData = suggestionsService.PercetangeAboveOrBelowAverage(taxList);
 
-            Assert.True(actualData < 0);
+            actualData.First().Should().BeEquivalentTo(expectedData.First(), d => d.ComparingByMembers<ISuggestionsService.TaxesWithSum>());
+
+            actualData.Last().Should().BeEquivalentTo(expectedData.Last(), d => d.ComparingByMembers<ISuggestionsService.TaxesWithSum>());
         }
     }
 }

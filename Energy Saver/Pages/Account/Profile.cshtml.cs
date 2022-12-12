@@ -14,6 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 
 namespace acme.Pages
 {
@@ -26,7 +27,7 @@ namespace acme.Pages
 
         public event EventHandler<NotificationService.NotificationArgs> ProfileHandler;
 
-        [StringLength(30, MinimumLength = 3)]
+        [StringLength(30, MinimumLength = 3, ErrorMessage = "Name must be at least 3 characters long")]
         [BindProperty]
         public string? UserName { get; set; }
 
@@ -53,6 +54,11 @@ namespace acme.Pages
 
         public async Task<IActionResult> OnPostDetails()
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var hasUpdatedName = await _profileService.UpdateUserNameAsync(userId, UserName);
             var hasUpdatedEmail = await _profileService.UpdateUserEmailAsync(userId, UserEmailAddress);

@@ -33,7 +33,7 @@ namespace acme.Pages
 
         [EmailAddress]
         [BindProperty]
-        public string UserEmailAddress { get; set; }
+        public string? UserEmailAddress { get; set; }
 
         public string? UserProfileImage { get; set; }
 

@@ -45,8 +45,11 @@ namespace acme.Pages
             ProfileHandler += _notificationService.CreateNotification;
         }
 
-        public void OnGet()
+        public async void OnGetAsync()
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            _logger.LogInformation($"Access token: {accessToken}");
+
             UserName = User.FindFirst(c => c.Type == "nickname")?.Value;
             UserEmailAddress = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
             UserProfileImage = User.FindFirst(c => c.Type == "picture")?.Value;

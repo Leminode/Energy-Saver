@@ -13,6 +13,7 @@ using RestSharp;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Authentication;
 
 namespace acme.Pages
 {
@@ -29,11 +30,9 @@ namespace acme.Pages
         [BindProperty]
         public string? UserName { get; set; }
 
-        [RegularExpression(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-        + "@"
-        + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$", ErrorMessage = "Invalid email address")]
+        [EmailAddress]
         [BindProperty]
-        public string? UserEmailAddress { get; set; }
+        public string UserEmailAddress { get; set; }
 
         public string? UserProfileImage { get; set; }
 
@@ -64,23 +63,6 @@ namespace acme.Pages
                 OnProfileEditError("Could not update user profile");
 
             return RedirectToPage("./Profile");
-
-            //OLD IMPLEMENTATION (DO NOT REMOVE YET):
-
-            //var client = new RestClient("https://priolette.eu.auth0.com/api/v2/");
-            //var request = new RestRequest($"/users/{userId}", RestSharp.Method.Patch);
-
-            //request.AddHeader("content-type", "application/json");
-            //request.AddHeader("authorization", $"Bearer {_config["Auth0ApiToken"]}");
-            //request.AddHeader("cache-control", "no-cache");
-            //request.AddParameter("application/json", $"{{\"nickname\": \"{UserName}\" }}", ParameterType.RequestBody);
-
-            //RestResponse response = client.Execute(request);
-            //_logger.LogInformation(response.Content);
-
-            //OnProfileEditSuccess();
-
-            //return RedirectToPage("./Profile");
         }
 
         public async Task<IActionResult> OnPostPassword()
@@ -89,7 +71,7 @@ namespace acme.Pages
 
             var ticketUrl = await _profileService.UpdateUserPasswordAsync(userId);
 
-            if (ticketUrl.Equals(null))
+            if (ticketUrl == null)
             {
                 OnProfileEditError("Something went wrong");
                 return RedirectToPage("./Profile");

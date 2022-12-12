@@ -7,6 +7,19 @@ namespace Energy_Saver.Tests
 {
     public class UtilitiesTests
     {
+        [Fact]
+        public void OrderList_TwoIntegers_ReturnsTheDescendingList()
+        {
+            List<int> actualList = new List<int>() { 1, 2};
+            List<int> expectedList = new List<int>() { 2, 1};
+
+            SortDirection sort = new SortDirection();
+
+            actualList = OrderList(SortDirection.Descending, actualList, num => num);
+
+            actualList.Should().BeEquivalentTo(expectedList);
+        }
+
         [Theory]
         [InlineData(2020, 2021)]
         [InlineData(0, 1)]
@@ -14,30 +27,32 @@ namespace Energy_Saver.Tests
         [InlineData(1, 3)]
         public void OrderList_TwoTaxesExist_ReturnsAscendingSortedListByYear(int year1, int year2)
         {
-            List<Taxes> actualTaxList = new List<Taxes>();
-            List<Taxes> expectedTaxList = new List<Taxes>();
-
-            Taxes tax1 = new Taxes
+            List<Taxes> actualTaxList = new List<Taxes>()
             {
-                Year = year1,
+                new Taxes()
+                {
+                    Year = year1
+                },
+                new Taxes()
+                {
+                    Year = year2
+                }
             };
-            Taxes tax2 = new Taxes
+            List<Taxes> expectedTaxList = new List<Taxes>()
             {
-                Year = year2,
+                new Taxes()
+                {
+                    Year = year2
+                },
+                new Taxes()
+                {
+                    Year = year1
+                }
             };
-
-            actualTaxList.Add(tax2);
-            actualTaxList.Add(tax1);
-
-            expectedTaxList.Add(tax1);
-            expectedTaxList.Add(tax2);
 
             actualTaxList = OrderList(SortDirection.Ascending, actualTaxList, tax => tax.Year);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(expectedTaxList);
         }
 
         [Theory]
@@ -47,30 +62,32 @@ namespace Energy_Saver.Tests
         [InlineData(1, 3)]
         public void OrderList_TwoTaxesExist_ReturnsDescendingSortedListByYear(int year1, int year2)
         {
-            List<Taxes> actualTaxList = new List<Taxes>();
-            List<Taxes> expectedTaxList = new List<Taxes>();
-
-            Taxes tax1 = new Taxes
+            List<Taxes> actualTaxList = new List<Taxes>()
             {
-                Year = year1,
+                new Taxes()
+                {
+                    Year = year1
+                },
+                new Taxes()
+                {
+                    Year = year2
+                }
             };
-            Taxes tax2 = new Taxes
+            List<Taxes> expectedTaxList = new List<Taxes>()
             {
-                Year = year2,
+                new Taxes()
+                {
+                    Year = year2
+                },
+                new Taxes()
+                {
+                    Year = year1
+                }
             };
-
-            actualTaxList.Add(tax1);
-            actualTaxList.Add(tax2);
-
-            expectedTaxList.Add(tax2);
-            expectedTaxList.Add(tax1);
 
             actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Year);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(expectedTaxList);
         }
 
         [Theory]
@@ -122,10 +139,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = OrderList(SortDirection.Descending, actualTaxList, tax => tax.Month);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(expectedTaxList);
         }
 
         [Theory]
@@ -184,10 +198,7 @@ namespace Energy_Saver.Tests
 
             actualTaxList = OrderList(SortDirection.Ascending, actualTaxList, taxes => taxes.Month);
 
-            var expectedTaxListString = JsonConvert.SerializeObject(expectedTaxList);
-            var actualTaxListString = JsonConvert.SerializeObject(actualTaxList);
-
-            Assert.Equal(expectedTaxListString, actualTaxListString);
+            actualTaxList.Should().BeEquivalentTo(expectedTaxList);
         }
 
         [Fact]

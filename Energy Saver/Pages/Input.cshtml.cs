@@ -9,9 +9,11 @@ using Microsoft.Extensions.Logging;
 using MailKit.Net.Imap;
 using MailKit;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages
 {
+    [ExcludeFromCodeCoverage]
     public class InputModel : PageModel
     {
         private readonly ILogger<InputModel> _logger;

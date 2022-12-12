@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using static Energy_Saver.Model.Utilities;
 using static Energy_Saver.Services.ChartService;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Energy_Saver.Pages
 {
@@ -33,6 +34,7 @@ namespace Energy_Saver.Pages
             TaxGet += _notificationService.CreateNotification;
         }
 
+        [ExcludeFromCodeCoverage]
         public void OnGet()
         {
             Taxes = GetTaxesFromDatabase();
@@ -44,6 +46,7 @@ namespace Energy_Saver.Pages
             MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Months.January, 2022), filterLabels, false);
         }
 
+        [ExcludeFromCodeCoverage]
         public IActionResult OnPostYear(int selectedYear, string selectedType)
         {
             Taxes = GetTaxesFromDatabase();
@@ -58,6 +61,7 @@ namespace Energy_Saver.Pages
             return new JsonResult(new { yearChart = YearChart.SerializeBody(), monthChart = MonthChart.SerializeBody()});
         }
 
+        [ExcludeFromCodeCoverage]
         public IActionResult OnPostMonth(string selectedMonth, int selectedYear, string selectedType)
         {
             Taxes = GetTaxesFromDatabase();
@@ -186,6 +190,8 @@ namespace Energy_Saver.Pages
             return months;
         }
 
+
+        [ExcludeFromCodeCoverage]
         public List<List<Taxes>>? GetTaxesFromDatabase()
         {
             if (User.Identity.IsAuthenticated)
@@ -213,6 +219,7 @@ namespace Energy_Saver.Pages
                 
         }
 
+        [ExcludeFromCodeCoverage]
         protected virtual void OnTaxGetError()
         {
             TaxGet?.Invoke(this, new NotificationService.NotificationArgs

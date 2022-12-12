@@ -27,6 +27,7 @@ namespace Energy_Saver.Services
             {
                 NickName = newName
             };
+
             try
             {
                 await client.Users.UpdateAsync(userId, request);

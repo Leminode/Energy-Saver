@@ -1,4 +1,5 @@
 ﻿using Energy_Saver.Email.Parsers;
+using Energy_Saver.Email.Parsers.Generic;
 using Energy_Saver.Model;
 using MimeKit;
 
@@ -12,6 +13,9 @@ namespace Energy_Saver.Email
         private static readonly (ParserCompatibilityChecker check, ParserCreator create)[] ParsersInfo = 
         { 
             (EnefitElectricityParser.CanParse, email => new EnefitElectricityParser() { Email = email }),
+            (LiteskoHeatingParser.CanParse, email => new LiteskoHeatingParser() { Email = email }),
+            
+            // Generic parsers
             (email => email.Subject.Contains("Gas"), email => new GasParser() { Email = email }),
             (email => email.Subject.Contains("Water"), email => new WaterParser() { Email = email }),
             (email => email.Subject.Contains("Electricity"), email => new ElectricityParser() { Email = email }),

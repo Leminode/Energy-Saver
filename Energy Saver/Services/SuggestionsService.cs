@@ -1,4 +1,5 @@
 ﻿using Energy_Saver.Model;
+using static Energy_Saver.Services.ISuggestionsService;
 
 namespace Energy_Saver.Services
 {
@@ -33,20 +34,39 @@ namespace Energy_Saver.Services
             return false;
         }
 
-        public decimal PercetangeAboveOrBelowAverage(List<List<Taxes>> taxes, Months month, int year)
+        public List<TaxesWithSum> PercetangeAboveOrBelowAverage(List<List<Taxes>> taxes)
         {
             decimal averageAllTime = taxes.SelectMany(taxesList => taxesList)
                 .Select(taxes => taxes.HeatingAmount + taxes.ElectricityAmount + taxes.WaterAmount + taxes.GasAmount)
                 .Average();
 
-            decimal monthSum = taxes.SelectMany(taxesList => taxesList.Where(x => x.Month == month && x.Year == year))
-                .Select(taxes => taxes.HeatingAmount + taxes.ElectricityAmount + taxes.WaterAmount + taxes.GasAmount)
-                .Sum();
+            List<(Months, int)> comb = taxes.SelectMany(taxesList => taxesList).Select(taxes => (taxes.Month, taxes.Year)).ToList();
 
-            if (averageAllTime == 0)
-                return 0;
-            else
-                return Math.Round(((monthSum - averageAllTime) / Math.Abs(averageAllTime)) * 100, 2);
+            List<TaxesWithSum> result = new List<TaxesWithSum>();
+
+            foreach((var month, var year) in comb)
+            {
+                var monthSum = taxes.SelectMany(taxesList => 
+                                                    taxesList.Where(x => x.Month == month && x.Year == year)
+                                                             .Select(taxes => taxes.HeatingAmount + taxes.ElectricityAmount + taxes.WaterAmount + taxes.GasAmount)
+                                               ).First();
+
+                var calculation = averageAllTime == 0 ? 0 : Math.Round(((monthSum - averageAllTime) / Math.Abs(averageAllTime)) * 100, 2);
+
+                result.Add(
+                    new TaxesWithSum 
+                    { 
+                        Year = year, 
+                        Month = month, 
+                        Percentage = calculation,
+                        Style = calculation < 0 ? "text-positive" : calculation == 0 ? "text-neutral" : "text-negative",
+                        Icon = calculation < 0 ? "bi-arrow-down" : calculation == 0 ? "bi-arrow-down-up" : "bi-arrow-up"
+                    }
+                );
+            }
+
+            return result;
         }
+
     }
 }

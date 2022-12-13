@@ -19,6 +19,7 @@ namespace Energy_Saver.Email.Parsers
 
             if (decimal.TryParse(price, out decimal parsedPrice))
             {
+                Console.WriteLine("[EnefitElectricityParser] Price parsed: " + parsedPrice);
                 taxes.ElectricityAmount = parsedPrice;
             }
         }

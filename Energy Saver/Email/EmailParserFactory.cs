@@ -13,6 +13,7 @@ namespace Energy_Saver.Email
         private static readonly (ParserCompatibilityChecker check, ParserCreator create)[] ParsersInfo = 
         { 
             (EnefitElectricityParser.CanParse, email => new EnefitElectricityParser() { Email = email }),
+            (IgnitisElectricityParser.CanParse, email => new IgnitisElectricityParser() { Email = email }),
             (LiteskoHeatingParser.CanParse, email => new LiteskoHeatingParser() { Email = email }),
             
             // Generic parsers

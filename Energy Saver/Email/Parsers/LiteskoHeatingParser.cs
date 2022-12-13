@@ -17,6 +17,7 @@ namespace Energy_Saver.Email.Parsers
 
             if (decimal.TryParse(price, out decimal parsedPrice))
             {
+                Console.WriteLine("[LiteskoHeatingParser] Price parsed: " + parsedPrice);
                 taxes.HeatingAmount = parsedPrice;
             }
         }

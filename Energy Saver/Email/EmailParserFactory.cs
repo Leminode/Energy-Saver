@@ -1,6 +1,5 @@
 ﻿using Energy_Saver.Email.Parsers;
 using Energy_Saver.Email.Parsers.Generic;
-using Energy_Saver.Model;
 using MimeKit;
 
 namespace Energy_Saver.Email
@@ -15,6 +14,7 @@ namespace Energy_Saver.Email
             (EnefitElectricityParser.CanParse, email => new EnefitElectricityParser() { Email = email }),
             (IgnitisElectricityParser.CanParse, email => new IgnitisElectricityParser() { Email = email }),
             (LiteskoHeatingParser.CanParse, email => new LiteskoHeatingParser() { Email = email }),
+            (VilniausSilumosTinkaiHeatingParser.CanParse, email => new VilniausSilumosTinkaiHeatingParser() { Email = email }),
             
             // Generic parsers
             (email => email.Subject.Contains("Gas"), email => new GasParser() { Email = email }),

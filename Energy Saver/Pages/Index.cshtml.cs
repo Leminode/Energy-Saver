@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using static Energy_Saver.Model.Utilities;
 using System.Security.Claims;
 using System.Diagnostics.CodeAnalysis;
+using static Energy_Saver.Services.ISuggestionsService;
 
 namespace Energy_Saver.Pages
 {
@@ -21,6 +22,7 @@ namespace Energy_Saver.Pages
 
         [BindProperty]
         public List<decimal> TaxComparison { get; set; }
+        public List<TaxesWithSum> IncDecTaxes { get; set; }
 
         public IndexModel(ILogger<IndexModel> logger, ISuggestionsService suggestionsService, EnergySaverTaxesContext context)
         {
@@ -44,7 +46,7 @@ namespace Energy_Saver.Pages
                     Taxes = OrderList(SortDirection.Descending, Taxes, taxes => taxes[0]);
 
                     TaxComparison = _suggestionsService.GetLatestTaxComparison(Taxes);
-                    Console.WriteLine(_suggestionsService.PercetangeAboveOrBelowAverage(Taxes, Months.May, 2022));
+                    IncDecTaxes = _suggestionsService.PercetangeAboveOrBelowAverage(Taxes);
                 }
                 catch (Exception)
                 {
@@ -60,9 +62,9 @@ namespace Energy_Saver.Pages
 
         }
 
-        public decimal GetComparison(Months month, int year)
+        public TaxesWithSum GetComparison(Months month, int year)
         {
-            return _suggestionsService.PercetangeAboveOrBelowAverage(Taxes, month, year);
+            return IncDecTaxes.Select(tax => tax).Where(withSum => withSum.Year == year && withSum.Month == month).First();
         }
     }
 }

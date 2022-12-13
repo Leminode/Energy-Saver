@@ -13,6 +13,8 @@ using RestSharp;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 
 namespace acme.Pages
 {
@@ -25,13 +27,11 @@ namespace acme.Pages
 
         public event EventHandler<NotificationService.NotificationArgs> ProfileHandler;
 
-        [StringLength(30, MinimumLength = 3)]
+        [StringLength(30, MinimumLength = 3, ErrorMessage = "Name must be at least 3 characters long")]
         [BindProperty]
         public string? UserName { get; set; }
 
-        [RegularExpression(@"^[\w!#$%&'*+\-/=?\^_`{|}~]+(\.[\w!#$%&'*+\-/=?\^_`{|}~]+)*"
-        + "@"
-        + @"((([\-\w]+\.)+[a-zA-Z]{2,4})|(([0-9]{1,3}\.){3}[0-9]{1,3}))$", ErrorMessage = "Invalid email address")]
+        [EmailAddress]
         [BindProperty]
         public string? UserEmailAddress { get; set; }
 
@@ -45,8 +45,11 @@ namespace acme.Pages
             ProfileHandler += _notificationService.CreateNotification;
         }
 
-        public void OnGet()
+        public async void OnGetAsync()
         {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            _logger.LogInformation($"Access token: {accessToken}");
+
             UserName = User.FindFirst(c => c.Type == "nickname")?.Value;
             UserEmailAddress = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
             UserProfileImage = User.FindFirst(c => c.Type == "picture")?.Value;
@@ -54,6 +57,11 @@ namespace acme.Pages
 
         public async Task<IActionResult> OnPostDetails()
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+            
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var hasUpdatedName = await _profileService.UpdateUserNameAsync(userId, UserName);
             var hasUpdatedEmail = await _profileService.UpdateUserEmailAsync(userId, UserEmailAddress);
@@ -64,23 +72,6 @@ namespace acme.Pages
                 OnProfileEditError("Could not update user profile");
 
             return RedirectToPage("./Profile");
-
-            //OLD IMPLEMENTATION (DO NOT REMOVE YET):
-
-            //var client = new RestClient("https://priolette.eu.auth0.com/api/v2/");
-            //var request = new RestRequest($"/users/{userId}", RestSharp.Method.Patch);
-
-            //request.AddHeader("content-type", "application/json");
-            //request.AddHeader("authorization", $"Bearer {_config["Auth0ApiToken"]}");
-            //request.AddHeader("cache-control", "no-cache");
-            //request.AddParameter("application/json", $"{{\"nickname\": \"{UserName}\" }}", ParameterType.RequestBody);
-
-            //RestResponse response = client.Execute(request);
-            //_logger.LogInformation(response.Content);
-
-            //OnProfileEditSuccess();
-
-            //return RedirectToPage("./Profile");
         }
 
         public async Task<IActionResult> OnPostPassword()
@@ -89,7 +80,7 @@ namespace acme.Pages
 
             var ticketUrl = await _profileService.UpdateUserPasswordAsync(userId);
 
-            if (ticketUrl.Equals(null))
+            if (ticketUrl == null)
             {
                 OnProfileEditError("Something went wrong");
                 return RedirectToPage("./Profile");

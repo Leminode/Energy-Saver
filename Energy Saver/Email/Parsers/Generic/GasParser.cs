@@ -1,6 +1,6 @@
 ﻿using Energy_Saver.Model;
 
-namespace Energy_Saver.Email.Parsers
+namespace Energy_Saver.Email.Parsers.Generic
 {
     public class GasParser : EmailParser
     {

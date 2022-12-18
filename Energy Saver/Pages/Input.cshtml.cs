@@ -113,9 +113,11 @@ namespace Energy_Saver.Pages
         public async Task OnPostEmail()
         {
             string userEmail = User.FindFirst(ClaimTypes.Email).Value;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserEmailAddress == userEmail);
+
             try
             {
-                var taxes = await _emailDataExtractorService.Extract(userEmail, UserEmailPassword, Year, Month);
+                var taxes = await _emailDataExtractorService.Extract(user.UserEmailAddress, user.UserEmailPassword, Year, Month);
 
                 Taxes.Year = taxes.Year;
                 Taxes.Month = taxes.Month;
@@ -146,7 +148,6 @@ namespace Energy_Saver.Pages
             {
                 OnTaxInputError("Error: " + ex.Message);
             }
-
         }
     }
 }

@@ -15,10 +15,12 @@ namespace Energy_Saver.DataSpace
         }
 
         public DbSet<Taxes> Taxes { get; set; } = default!;
+        public DbSet<Users> Users { get; set; } = default!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Taxes>().ToTable("taxes");
+            modelBuilder.Entity<Users>().ToTable("users");
         }
     }
 }

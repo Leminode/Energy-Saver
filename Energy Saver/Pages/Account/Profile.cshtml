@@ -1,4 +1,5 @@
 ﻿@page
+@using Energy_Saver.Model
 @model acme.Pages.ProfileModel
 @{
     ViewData["Title"] = "User Profile";
@@ -10,27 +11,54 @@
             <h2>@ViewData["Title"]</h2>
 
             <div class="col-md-2">
-                <img src="@Model.UserProfileImage"
+                <img src="@Model.DbUser.UserProfileImage"
                      alt="" class="img-rounded img-responsive" />
             </div>
+
+            <input type="hidden" asp-for="DbUser.UserId" />
             <div class="col-md-4 text-color">
                 <form method="post">
-                    <div class="form-group">
-                        <label asp-for="UserName" class="control-label">User Name</label>
-                        <input asp-for="UserName" class="form-control" />
-                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    <div class="form-floating">
+                        <input asp-for="DbUser.UserName" class="form-control" />
+                        <span asp-validation-for="DbUser.UserName" class="text-danger"></span>
+                        <label asp-for="DbUser.UserName" class="control-label">User Name</label>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="UserEmailAddress" class="control-label">Email Address</label>
-                        <input asp-for="UserEmailAddress" class="form-control" />
-                        <span asp-validation-for="UserEmailAddress" class="text-danger"></span>
+                    <div class="form-floating" style="margin-top: 10px">
+                        <input asp-for="DbUser.UserEmailAddress" class="form-control" />
+                        <span asp-validation-for="DbUser.UserEmailAddress" class="text-danger"></span>
+                        <label asp-for="DbUser.UserEmailAddress" class="control-label">Email Address</label>
                     </div>
                     <div class="form-group" style="margin-top: 10px">
                         <input type="submit" value="Save" class="btn" asp-page-handler="Details" /> 
-                        <input type="submit" value="Change Password" class="btn" style="margin-left: 10px" asp-page-handler="Password" />
+                        <input type="submit" value="Change Password" class="btn" style="margin-left: 10px" asp-page-handler="AccountPassword" />
                     </div>
                 </form>
             </div>
+
+            <div class="col-md-6 text-color">
+                <form method="post">
+                    <div class="row mb-2">
+                        <div class="col offset-8">
+                            <div class="form-floating">
+                                <span asp-validation-for="DbUser.UserEmailPassword" class="text-danger"></span>
+                                <input asp-for="DbUser.UserEmailPassword" class="form-control" type="password" />
+                                <label asp-for="DbUser.UserEmailPassword" class="control-label">Email Password</label>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 10px">
+                                <input type="submit" value="Save" class="btn btn-primary" asp-page-handler="EmailPassword" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
         </div>
     </div>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }

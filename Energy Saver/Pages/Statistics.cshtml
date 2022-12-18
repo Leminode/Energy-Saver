@@ -1,6 +1,6 @@
 ﻿@page
-@model Energy_Saver.Pages.StatisticsModel
-@using Energy_Saver.Model
+@model Energy_Saver.Pages.StatisticsModel;
+@using Energy_Saver.Model;
 @using ChartJSCore.Models;
 @{
     ViewData["Title"] = "Statistics";
@@ -19,7 +19,11 @@
                     <select class="form-select" name="Year" id="yearDropdown" onchange="editYear()">
                         @for (int i = DateTime.Now.Year; i > 1919; i--)
                         {
-                            <option value="@i">@i</option>
+                            @if (Model.GetParam == null || Model.GetParam.SelectedYear != i) {
+                                <option value="@i">@i</option>
+                            } else if (Model.GetParam.SelectedYear == i) {
+                                <option value="@i" selected>@i</option>
+                            }
                         }
                     </select>
                     <label for="yearDropdown">Year</label>
@@ -43,7 +47,11 @@
                     <select class="form-select" name="Month" id="monthDropdown" onchange="editMonth()">
                         @foreach (Months month in Enum.GetValues(typeof(Months)))
                         {
-                            <option value="@month">@month</option>
+                            @if (Model.GetParam == null || Model.GetParam.SelectedMonth != month) {
+                                <option value="@month">@month</option>
+                            } else if (Model.GetParam.SelectedMonth == month) {
+                                <option value="@month" selected>@month</option>
+                            }
                         }
                     </select>
                     <label for="monthDropDown">Month</label>

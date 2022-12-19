@@ -39,7 +39,12 @@
                                     @taxRecord.Month.ToString()
                                 </div>
                                 <div style="text-align:right; vertical-align:middle" class="col">
-                                    <div class="@withStyle.Style"><i class="@withStyle.Icon"></i> @withStyle.Percentage%</div>
+                                    @{
+                                        string colorStyle = withStyle.Percentage < 0 ? "text-positive" : withStyle.Percentage == 0 ? "text-neutral" : "text-negative";
+                                        string arrowStyle = withStyle.Percentage < 0 ? "bi-arrow-down" : withStyle.Percentage == 0 ? "bi-arrow-down-up" : "bi-arrow-up";
+                                        string value = withStyle.Percentage > 0 ? "+" + withStyle.Percentage.ToString() : withStyle.Percentage.ToString();
+                                    }
+                                    <div class="@colorStyle"><i class="@arrowStyle"></i> @value%</div>
                                 </div>
                             </div>
                         </td>

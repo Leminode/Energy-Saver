@@ -10,6 +10,7 @@ using MailKit.Net.Imap;
 using MailKit;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using static Energy_Saver.Pages.StatisticsModel;
 
 namespace Energy_Saver.Pages
 {
@@ -89,7 +90,7 @@ namespace Energy_Saver.Pages
                 OnTaxInputError("Could not write enrty. Please try again.");
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Statistics", new { selectedMonth = Taxes.Month, selectedYear = Taxes.Year });
         }
 
         protected virtual void OnTaxInputSuccess()

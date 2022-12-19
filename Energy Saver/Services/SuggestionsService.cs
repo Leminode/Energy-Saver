@@ -58,9 +58,7 @@ namespace Energy_Saver.Services
                     { 
                         Year = year, 
                         Month = month, 
-                        Percentage = calculation,
-                        Style = calculation < 0 ? "text-positive" : calculation == 0 ? "text-neutral" : "text-negative",
-                        Icon = calculation < 0 ? "bi-arrow-down" : calculation == 0 ? "bi-arrow-down-up" : "bi-arrow-up"
+                        Percentage = calculation
                     }
                 );
             }

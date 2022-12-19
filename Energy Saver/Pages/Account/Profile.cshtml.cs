@@ -24,47 +24,47 @@ namespace acme.Pages
         private readonly ILogger<ProfileModel> _logger;
         private readonly INotificationService _notificationService;
         private readonly IUserProfileService _profileService;
+        private readonly EnergySaverTaxesContext _context;
 
         public event EventHandler<NotificationService.NotificationArgs> ProfileHandler;
 
-        [StringLength(30, MinimumLength = 3, ErrorMessage = "Name must be at least 3 characters long")]
         [BindProperty]
-        public string? UserName { get; set; }
+        public Users? DbUser { get; set; }
 
-        [EmailAddress]
-        [BindProperty]
-        public string? UserEmailAddress { get; set; }
-
-        public string? UserProfileImage { get; set; }
-
-        public ProfileModel(ILogger<ProfileModel> logger, INotificationService notificationService, IUserProfileService profileService)
+        public ProfileModel(ILogger<ProfileModel> logger, INotificationService notificationService, IUserProfileService profileService, EnergySaverTaxesContext context)
         {
             _logger = logger;
             _notificationService = notificationService;
             _profileService = profileService;
             ProfileHandler += _notificationService.CreateNotification;
+            _context = context;
         }
 
-        public async void OnGetAsync()
+        public void OnGet()
         {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            _logger.LogInformation($"Access token: {accessToken}");
+            var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+            int userID = int.Parse(tempString);
 
-            UserName = User.FindFirst(c => c.Type == "nickname")?.Value;
-            UserEmailAddress = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
-            UserProfileImage = User.FindFirst(c => c.Type == "picture")?.Value;
+            try
+            {
+                var user = _context.Users.FirstOrDefault(u => u.UserId == userID);
+                DbUser = user;
+
+                DbUser.UserName = User.FindFirst(c => c.Type == "nickname")?.Value;
+                DbUser.UserEmailAddress = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+                DbUser.UserProfileImage = User.FindFirst(c => c.Type == "picture")?.Value;
+            }
+            catch (Exception)
+            {
+                OnProfileEditError("There has been an error when conneting to the database");
+            }
         }
 
         public async Task<IActionResult> OnPostDetails()
-        {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-            
+        {  
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var hasUpdatedName = await _profileService.UpdateUserNameAsync(userId, UserName);
-            var hasUpdatedEmail = await _profileService.UpdateUserEmailAsync(userId, UserEmailAddress);
+            var hasUpdatedName = await _profileService.UpdateUserNameAsync(userId, DbUser.UserName);
+            var hasUpdatedEmail = await _profileService.UpdateUserEmailAsync(userId, DbUser.UserEmailAddress);
 
             if (hasUpdatedEmail && hasUpdatedName)
                 OnProfileEditSuccess();
@@ -74,7 +74,7 @@ namespace acme.Pages
             return RedirectToPage("./Profile");
         }
 
-        public async Task<IActionResult> OnPostPassword()
+        public async Task<IActionResult> OnPostAccountPassword()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -87,6 +87,29 @@ namespace acme.Pages
             }
 
             return Redirect(ticketUrl);
+        }
+
+        public async Task<IActionResult> OnPostEmailPassword()
+        {
+            var tempString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value.Split('|').Last();
+            int userID = int.Parse(tempString);
+
+            DbUser.UserId = userID;
+            DbUser.UserEmailAddress = User.FindFirst(c => c.Type == ClaimTypes.Email)?.Value;
+
+            _context.Attach(DbUser).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                OnProfileEditSuccess();
+            }
+            catch (DbUpdateException)
+            {
+                OnProfileEditError("Something went wrong");
+            }
+
+            return RedirectToPage("./Profile");
         }
 
         protected virtual void OnProfileEditSuccess()

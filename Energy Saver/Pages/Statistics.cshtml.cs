@@ -24,6 +24,8 @@ namespace Energy_Saver.Pages
         public Chart? MonthChart { get; set; }
         [BindProperty]
         public List<List<Taxes>>? Taxes { get; set; }
+        [BindProperty]
+        public Params? GetParam { get; set; }
 
 
         public StatisticsModel(IChartService chartService, EnergySaverTaxesContext context, INotificationService notificationService)
@@ -35,15 +37,17 @@ namespace Energy_Saver.Pages
         }
 
         [ExcludeFromCodeCoverage]
-        public void OnGet()
+        public void OnGet(int selectedYear = 2022, Months selectedMonth = Months.January)
         {
             Taxes = GetTaxesFromDatabase();
 
             var monthsLabels = GenerateMonthsLabels();
             var filterLabels = GenerateTaxLabels();
 
-            YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(2022), monthsLabels);
-            MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(Months.January, 2022), filterLabels, false);
+            GetParam = new Params { SelectedMonth = selectedMonth, SelectedYear = selectedYear };
+
+            YearChart = _chartService.CreateChart(Enums.ChartType.Line, CreateDataForYearChart(selectedYear), monthsLabels);
+            MonthChart = _chartService.CreateChart(Enums.ChartType.Bar, CreateDataForMonthChart(selectedMonth, selectedYear), filterLabels, false);
         }
 
         [ExcludeFromCodeCoverage]
@@ -228,6 +232,13 @@ namespace Energy_Saver.Pages
                 Type = NotificationService.NotificationType.Error
             });
         }
+
+        public class Params
+        {
+            public Months SelectedMonth { get; set; }
+            public int SelectedYear { get; set; }
+        }
+
     }
 
     

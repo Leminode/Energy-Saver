@@ -12,8 +12,6 @@ namespace Energy_Saver.Services
             public int Year { get; set; }
             public Months Month { get; set; }
             public decimal Percentage { get; set; }
-            public string Style { get; set; }
-            public string Icon { get; set; }
         }
     }
 }

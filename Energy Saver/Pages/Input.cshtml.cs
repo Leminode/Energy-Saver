@@ -10,6 +10,7 @@ using MailKit.Net.Imap;
 using MailKit;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using static Energy_Saver.Pages.StatisticsModel;
 
 namespace Energy_Saver.Pages
 {
@@ -89,7 +90,7 @@ namespace Energy_Saver.Pages
                 OnTaxInputError("Could not write enrty. Please try again.");
             }
 
-            return RedirectToPage("./Index");
+            return RedirectToPage("./Statistics", new { selectedMonth = Taxes.Month, selectedYear = Taxes.Year });
         }
 
         protected virtual void OnTaxInputSuccess()
@@ -113,9 +114,11 @@ namespace Energy_Saver.Pages
         public async Task OnPostEmail()
         {
             string userEmail = User.FindFirst(ClaimTypes.Email).Value;
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserEmailAddress == userEmail);
+
             try
             {
-                var taxes = await _emailDataExtractorService.Extract(userEmail, UserEmailPassword, Year, Month);
+                var taxes = await _emailDataExtractorService.Extract(user.UserEmailAddress, user.UserEmailPassword, Year, Month);
 
                 Taxes.Year = taxes.Year;
                 Taxes.Month = taxes.Month;
@@ -146,7 +149,6 @@ namespace Energy_Saver.Pages
             {
                 OnTaxInputError("Error: " + ex.Message);
             }
-
         }
     }
 }
